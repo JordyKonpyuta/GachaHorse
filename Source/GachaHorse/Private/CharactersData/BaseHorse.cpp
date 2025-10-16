@@ -6,6 +6,8 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "EnhancedInputComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 // ==========================
@@ -54,11 +56,14 @@ void ABaseHorse::BeginPlay()
 	// FOURTH : CREATE WIDGET
 
 	CreateWidgetRace();
+	
+	GetCharacterMovement()->MaxWalkSpeed = 50000.0f;
 }
 
 void ABaseHorse::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Emerald, FString::SanitizeFloat(CurrentSpeed));
 
 	// ALWAYS CHECK SLOPE
 	SlopeCheck();
@@ -67,8 +72,11 @@ void ABaseHorse::Tick(float DeltaTime)
 	ChargeJump(DeltaTime);
 
 	// MOVE HORSEY FORWARD
-	if (!bIsRagdoll && GetCharacterMovement()->IsMovingOnGround())
-		AddMovementInput(GetActorForwardVector(), 0.5 * SlopeType + CurrentSpeed <= TargetSpeed * (1 + SlopeType * 0.15) ? 1 : -1, false);
+	 CalculateCurrentSpeed();
+
+	if (!((1 + SlopeType * 0.15) * TargetSpeed - 1  < CurrentSpeed && CurrentSpeed < (1 + SlopeType * 0.15) * TargetSpeed + 1))
+		if (!bIsRagdoll && GetCharacterMovement()->IsMovingOnGround())
+			AddMovementInput(GetActorForwardVector(), SlopeType * 0.5 + (CurrentSpeed <= TargetSpeed * (1 + SlopeType * 0.15) ? 1 : -1), false);
 
 	// MOVE HORSEY LEFTY RIGHTY
 	if (!(-0.1 < SideSpeed && SideSpeed < 0.1))
@@ -101,9 +109,86 @@ void ABaseHorse::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	// Set up action bindings
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		// Move
+		EnhancedInputComponent->BindAction(Move_Action, ETriggerEvent::Triggered, this, &ABaseHorse::Turn);
+
+		// Jumping
+		EnhancedInputComponent->BindAction(Jump_Action, ETriggerEvent::Started, this, &ABaseHorse::PrepareJump);
+		EnhancedInputComponent->BindAction(Jump_Action, ETriggerEvent::Completed, this, &ABaseHorse::ReleaseJump);
+
+		// Speed
+		EnhancedInputComponent->BindAction(Speed_Action, ETriggerEvent::Started, this, &ABaseHorse::ChangeSpeed);
+	}
+}
+	
+	// =========================
+	// ==      Movements      ==
+	// =========================
+
+void ABaseHorse::Turn(const FInputActionValue& Value)
+{
+	if (bIsRagdoll)
+		return;
+
+	float TurnAngle = (Value.Get<float>() * TurnRateFactor) / (bIsChargingJump ? 3 : 1) / (GetCharacterMovement()->IsMovingOnGround() ? 1 : 100);
+
+	AddControllerYawInput(TurnAngle);
+	GetCharacterMovement()->Velocity = UKismetMathLibrary::RotateAngleAxis(GetCharacterMovement()->Velocity, TurnAngle, FVector(0, 0, 1));
 }
 
-	// =========================
+void ABaseHorse::PrepareJump(const FInputActionValue& Value)
+{
+	// DON'T BEGIN THE CHARGING IF IN THE AIR OR ALREADY CHARGING
+	if (bIsChargingJump || !GetCharacterMovement()->IsMovingOnGround())
+		return;
+
+	// LET TICK START CHARGING JUMP
+	bIsChargingJump = true;
+	JumpCharge = 0.0f;
+
+	// DISPLAY CHARGE WIDGET
+	Widget_ShowCharge();
+}
+
+void ABaseHorse::ReleaseJump(const FInputActionValue& Value)
+{
+	// DON'T BEGIN THE CHARGING IF IN THE AIR
+	if (!GetCharacterMovement()->IsMovingOnGround())
+		return;
+
+	if (!bIsRagdoll && CurrentSpeed > 750 && GetCharacterMovement()->JumpZVelocity > 325.0f)
+	{
+		Jump();
+		GetCapsuleComponent()->SetCapsuleSize(34,34,true);
+	}
+	bIsChargingJump = false;
+	Widget_HideCharge();
+}
+
+void ABaseHorse::ChangeSpeed(const FInputActionValue& Value)
+{
+	if (Value.Get<float>() < 0)
+	{
+		if (CurrentSpeedIndex <= 0)
+			return;
+
+		CurrentSpeedIndex -= 1;
+		SetTargetSpeed(CurrentSpeedIndex);
+	}
+	else
+	{
+		if (CurrentSpeedIndex >= 5)
+			return;
+
+		CurrentSpeedIndex += 1;
+		SetTargetSpeed(CurrentSpeedIndex);
+	}
+}
+
+// =========================
 	// ==       Respawn       ==
 	// =========================
 
@@ -129,7 +214,6 @@ void ABaseHorse::InitAcceleration()
 void ABaseHorse::InitSpeed()
 {
 	SpeedTable[5] = 1750 + (Stats[1] * 25);
-	GetCharacterMovement()->MaxWalkSpeed = SpeedTable[5];
 }
 
 void ABaseHorse::InitHandling()
@@ -145,6 +229,7 @@ void ABaseHorse::ResetShiftSpeed()
 void ABaseHorse::SetTargetSpeed(int IndexSpeed)
 {
 	TargetSpeed = SpeedTable[IndexSpeed];
+	CurrentSpeedIndex = IndexSpeed;
 }
 
 void ABaseHorse::SlopeCheck()
@@ -324,7 +409,7 @@ void ABaseHorse::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UP
 
 		if (CurrentSpeed > 1000)
 		{
-			SetTargetSpeed(FMath::Clamp(TargetSpeedIndex, 0, 4));
+			SetTargetSpeed(FMath::Clamp(CurrentSpeedIndex, 0, 4));
 			bCanShiftSpeed = false;
 			GetWorldTimerManager().SetTimer(
 				ShiftSpeedTimerHandle,
@@ -340,6 +425,8 @@ void ABaseHorse::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UP
 	}
 }
 
+
+
 	// =========================
 	// ==       Widgets       ==
 	// =========================
@@ -351,3 +438,41 @@ void ABaseHorse::DeleteWidgetRace_Implementation(){}
 void ABaseHorse::CreateWidgetFinish_Implementation(){}
  
 void ABaseHorse::DeleteWidgetFinish_Implementation(){}
+
+	// =========================
+	// ==        TESTS        ==
+	// =========================
+
+void ABaseHorse::Widget_ShowCharge_Implementation()
+{
+}
+
+void ABaseHorse::Widget_HideCharge_Implementation()
+{
+}
+
+void ABaseHorse::A(const FInputActionValue& Value)
+{
+	GEngine->AddOnScreenDebugMessage(-1,5.f, Value.Get<float>() < 0 ? FColor::Red : FColor::Purple, "A");
+}
+                                                      
+void ABaseHorse::B(const FInputActionValue& Value)
+{
+	GEngine->AddOnScreenDebugMessage(-1,5.f, Value.Get<bool>() ? FColor::Green : FColor::Yellow, "B");
+}
+                                                      
+void ABaseHorse::C(const FInputActionValue& Value)
+{
+	GEngine->AddOnScreenDebugMessage(-1,5.f, Value.Get<float>() < 0 ? FColor::Blue : FColor::Cyan, "C");
+
+	if (Value.Get<float>() < 0)
+	{
+		SetTargetSpeed(5);
+	}
+	else
+	{
+		SetTargetSpeed(0);
+	}
+	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Yellow, FString::FromInt(CurrentSpeedIndex));
+	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Yellow, FString::SanitizeFloat(TargetSpeed));
+}

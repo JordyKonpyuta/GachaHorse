@@ -3,23 +3,33 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputActionValue.h"
 #include "GameFramework/Character.h"
 #include "BaseHorse.generated.h"
 
+struct FInputActionValue;
 class UCameraComponent;
 class USpringArmComponent;
+class UInputAction;
 
 UCLASS()
 class GACHAHORSE_API ABaseHorse : public ACharacter
 {
 	GENERATED_BODY()
 
-	// UPROPERTIES
+	// UPROPERTY
 public:
 	// =========================
 	// ==      Movements      ==
 	// =========================
 
+	UPROPERTY(EditAnywhere, Category="Inputs")
+	TObjectPtr<UInputAction> Move_Action;
+	UPROPERTY(EditAnywhere, Category="Inputs")
+	TObjectPtr<UInputAction> Jump_Action;
+	UPROPERTY(EditAnywhere, Category="Inputs")
+	TObjectPtr<UInputAction> Speed_Action;
+	
 protected:
 	// ==========================
 	// ==      Components      ==
@@ -42,7 +52,7 @@ protected:
 	 * Third Stat : Handling
 	 */
 	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Stats")
-	TArray<int> Stats = {2,2,2};
+	TArray<int> Stats = {150,150,2};
 	
 	// =========================
 	// ==        Speed        ==
@@ -52,7 +62,7 @@ protected:
 	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Speed Targets")
 	float TargetSpeed = 0.0f;
 	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Speed Targets")
-	int TargetSpeedIndex = 0; // WILL PROBABLY BE REMOVED
+	int CurrentSpeedIndex = 1;
 	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Speed Targets")
 	TArray<float> SpeedTable = {-200, 0, 350, 800, 1200, 1750};
 
@@ -102,8 +112,8 @@ protected:
 	// =========================
 
 	/**
-	 * As you can see, the above property is a boolean that allows one to know whether or
-	 * not the character is currently in the process of being a ragdoll.
+	 * As you can see, the above property is a boolean that allows one to know whether
+	 * the character is currently in the process of being a ragdoll.
 	 * In truth, this is an incredibly necessary and important, core function of the
 	 * game ; without the ragdoll, it would be like Mario without Luigi, spaghetti
 	 * without Ketchup, or indeed, Aerith without a sword sticking through her dumb
@@ -157,6 +167,21 @@ protected:
 	virtual void BeginPlay() override;
 	
 	// =========================
+	// ==      Movements      ==
+	// =========================
+
+	UFUNCTION()
+	void Turn(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void PrepareJump(const FInputActionValue& Value);
+	UFUNCTION()
+	void ReleaseJump(const FInputActionValue& Value);
+	
+	UFUNCTION()
+	void ChangeSpeed(const FInputActionValue& Value);
+	
+	// =========================
 	// ==       Respawn       ==
 	// =========================
 
@@ -193,7 +218,7 @@ protected:
 	UFUNCTION()
 	void ChargeJump(float DeltaTime);
 
-	void Landed(const FHitResult& Hit) override;
+	virtual void Landed(const FHitResult& Hit) override;
 	
 	// =========================
 	// ==       Respawn       ==
@@ -233,4 +258,16 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void DeleteWidgetFinish();
 	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void Widget_ShowCharge();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void Widget_HideCharge();
+	
+	// =========================
+	// ==        TESTS        ==
+	// =========================
+	
+	void A(const FInputActionValue& Value);
+	void B(const FInputActionValue& Value);
+	void C(const FInputActionValue& Value);
 };
