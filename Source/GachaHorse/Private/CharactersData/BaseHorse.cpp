@@ -24,6 +24,7 @@ ABaseHorse::ABaseHorse()
 	HorseSpringArm = CreateDefaultSubobject<USpringArmComponent>("Spring Arm");
 	HorseSpringArm->SetupAttachment(GetCapsuleComponent());
 	HorseSpringArm->TargetArmLength = 600.0f;
+	HorseSpringArm->SetRelativeRotation(FRotator(-20,0,0));
 
 	// CAMERA
 	
@@ -32,7 +33,7 @@ ABaseHorse::ABaseHorse()
 
 	// FUNCTIONS
 
-	GetMesh()->OnComponentHit.AddDynamic(this, &ABaseHorse::OnHit);
+	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ABaseHorse::OnHit);
 }
 
 void ABaseHorse::BeginPlay()
@@ -188,7 +189,7 @@ void ABaseHorse::ChangeSpeed(const FInputActionValue& Value)
 	}
 }
 
-// =========================
+	// =========================
 	// ==       Respawn       ==
 	// =========================
 
@@ -200,6 +201,23 @@ void ABaseHorse::SetPlayerRespawn()
 void ABaseHorse::SetPlayerRespawn(const FTransform& RespawnLoc)
 {
 	RespawnPoint = RespawnLoc;
+}
+
+	// =========================
+	// ==        Stats        ==
+	// =========================
+
+void ABaseHorse::SetStats(TArray<int> StatsToSet)
+{
+	if (StatsToSet.Num() != 3)
+		return;
+	
+	Stats = StatsToSet;
+}
+
+void ABaseHorse::SetStats(int StatAccel, int StatSpeed, int StatHandling)
+{
+	Stats = {StatAccel, StatSpeed, StatHandling};
 }
 
 	// =========================
@@ -360,7 +378,7 @@ void ABaseHorse::CeaseRagdoll()
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::Type::QueryOnly);
 	GetMesh()->SetSimulatePhysics(false);
 	GetMesh()->AttachToComponent(GetCapsuleComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-	GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -90), FRotator(0, 0, -90));
+	GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -90), FRotator(0, -90, 0));
 }
 	
 	// ========================
@@ -370,13 +388,12 @@ void ABaseHorse::CeaseRagdoll()
 void ABaseHorse::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (FVector2D(Hit.ImpactNormal.X, Hit.ImpactNormal.Y).Length() < 0.35)
+	if (FVector2D(Hit.ImpactNormal.X, Hit.ImpactNormal.Y).Length() < 0.35 || bIsRagdoll)
 		return;
 		
 	FVector2D NormalHitSave2D = FVector2D(Hit.ImpactNormal.X, Hit.ImpactNormal.Y);
 	FVector2D ForwardVector2D = FVector2D(GetActorForwardVector().X, GetActorForwardVector().Y);
 	FVector2D RightVector2D = FVector2D(GetActorRightVector().X, GetActorRightVector().Y);
-
 	
 	if (FVector2D::DotProduct(NormalHitSave2D, ForwardVector2D) < -0.5)
 	{
@@ -425,8 +442,6 @@ void ABaseHorse::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UP
 	}
 }
 
-
-
 	// =========================
 	// ==       Widgets       ==
 	// =========================
@@ -439,40 +454,10 @@ void ABaseHorse::CreateWidgetFinish_Implementation(){}
  
 void ABaseHorse::DeleteWidgetFinish_Implementation(){}
 
-	// =========================
-	// ==        TESTS        ==
-	// =========================
-
 void ABaseHorse::Widget_ShowCharge_Implementation()
 {
 }
 
 void ABaseHorse::Widget_HideCharge_Implementation()
 {
-}
-
-void ABaseHorse::A(const FInputActionValue& Value)
-{
-	GEngine->AddOnScreenDebugMessage(-1,5.f, Value.Get<float>() < 0 ? FColor::Red : FColor::Purple, "A");
-}
-                                                      
-void ABaseHorse::B(const FInputActionValue& Value)
-{
-	GEngine->AddOnScreenDebugMessage(-1,5.f, Value.Get<bool>() ? FColor::Green : FColor::Yellow, "B");
-}
-                                                      
-void ABaseHorse::C(const FInputActionValue& Value)
-{
-	GEngine->AddOnScreenDebugMessage(-1,5.f, Value.Get<float>() < 0 ? FColor::Blue : FColor::Cyan, "C");
-
-	if (Value.Get<float>() < 0)
-	{
-		SetTargetSpeed(5);
-	}
-	else
-	{
-		SetTargetSpeed(0);
-	}
-	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Yellow, FString::FromInt(CurrentSpeedIndex));
-	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Yellow, FString::SanitizeFloat(TargetSpeed));
 }

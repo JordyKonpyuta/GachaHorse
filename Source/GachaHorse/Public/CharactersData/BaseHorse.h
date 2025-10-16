@@ -146,6 +146,14 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	// =========================
+	// ==        Stats        ==
+	// =========================
+
+	UFUNCTION()
+	void SetStats(TArray<int> StatsToSet);
+	void SetStats(int StatAccel, int StatSpeed, int StatHandling);
+	
+	// =========================
 	// ==        Speed        ==
 	// =========================
 
@@ -262,12 +270,4 @@ protected:
 	void Widget_ShowCharge();
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void Widget_HideCharge();
-	
-	// =========================
-	// ==        TESTS        ==
-	// =========================
-	
-	void A(const FInputActionValue& Value);
-	void B(const FInputActionValue& Value);
-	void C(const FInputActionValue& Value);
 };
