@@ -10,7 +10,7 @@
  * 
  */
 USTRUCT(BlueprintType)
-struct GACHAHORSE_API FHorseDataStruct
+struct GACHAHORSE_API FHorseDataStruct : public FTableRowBase
 {
 	GENERATED_BODY()
 
@@ -39,9 +39,9 @@ public:
 	{
 		HorseID = 0;
 		HorseName = "ThisIsntAHorse";
-		AccelerationPerLevel.Empty();
-		SpeedPerLevel.Empty();
-		HandlingPerLevel.Empty();
+		AccelerationPerLevel = {0,0,0,0,0,0,0,0,0,0};
+		SpeedPerLevel= {0,0,0,0,0,0,0,0,0,0};
+		HandlingPerLevel= {0,0,0,0,0,0,0,0,0,0};
 		HorseMesh = nullptr;
 		HorseAnimation = nullptr;
 	}
