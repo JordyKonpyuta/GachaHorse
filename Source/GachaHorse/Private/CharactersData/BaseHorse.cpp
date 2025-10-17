@@ -10,7 +10,7 @@
 #include "Kismet/KismetMathLibrary.h"
 
 
-// ==========================
+	// ==========================
 	// ==    Base Functions    ==
 	// ==========================
 
@@ -33,12 +33,16 @@ ABaseHorse::ABaseHorse()
 
 	// FUNCTIONS
 
-	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ABaseHorse::OnHit);
+	// ????? POURQUOI TU MARCHES PLUS?
+	//GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ABaseHorse::OnHit);
 }
 
 void ABaseHorse::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// ????? CA FIXE LE RAGDOLL JE SUPPOSE
+	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ABaseHorse::OnHit);
 
 	// FIRST : PREPARE RESPAWN
 
@@ -49,6 +53,7 @@ void ABaseHorse::BeginPlay()
 	InitAcceleration();
 	InitSpeed();
 	InitHandling();
+	GetCharacterMovement()->JumpZVelocity = 0.0f;
 
 	// THIRD : SET SPEED
 
@@ -71,9 +76,16 @@ void ABaseHorse::Tick(float DeltaTime)
 
 	// CHARGE JUMP
 	ChargeJump(DeltaTime);
+	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Cyan, FString::SanitizeFloat(JumpCharge));
 
 	// MOVE HORSEY FORWARD
-	 CalculateCurrentSpeed();
+	CalculateCurrentSpeed();
+
+	if (!GetCharacterMovement()->IsMovingOnGround() && bIsChargingJump)
+	{
+		bIsChargingJump = false;
+		JumpCharge = 0.0f;
+	}
 
 	if (!((1 + SlopeType * 0.15) * TargetSpeed - 1  < CurrentSpeed && CurrentSpeed < (1 + SlopeType * 0.15) * TargetSpeed + 1))
 		if (!bIsRagdoll && GetCharacterMovement()->IsMovingOnGround())
@@ -149,6 +161,7 @@ void ABaseHorse::PrepareJump(const FInputActionValue& Value)
 	// LET TICK START CHARGING JUMP
 	bIsChargingJump = true;
 	JumpCharge = 0.0f;
+	GetCharacterMovement()->JumpZVelocity = 0.0f;
 
 	// DISPLAY CHARGE WIDGET
 	Widget_ShowCharge();
@@ -156,9 +169,13 @@ void ABaseHorse::PrepareJump(const FInputActionValue& Value)
 
 void ABaseHorse::ReleaseJump(const FInputActionValue& Value)
 {
-	// DON'T BEGIN THE CHARGING IF IN THE AIR
+	// DON'T KEEP THE CHARGING IF IN THE AIR
 	if (!GetCharacterMovement()->IsMovingOnGround())
+	{
+		bIsChargingJump = false;
+		JumpCharge = 0.0f;
 		return;
+	}
 
 	if (!bIsRagdoll && CurrentSpeed > 750 && GetCharacterMovement()->JumpZVelocity > 325.0f)
 	{
@@ -166,6 +183,7 @@ void ABaseHorse::ReleaseJump(const FInputActionValue& Value)
 		GetCapsuleComponent()->SetCapsuleSize(34,34,true);
 	}
 	bIsChargingJump = false;
+	JumpCharge = 0.0f;
 	Widget_HideCharge();
 }
 
@@ -312,7 +330,7 @@ void ABaseHorse::ChargeJump(float DeltaTime)
 	}
 
 	// APPLY PERCENTAGE CALC
-	JumpCharge += FMath::Clamp(JumpCharge + (DeltaTime / 3), 0.0f, 1.0f);
+	JumpCharge = FMath::Clamp(JumpCharge + (DeltaTime / 3), 0.0f, 1.0f);
 
 	// MAKE SURE TO CHANGE JUMP VELOCITY ONLY IF YOU CAN JUMP
 	if (JumpCharge < 0.7)
@@ -394,6 +412,8 @@ void ABaseHorse::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UP
 	FVector2D NormalHitSave2D = FVector2D(Hit.ImpactNormal.X, Hit.ImpactNormal.Y);
 	FVector2D ForwardVector2D = FVector2D(GetActorForwardVector().X, GetActorForwardVector().Y);
 	FVector2D RightVector2D = FVector2D(GetActorRightVector().X, GetActorRightVector().Y);
+
+	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH");
 	
 	if (FVector2D::DotProduct(NormalHitSave2D, ForwardVector2D) < -0.5)
 	{

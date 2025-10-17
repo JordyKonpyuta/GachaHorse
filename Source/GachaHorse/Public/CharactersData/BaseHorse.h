@@ -30,6 +30,19 @@ public:
 	UPROPERTY(EditAnywhere, Category="Inputs")
 	TObjectPtr<UInputAction> Speed_Action;
 	
+	// =========================
+	// ==        Stats        ==
+	// =========================
+
+	/**
+	 * Array with three ints. \n
+	 * First Stat : Acceleration \n
+	 * Second Stat : Speed \n
+	 * Third Stat : Handling
+	 */
+	UPROPERTY(EditAnywhere, Blueprintable, BlueprintReadWrite, Category="Stats")
+	TArray<int> Stats = {5,5,5};
+	
 protected:
 	// ==========================
 	// ==      Components      ==
@@ -51,9 +64,9 @@ protected:
 	 * Second Stat : Speed \n
 	 * Third Stat : Handling
 	 */
-	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Stats")
-	TArray<int> Stats = {150,150,2};
-	
+	/*UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Stats")
+	TArray<int> Stats = {5,5,5};
+	*/
 	// =========================
 	// ==        Speed        ==
 	// =========================
