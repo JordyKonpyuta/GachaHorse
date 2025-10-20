@@ -69,6 +69,7 @@ void ABaseHorse::BeginPlay()
 void ABaseHorse::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, FString::SanitizeFloat(1 / DeltaTime));
 	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Emerald, FString::SanitizeFloat(CurrentSpeed));
 
 	// ALWAYS CHECK SLOPE
@@ -76,7 +77,6 @@ void ABaseHorse::Tick(float DeltaTime)
 
 	// CHARGE JUMP
 	ChargeJump(DeltaTime);
-	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Cyan, FString::SanitizeFloat(JumpCharge));
 
 	// MOVE HORSEY FORWARD
 	CalculateCurrentSpeed();
@@ -93,8 +93,10 @@ void ABaseHorse::Tick(float DeltaTime)
 
 	// MOVE HORSEY LEFTY RIGHTY
 	if (!(-0.1 < SideSpeed && SideSpeed < 0.1))
-		AddMovementInput(GetActorRightVector(), SideSpeed < 0 ? 2 : -2);
+		AddMovementInput(GetActorRightVector(), (SideSpeed < 0 ? 2 : -2) * DeltaTime * TickCorrecter);
 
+	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Yellow, FString::SanitizeFloat((SideSpeed < 0 ? 40 : -40) * DeltaTime));
+	
 	// LANDING BEHAVIOUR
 	if (bHasJustJumped)
 	{
@@ -147,9 +149,10 @@ void ABaseHorse::Turn(const FInputActionValue& Value)
 		return;
 
 	float TurnAngle = (Value.Get<float>() * TurnRateFactor) / (bIsChargingJump ? 3 : 1) / (GetCharacterMovement()->IsMovingOnGround() ? 1 : 100);
-
-	AddControllerYawInput(TurnAngle);
-	GetCharacterMovement()->Velocity = UKismetMathLibrary::RotateAngleAxis(GetCharacterMovement()->Velocity, TurnAngle, FVector(0, 0, 1));
+	TurnAngle *= TickCorrecter;
+	
+	AddControllerYawInput(TurnAngle * GetWorld()->GetDeltaSeconds());
+	GetCharacterMovement()->Velocity = UKismetMathLibrary::RotateAngleAxis(GetCharacterMovement()->Velocity, TurnAngle * GetWorld()->GetDeltaSeconds(), FVector(0, 0, 1));
 }
 
 void ABaseHorse::PrepareJump(const FInputActionValue& Value)
@@ -441,7 +444,7 @@ void ABaseHorse::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UP
 	{
 		// SIDE HIT
 		AddControllerYawInput(FVector2D::DotProduct(NormalHitSave2D, RightVector2D) > 0 ? 0.5 : -0.5);
-
+		
 		GetCharacterMovement()->Velocity = GetCharacterMovement()->Velocity.RotateAngleAxis(FVector2D::DotProduct(NormalHitSave2D, RightVector2D) > 0 ? 0.5 : -0.5, FVector(0,0,1));
 
 		if (CurrentSpeed > 1000)

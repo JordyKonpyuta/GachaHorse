@@ -19,6 +19,13 @@ class GACHAHORSE_API ABaseHorse : public ACharacter
 
 	// UPROPERTY
 public:
+	// ==========================
+	// ==      Correction      ==
+	// ==========================
+
+	UPROPERTY(EditAnywhere, Category="Tick")
+	float TickCorrecter = 200.0f;
+	
 	// =========================
 	// ==      Movements      ==
 	// =========================

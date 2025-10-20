@@ -13,5 +13,12 @@ UCLASS()
 class GACHAHORSE_API ABaseGamemode : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
+public:
+
+protected:
+
+public:
+
+protected:
 };
