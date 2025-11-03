@@ -423,7 +423,7 @@ void ABaseHorse::BeginRagdoll()
 		1.0f,
 		false);
 }
- 
+
 void ABaseHorse::CeaseRagdoll()
 {
 	bIsRagdoll = false;
@@ -446,8 +446,6 @@ void ABaseHorse::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UP
 	FVector2D NormalHitSave2D = FVector2D(Hit.ImpactNormal.X, Hit.ImpactNormal.Y);
 	FVector2D ForwardVector2D = FVector2D(GetActorForwardVector().X, GetActorForwardVector().Y);
 	FVector2D RightVector2D = FVector2D(GetActorRightVector().X, GetActorRightVector().Y);
-
-	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH");
 	
 	if (FVector2D::DotProduct(NormalHitSave2D, ForwardVector2D) < -0.5)
 	{
