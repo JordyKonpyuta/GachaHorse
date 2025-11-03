@@ -69,14 +69,16 @@ void ABaseHorse::BeginPlay()
 void ABaseHorse::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, FString::SanitizeFloat(1 / DeltaTime));
-	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Emerald, FString::SanitizeFloat(CurrentSpeed));
 
 	// ALWAYS CHECK SLOPE
 	SlopeCheck();
 
 	// CHARGE JUMP
 	ChargeJump(DeltaTime);
+	
+	// CHECK IF SPEED STAGE NEEDS TO CHANGE
+	if (bCheckSpeedShift)
+		ActualChangeSpeed();
 
 	// MOVE HORSEY FORWARD
 	CalculateCurrentSpeed();
@@ -95,8 +97,6 @@ void ABaseHorse::Tick(float DeltaTime)
 	if (!(-0.1 < SideSpeed && SideSpeed < 0.1))
 		AddMovementInput(GetActorRightVector(), (SideSpeed < 0 ? 2 : -2) * DeltaTime * TickCorrecter);
 
-	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Yellow, FString::SanitizeFloat((SideSpeed < 0 ? 40 : -40) * DeltaTime));
-	
 	// LANDING BEHAVIOUR
 	if (bHasJustJumped)
 	{
@@ -135,7 +135,8 @@ void ABaseHorse::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 		EnhancedInputComponent->BindAction(Jump_Action, ETriggerEvent::Completed, this, &ABaseHorse::ReleaseJump);
 
 		// Speed
-		EnhancedInputComponent->BindAction(Speed_Action, ETriggerEvent::Started, this, &ABaseHorse::ChangeSpeed);
+		EnhancedInputComponent->BindAction(Speed_Action, ETriggerEvent::Started, this, &ABaseHorse::StartChangeSpeed);
+		EnhancedInputComponent->BindAction(Speed_Action, ETriggerEvent::Completed, this, &ABaseHorse::StopChangeSpeed);
 	}
 }
 	
@@ -172,6 +173,7 @@ void ABaseHorse::PrepareJump(const FInputActionValue& Value)
 
 void ABaseHorse::ReleaseJump(const FInputActionValue& Value)
 {
+	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "STOP JUMP");
 	// DON'T KEEP THE CHARGING IF IN THE AIR
 	if (!GetCharacterMovement()->IsMovingOnGround())
 	{
@@ -190,9 +192,25 @@ void ABaseHorse::ReleaseJump(const FInputActionValue& Value)
 	Widget_HideCharge();
 }
 
-void ABaseHorse::ChangeSpeed(const FInputActionValue& Value)
+void ABaseHorse::StartChangeSpeed(const FInputActionValue& Value)
 {
-	if (Value.Get<float>() < 0)
+	NewSpeedValue = Value.Get<float>();
+	bCheckSpeedShift = true;
+	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "START");
+}
+
+void ABaseHorse::StopChangeSpeed()
+{
+	bCheckSpeedShift = false;
+	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "STOP");
+}
+
+void ABaseHorse::ActualChangeSpeed()
+{
+	if (!bCanShiftSpeed)
+		return;
+	
+	if (NewSpeedValue < 0)
 	{
 		if (CurrentSpeedIndex <= 0)
 			return;
@@ -208,6 +226,8 @@ void ABaseHorse::ChangeSpeed(const FInputActionValue& Value)
 		CurrentSpeedIndex += 1;
 		SetTargetSpeed(CurrentSpeedIndex);
 	}
+
+	PauseShiftSpeedPossibility(1.0f);
 }
 
 	// =========================
@@ -258,6 +278,17 @@ void ABaseHorse::InitSpeed()
 void ABaseHorse::InitHandling()
 {
 	TurnRateFactor = 0.05 + (Stats[2] * 0.005);
+}
+
+void ABaseHorse::PauseShiftSpeedPossibility(float TimeBeforeNewShift)
+{
+	bCanShiftSpeed = false;
+	GetWorldTimerManager().SetTimer(
+				ShiftSpeedTimerHandle,
+				this,
+				&ABaseHorse::ResetShiftSpeed,
+				TimeBeforeNewShift,
+				false);
 }
 
 void ABaseHorse::ResetShiftSpeed()
@@ -450,13 +481,7 @@ void ABaseHorse::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UP
 		if (CurrentSpeed > 1000)
 		{
 			SetTargetSpeed(FMath::Clamp(CurrentSpeedIndex, 0, 4));
-			bCanShiftSpeed = false;
-			GetWorldTimerManager().SetTimer(
-				ShiftSpeedTimerHandle,
-				this,
-				&ABaseHorse::ResetShiftSpeed,
-				1.0,
-				false);
+			PauseShiftSpeedPossibility(1.0f);
 		}
 	}
 	else

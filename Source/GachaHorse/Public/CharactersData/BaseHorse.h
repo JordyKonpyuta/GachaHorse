@@ -87,10 +87,6 @@ protected:
 	TArray<float> SpeedTable = {-200, 0, 350, 800, 1200, 1750};
 
 	// ACTUAL
-	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Speed Actual")
-	bool bCanShiftSpeed = true;
-	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Speed Actual")
-	FTimerHandle ShiftSpeedTimerHandle;
 	
 	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Speed Actual")
 	float CurrentSpeed = 0.0f;
@@ -100,6 +96,18 @@ protected:
 	// SLOPE
 	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Slope")
 	int SlopeType;
+
+	// SPEED CHANGES
+	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Speed Actual")
+	bool bCanShiftSpeed = true;
+	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Speed Actual")
+	bool bCheckSpeedShift = false;
+	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Speed Actual")
+	float NewSpeedValue = true;
+	
+	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Speed Actual")
+	FTimerHandle ShiftSpeedTimerHandle;
+	
 	
 	// ==========================
 	// ==         Jump         ==
@@ -207,7 +215,12 @@ protected:
 	void ReleaseJump(const FInputActionValue& Value);
 	
 	UFUNCTION()
-	void ChangeSpeed(const FInputActionValue& Value);
+	void StartChangeSpeed(const FInputActionValue& Value);
+	UFUNCTION()
+	void StopChangeSpeed();
+	UFUNCTION()
+	
+	void ActualChangeSpeed();
 	
 	// =========================
 	// ==       Respawn       ==
@@ -229,6 +242,9 @@ protected:
 
 	UFUNCTION()
 	void InitHandling();
+
+	UFUNCTION()
+	void PauseShiftSpeedPossibility(float TimeBeforeNewShift);
 
 	UFUNCTION()
 	void ResetShiftSpeed();
