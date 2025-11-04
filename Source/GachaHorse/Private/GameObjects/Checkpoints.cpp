@@ -41,6 +41,8 @@ void ACheckpoints::BeginPlay()
 	
 }
 
+
+
 // Called every frame
 void ACheckpoints::Tick(float DeltaTime)
 {
@@ -51,7 +53,31 @@ void ACheckpoints::Tick(float DeltaTime)
 void ACheckpoints::OnComponentBeginOverlap(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor,
 	class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (Cast<ABaseHorse>(OtherActor))
-		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, "A");
+	if (!Cast<ABaseHorse>(OtherActor))
+		return;
+
+	switch (CurrentCheckpointType)
+	{
+	case ECheckpointType::Generic :
+		RegularCheckpointCrossed(OtherActor, false);
+		break;
+	case ECheckpointType::LastGen :
+		RegularCheckpointCrossed(OtherActor, false);
+		break;
+	case ECheckpointType::Start :
+		StartCheckPointCrossed();
+		break;
+	default:
+		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, "Wait wat");
+	}
 }
 
+void ACheckpoints::RegularCheckpointCrossed(ABaseHorse* Actor, bool LastGen)
+{
+	if (Actor->CurrentCheckpointIndex != CurrentIndex - 1)
+		return;
+}
+
+void ACheckpoints::StartCheckPointCrossed()
+{
+}

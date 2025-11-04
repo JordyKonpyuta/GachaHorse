@@ -6,8 +6,18 @@
 #include "GameFramework/Actor.h"
 #include "Checkpoints.generated.h"
 
+class ABaseHorse;
 class UArrowComponent;
 class UBoxComponent;
+
+UENUM(BlueprintType)
+enum class ECheckpointType : uint8
+{
+	Generic		UMETA (DisplayName = "Generic"),
+	LastGen		UMETA (DisplayName = "Last Generic"),
+	Start		UMETA (DisplayName = "Start")
+};
+
 
 UCLASS()
 class GACHAHORSE_API ACheckpoints : public AActor
@@ -26,6 +36,16 @@ public:
 	TObjectPtr<UBoxComponent> CheckpointArea;
 	UPROPERTY(EditAnywhere, Category="Components")
 	TObjectPtr<UArrowComponent> Arrow;
+	
+	// ==========================
+	// ==        Values        ==
+	// ==========================
+
+	UPROPERTY(EditAnywhere, Category="Checkpoints")
+	ECheckpointType CurrentCheckpointType = ECheckpointType::Generic;
+
+	UPROPERTY(EditAnywhere, Category="Checkpoints")
+	int CurrentIndex = 0;
 
 protected:
 
@@ -54,4 +74,18 @@ protected:
 	// ==========================
 	
 	virtual void BeginPlay() override;
+	
+	// ==========================
+	// ==    Race Functions    ==
+	// ==========================
+	
+	// ===========================
+	// ==   Overlap Functions   ==
+	// ===========================
+
+	UFUNCTION()
+	void RegularCheckpointCrossed(ABaseHorse* Actor, bool LastGen);
+
+	UFUNCTION()
+	void StartCheckPointCrossed();
 };

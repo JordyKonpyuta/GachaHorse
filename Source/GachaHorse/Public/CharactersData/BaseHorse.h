@@ -38,6 +38,13 @@ public:
 	TObjectPtr<UInputAction> Speed_Action;
 	
 	// =========================
+	// ==     Race Values     ==
+	// =========================
+
+	UPROPERTY()
+	int CurrentCheckpointIndex = -1;
+	
+	// =========================
 	// ==        Stats        ==
 	// =========================
 
