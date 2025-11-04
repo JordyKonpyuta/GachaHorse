@@ -84,7 +84,7 @@ protected:
 	// ===========================
 
 	UFUNCTION()
-	void RegularCheckpointCrossed(ABaseHorse* HorseActor, bool LastGen);
+	void RegularCheckpointCrossed(ABaseHorse* HorseActor);
 
 	UFUNCTION()
 	void StartCheckPointCrossed();

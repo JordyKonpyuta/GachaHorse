@@ -6,12 +6,13 @@
 #include "CharactersData/BaseHorse.h"
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
+#include "GameData/BaseGamemode.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ACheckpoints::ACheckpoints()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	// SCENE COMPONENT
@@ -30,7 +31,7 @@ ACheckpoints::ACheckpoints()
 	Arrow->ArrowSize = 5.0f;
 	Arrow->SetRelativeRotation(FRotator(0,0,0));
 	Arrow->SetRelativeLocation(FVector(0,0,180));
-	
+
 	CheckpointArea->OnComponentBeginOverlap.AddDynamic(this, &ACheckpoints::OnComponentBeginOverlap);
 }
 
@@ -38,7 +39,7 @@ ACheckpoints::ACheckpoints()
 void ACheckpoints::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	TArray<AActor*> AllCheckpointsFound;
 
 	switch (CurrentCheckpointType)
@@ -48,12 +49,15 @@ void ACheckpoints::BeginPlay()
 	case ECheckpointType::LastGen:
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACheckpoints::StaticClass(), AllCheckpointsFound);
 		CurrentIndex = AllCheckpointsFound.Num() - 1;
-		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Green, FString::FromInt(CurrentIndex));
-		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Yellow, FString::FromInt(AllCheckpointsFound.Num()));
 		break;
 	case ECheckpointType::Start:
 		CurrentIndex = 0;
 		// MAKE ITS COLLISIONS HARD
+		if (!Cast<ABaseGamemode>(GetWorld()->GetAuthGameMode()))
+			break;
+		
+		//ABaseGamemode* GameModeRef = Cast<ABaseGamemode>(GetWorld()->GetAuthGameMode());
+		
 		break;
 	default:
 		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, "Wait wat");
@@ -78,10 +82,10 @@ void ACheckpoints::OnComponentBeginOverlap(class UPrimitiveComponent* Overlapped
 	switch (CurrentCheckpointType)
 	{
 	case ECheckpointType::Generic :
-		RegularCheckpointCrossed(Cast<ABaseHorse>(OtherActor), false);
+		RegularCheckpointCrossed(Cast<ABaseHorse>(OtherActor));
 		break;
 	case ECheckpointType::LastGen :
-		RegularCheckpointCrossed(Cast<ABaseHorse>(OtherActor), false);
+		RegularCheckpointCrossed(Cast<ABaseHorse>(OtherActor));
 		break;
 	case ECheckpointType::Start :
 		StartCheckPointCrossed();
@@ -91,7 +95,7 @@ void ACheckpoints::OnComponentBeginOverlap(class UPrimitiveComponent* Overlapped
 	}
 }
 
-void ACheckpoints::RegularCheckpointCrossed(ABaseHorse* HorseActor, bool LastGen)
+void ACheckpoints::RegularCheckpointCrossed(ABaseHorse* HorseActor)
 {
 	GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, FString::FromInt(CurrentIndex));
 	if (HorseActor->CurrentCheckpointIndex != CurrentIndex - 1)
