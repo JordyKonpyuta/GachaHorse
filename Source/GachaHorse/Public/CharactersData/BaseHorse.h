@@ -195,6 +195,14 @@ public:
 	UFUNCTION()
 	void SetTargetSpeed(int IndexSpeed);
 	
+	// =========================
+	// ==       Respawn       ==
+	// =========================
+
+	UFUNCTION()
+	void SetPlayerRespawn();
+	void SetPlayerRespawn(const FTransform& RespawnLoc);
+	
 	// ==========================
 	// ==       End Game       ==
 	// ==========================
@@ -228,14 +236,6 @@ protected:
 	UFUNCTION()
 	
 	void ActualChangeSpeed();
-	
-	// =========================
-	// ==       Respawn       ==
-	// =========================
-
-	UFUNCTION()
-	void SetPlayerRespawn();
-	void SetPlayerRespawn(const FTransform& RespawnLoc);
 	
 	// =========================
 	// ==        Speed        ==

@@ -44,7 +44,7 @@ public:
 	UPROPERTY(EditAnywhere, Category="Checkpoints")
 	ECheckpointType CurrentCheckpointType = ECheckpointType::Generic;
 
-	UPROPERTY(EditAnywhere, Category="Checkpoints")
+	UPROPERTY(EditAnywhere, Category="Checkpoints", meta = (EditCondition = "CurrentCheckpointType == ECheckpointType::Generic"))
 	int CurrentIndex = 0;
 
 protected:
@@ -84,7 +84,7 @@ protected:
 	// ===========================
 
 	UFUNCTION()
-	void RegularCheckpointCrossed(ABaseHorse* Actor, bool LastGen);
+	void RegularCheckpointCrossed(ABaseHorse* HorseActor, bool LastGen);
 
 	UFUNCTION()
 	void StartCheckPointCrossed();
