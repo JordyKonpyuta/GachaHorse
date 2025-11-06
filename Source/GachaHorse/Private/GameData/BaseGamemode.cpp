@@ -26,13 +26,13 @@ void ABaseGamemode::Tick(float DeltaTime)
 			Widget_ReadyToGo(3);
 			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "3");
 		}
-		if (Timer >= 3.0f && !bTwoBeforeGo)
+		if (Timer >= -3.0f && !bTwoBeforeGo)
 		{
 			bTwoBeforeGo = true;
 			Widget_ReadyToGo(2);
 			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "2");
 		}
-		if (Timer >= 1.5f && !bOneBeforeGo)
+		if (Timer >= -1.5f && !bOneBeforeGo)
 		{
 			bOneBeforeGo = true;
 			Widget_ReadyToGo(1);
