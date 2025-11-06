@@ -16,6 +16,7 @@ void ABaseGamemode::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	Timer += DeltaTime;
+	GEngine->AddOnScreenDebugMessage(-1,0.f,FColor::Red, FString::SanitizeFloat(Timer));
 
 	if (!bHasStartedRun)
 	{
@@ -23,19 +24,25 @@ void ABaseGamemode::Tick(float DeltaTime)
 		{
 			bThreeBeforeGo = true;
 			Widget_ReadyToGo(3);
+			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "3");
 		}
 		if (Timer >= 3.0f && !bTwoBeforeGo)
 		{
 			bTwoBeforeGo = true;
 			Widget_ReadyToGo(2);
+			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "2");
 		}
 		if (Timer >= 1.5f && !bOneBeforeGo)
 		{
 			bOneBeforeGo = true;
 			Widget_ReadyToGo(1);
+			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "1");
 		}
 		if (Timer >= 0.0f)
+		{
 			StartGame();
+			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "0");
+		}
 	}
 
 	WidgetTimerUpdate(Timer);
