@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "BaseHorse.generated.h"
 
+class ABaseGamemode;
 struct FInputActionValue;
 class UCameraComponent;
 class USpringArmComponent;
@@ -58,6 +59,13 @@ public:
 	TArray<int> Stats = {5,5,5};
 	
 protected:
+	// ==========================
+	// ==      References      ==
+	// ==========================
+
+	UPROPERTY()
+	TObjectPtr<ABaseGamemode> GameModeRef;
+	
 	// ==========================
 	// ==      Components      ==
 	// ==========================

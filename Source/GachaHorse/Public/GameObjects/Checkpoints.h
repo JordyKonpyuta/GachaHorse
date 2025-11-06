@@ -68,6 +68,9 @@ public:
 		class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION()
+	void UnblockStart();
+
 protected:
 	// ==========================
 	// ==    Base Functions    ==
@@ -87,5 +90,5 @@ protected:
 	void RegularCheckpointCrossed(ABaseHorse* HorseActor);
 
 	UFUNCTION()
-	void StartCheckPointCrossed();
+	void StartCheckPointCrossed(ABaseHorse* HorseActor);
 };

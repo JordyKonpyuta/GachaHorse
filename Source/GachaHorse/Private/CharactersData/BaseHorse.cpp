@@ -7,6 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
+#include "GameData/BaseGamemode.h"
 #include "Kismet/KismetMathLibrary.h"
 
 
@@ -64,6 +65,12 @@ void ABaseHorse::BeginPlay()
 	CreateWidgetRace();
 	
 	GetCharacterMovement()->MaxWalkSpeed = 50000.0f;
+
+	// FIFTH : SET-UP REF IN GAMEMODE
+
+	GameModeRef = Cast<ABaseGamemode>(GetWorld()->GetAuthGameMode());
+	if (GameModeRef)
+		GameModeRef->HorseRef = this;
 }
 
 void ABaseHorse::Tick(float DeltaTime)

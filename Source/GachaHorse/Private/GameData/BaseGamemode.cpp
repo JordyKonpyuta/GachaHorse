@@ -3,7 +3,13 @@
 
 #include "GameData/BaseGamemode.h"
 
+#include "CharactersData/BaseHorse.h"
 #include "GameObjects/Checkpoints.h"
+
+ABaseGamemode::ABaseGamemode()
+{
+	PrimaryActorTick.bCanEverTick = true;
+}
 
 void ABaseGamemode::Tick(float DeltaTime)
 {
@@ -12,9 +18,34 @@ void ABaseGamemode::Tick(float DeltaTime)
 	Timer += DeltaTime;
 
 	if (!bHasStartedRun)
+	{
+		if (Timer >= 0.0f && !bThreeBeforeGo)
+		{
+			bThreeBeforeGo = true;
+			Widget_ReadyToGo(3);
+		}
+		if (Timer >= 0.0f && !bTwoBeforeGo)
+		{
+			bTwoBeforeGo = true;
+			Widget_ReadyToGo(2);
+		}
+		if (Timer >= 0.0f && !bOneBeforeGo)
+		{
+			bOneBeforeGo = true;
+			Widget_ReadyToGo(1);
+		}
 		if (Timer >= 0.0f)
 			StartGame();
-			
+	}
+
+	WidgetTimerUpdate();
+}
+
+void ABaseGamemode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	SetupWidgets();
 }
 
 void ABaseGamemode::StartGame()
@@ -23,9 +54,35 @@ void ABaseGamemode::StartGame()
 	Timer = 0.0f;
 	bHasStartedRun = true;
 
+	// PLAY WIDGET
+	Widget_ReadyToGo(0);
+
 	// UNSOLIDIFY START CHECKPOINT
 	if (!StartCheckpointRef->IsValidLowLevelFast())
 		return;
 
-	//StartCheckpointRef->
+	StartCheckpointRef->UnblockStart();
+}
+
+void ABaseGamemode::Victory()
+{
+	WidgetVictory();
+	HorseRef->SetTargetSpeed(1);
+}
+
+void ABaseGamemode::SetupWidgets_Implementation()
+{
+}
+
+void ABaseGamemode::Widget_ReadyToGo_Implementation(int TimeBeforeGo)
+{
+}
+
+
+void ABaseGamemode::WidgetTimerUpdate_Implementation()
+{
+}
+
+void ABaseGamemode::WidgetVictory_Implementation()
+{
 }

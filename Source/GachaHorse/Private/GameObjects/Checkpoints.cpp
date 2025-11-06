@@ -2,7 +2,6 @@
 
 
 #include "GameObjects/Checkpoints.h"
-
 #include "CharactersData/BaseHorse.h"
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
@@ -48,15 +47,20 @@ void ACheckpoints::BeginPlay()
 		break;
 	case ECheckpointType::LastGen:
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACheckpoints::StaticClass(), AllCheckpointsFound);
-		CurrentIndex = AllCheckpointsFound.Num() - 1;
+		CurrentIndex = AllCheckpointsFound.Num() - 2;
 		break;
 	case ECheckpointType::Start:
 		CurrentIndex = 0;
-		// MAKE ITS COLLISIONS HARD
+		
 		if (!Cast<ABaseGamemode>(GetWorld()->GetAuthGameMode()))
 			break;
 		
-		//ABaseGamemode* GameModeRef = Cast<ABaseGamemode>(GetWorld()->GetAuthGameMode());
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACheckpoints::StaticClass(), AllCheckpointsFound);
+		CurrentIndex = AllCheckpointsFound.Num() - 2;
+		if (Cast<ABaseGamemode>(GetWorld()->GetAuthGameMode()))
+			Cast<ABaseGamemode>(GetWorld()->GetAuthGameMode())->StartCheckpointRef = this;
+
+		CheckpointArea->SetCollisionResponseToAllChannels(ECR_Block);
 		
 		break;
 	default:
@@ -79,20 +83,27 @@ void ACheckpoints::OnComponentBeginOverlap(class UPrimitiveComponent* Overlapped
 	if (!Cast<ABaseHorse>(OtherActor))
 		return;
 
+	ABaseHorse* OurHorse = Cast<ABaseHorse>(OtherActor);
+
 	switch (CurrentCheckpointType)
 	{
 	case ECheckpointType::Generic :
-		RegularCheckpointCrossed(Cast<ABaseHorse>(OtherActor));
+		RegularCheckpointCrossed(OurHorse);
 		break;
 	case ECheckpointType::LastGen :
-		RegularCheckpointCrossed(Cast<ABaseHorse>(OtherActor));
+		RegularCheckpointCrossed(OurHorse);
 		break;
 	case ECheckpointType::Start :
-		StartCheckPointCrossed();
+		StartCheckPointCrossed(OurHorse);
 		break;
 	default:
 		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, "Wait wat");
 	}
+}
+
+void ACheckpoints::UnblockStart()
+{
+	CheckpointArea->SetCollisionResponseToAllChannels(ECR_Overlap);
 }
 
 void ACheckpoints::RegularCheckpointCrossed(ABaseHorse* HorseActor)
@@ -109,6 +120,12 @@ void ACheckpoints::RegularCheckpointCrossed(ABaseHorse* HorseActor)
 	HorseActor->CurrentCheckpointIndex = CurrentIndex;
 }
 
-void ACheckpoints::StartCheckPointCrossed()
+void ACheckpoints::StartCheckPointCrossed(ABaseHorse* HorseActor)
 {
+	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, FString::FromInt(HorseActor->CurrentCheckpointIndex ));
+	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, FString::FromInt(CurrentIndex));
+	if (HorseActor->CurrentCheckpointIndex != CurrentIndex)
+		return;
+
+	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "WIN");
 }
