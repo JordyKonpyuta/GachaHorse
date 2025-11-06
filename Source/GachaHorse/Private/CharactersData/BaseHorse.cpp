@@ -61,8 +61,6 @@ void ABaseHorse::BeginPlay()
 	SetTargetSpeed(1);
 
 	// FOURTH : CREATE WIDGET
-
-	CreateWidgetRace();
 	
 	GetCharacterMovement()->MaxWalkSpeed = 50000.0f;
 
