@@ -89,8 +89,8 @@ protected:
 	void Widget_ReadyToGo(int TimeBeforeGo);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void WidgetTimerUpdate();
+	void WidgetTimerUpdate(float CurrentTimer);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void WidgetVictory();
+	void WidgetVictory(float CurrentTimer);
 };

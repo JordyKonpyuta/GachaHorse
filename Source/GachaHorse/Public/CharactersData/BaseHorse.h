@@ -196,6 +196,13 @@ public:
 	void SetStats(TArray<int> StatsToSet);
 	void SetStats(int StatAccel, int StatSpeed, int StatHandling);
 	
+	// ========================
+	// ==        Jump        ==
+	// ========================
+
+	UFUNCTION()
+	float GetJumpPower();
+	
 	// =========================
 	// ==        Speed        ==
 	// =========================

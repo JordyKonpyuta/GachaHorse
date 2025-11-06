@@ -267,6 +267,15 @@ void ABaseHorse::SetStats(int StatAccel, int StatSpeed, int StatHandling)
 {
 	Stats = {StatAccel, StatSpeed, StatHandling};
 }
+	
+	// ========================
+	// ==        Jump        ==
+	// ========================
+
+float ABaseHorse::GetJumpPower()
+{
+	return JumpCharge;
+}
 
 	// =========================
 	// ==        Speed        ==

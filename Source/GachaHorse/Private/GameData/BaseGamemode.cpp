@@ -19,17 +19,17 @@ void ABaseGamemode::Tick(float DeltaTime)
 
 	if (!bHasStartedRun)
 	{
-		if (Timer >= 0.0f && !bThreeBeforeGo)
+		if (Timer >= -4.5f && !bThreeBeforeGo)
 		{
 			bThreeBeforeGo = true;
 			Widget_ReadyToGo(3);
 		}
-		if (Timer >= 0.0f && !bTwoBeforeGo)
+		if (Timer >= 3.0f && !bTwoBeforeGo)
 		{
 			bTwoBeforeGo = true;
 			Widget_ReadyToGo(2);
 		}
-		if (Timer >= 0.0f && !bOneBeforeGo)
+		if (Timer >= 1.5f && !bOneBeforeGo)
 		{
 			bOneBeforeGo = true;
 			Widget_ReadyToGo(1);
@@ -38,7 +38,7 @@ void ABaseGamemode::Tick(float DeltaTime)
 			StartGame();
 	}
 
-	WidgetTimerUpdate();
+	WidgetTimerUpdate(Timer);
 }
 
 void ABaseGamemode::BeginPlay()
@@ -66,7 +66,7 @@ void ABaseGamemode::StartGame()
 
 void ABaseGamemode::Victory()
 {
-	WidgetVictory();
+	WidgetVictory(Timer);
 	HorseRef->SetTargetSpeed(1);
 }
 
@@ -79,10 +79,10 @@ void ABaseGamemode::Widget_ReadyToGo_Implementation(int TimeBeforeGo)
 }
 
 
-void ABaseGamemode::WidgetTimerUpdate_Implementation()
+void ABaseGamemode::WidgetTimerUpdate_Implementation(float CurrentTimer)
 {
 }
 
-void ABaseGamemode::WidgetVictory_Implementation()
+void ABaseGamemode::WidgetVictory_Implementation(float CurrentTimer)
 {
 }
