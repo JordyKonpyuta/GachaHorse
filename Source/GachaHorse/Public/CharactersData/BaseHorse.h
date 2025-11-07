@@ -75,6 +75,21 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category="Components")
 	TObjectPtr<UCameraComponent> HorseCamera;
+
+	
+	UPROPERTY(EditAnywhere, Category="SkeletonComponent")
+	TObjectPtr<USkeletalMeshComponent> RiderSkel;
+	
+	UPROPERTY(EditAnywhere, Category="SkeletonComponent")
+	TObjectPtr<USkeletalMeshComponent> HorseSkel;
+	UPROPERTY(EditAnywhere, Category="SkeletonComponent")
+	TObjectPtr<USkeletalMeshComponent> SaddleSkel;
+	UPROPERTY(EditAnywhere, Category="SkeletonComponent")
+	TObjectPtr<USkeletalMeshComponent> HairSkel;
+	UPROPERTY(EditAnywhere, Category="SkeletonComponent")
+	TObjectPtr<USkeletalMeshComponent> BeltsSkel;
+	UPROPERTY(EditAnywhere, Category="SkeletonComponent")
+	TObjectPtr<USkeletalMeshComponent> ReinsSkel;
 	
 	// =========================
 	// ==        Stats        ==
@@ -111,6 +126,10 @@ protected:
 	// SLOPE
 	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Slope")
 	int SlopeType;
+
+	// Hazard
+	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Slope")
+	float HazardModifier = 0.0f;
 
 	// SPEED CHANGES
 	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Speed Actual")
@@ -272,7 +291,7 @@ protected:
 	void ResetShiftSpeed();
 
 	UFUNCTION()
-	void SlopeCheck();
+	void HazardCheck();
 
 	UFUNCTION()
 	void CalculateCurrentSpeed();

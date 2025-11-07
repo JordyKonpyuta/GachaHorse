@@ -32,6 +32,30 @@ ABaseHorse::ABaseHorse()
 	HorseCamera = CreateDefaultSubobject<UCameraComponent>("Camera");
 	HorseCamera->SetupAttachment(HorseSpringArm);
 
+	// SKELETONS
+
+	RiderSkel = CreateDefaultSubobject<USkeletalMeshComponent>("Rider Skeleton");
+	RiderSkel->SetupAttachment(GetMesh());
+	RiderSkel->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+	HorseSkel = CreateDefaultSubobject<USkeletalMeshComponent>("Horse Skeleton");
+	HorseSkel->SetupAttachment(GetMesh());
+	HorseSkel->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	SaddleSkel = CreateDefaultSubobject<USkeletalMeshComponent>("Saddle Skeleton");
+	SaddleSkel->SetupAttachment(HorseSkel);
+	SaddleSkel->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	HairSkel = CreateDefaultSubobject<USkeletalMeshComponent>("Hair Skeleton");
+	HairSkel->SetupAttachment(HorseSkel);
+	HairSkel->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	BeltsSkel = CreateDefaultSubobject<USkeletalMeshComponent>("Belts Skeleton");
+	BeltsSkel->SetupAttachment(HorseSkel);
+	BeltsSkel->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	ReinsSkel = CreateDefaultSubobject<USkeletalMeshComponent>("Reins Skeleton");
+	ReinsSkel->SetupAttachment(HorseSkel);
+	ReinsSkel->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+
+	
 	// FUNCTIONS
 
 	// ????? POURQUOI TU MARCHES PLUS?
@@ -76,7 +100,7 @@ void ABaseHorse::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// ALWAYS CHECK SLOPE
-	SlopeCheck();
+	HazardCheck();
 
 	// CHARGE JUMP
 	ChargeJump(DeltaTime);
@@ -94,9 +118,12 @@ void ABaseHorse::Tick(float DeltaTime)
 		JumpCharge = 0.0f;
 	}
 
-	if (!((1 + SlopeType * 0.15) * TargetSpeed - 1  < CurrentSpeed && CurrentSpeed < (1 + SlopeType * 0.15) * TargetSpeed + 1))
+	float MaxAvailableSpeed = (1 + SlopeType * 0.15) * TargetSpeed * (1 + HazardModifier);
+
+	if (!(MaxAvailableSpeed - 1 < CurrentSpeed && CurrentSpeed < MaxAvailableSpeed + 1))
 		if (!bIsRagdoll && GetCharacterMovement()->IsMovingOnGround())
-			AddMovementInput(GetActorForwardVector(), SlopeType * 0.5 + (CurrentSpeed <= TargetSpeed * (1 + SlopeType * 0.15) ? 1 : -1), false);
+			AddMovementInput(GetActorForwardVector(),
+				SlopeType * 0.5 + (CurrentSpeed <= MaxAvailableSpeed ? 1 : -1), false);
 
 	// MOVE HORSEY LEFTY RIGHTY
 	if (!(-0.1 < SideSpeed && SideSpeed < 0.1))
@@ -316,7 +343,7 @@ void ABaseHorse::SetTargetSpeed(int IndexSpeed)
 	CurrentSpeedIndex = IndexSpeed;
 }
 
-void ABaseHorse::SlopeCheck()
+void ABaseHorse::HazardCheck()
 {
 	// ONLY DOES THIS IF YOU'RE ON THE GROUND
 	if (!GetCharacterMovement()->IsMovingOnGround())
@@ -328,7 +355,7 @@ void ABaseHorse::SlopeCheck()
 	// LINE TRACE TO THE GROUND
 	FCollisionQueryParams RV_TraceParams = FCollisionQueryParams(FName(TEXT("RV_Trace")), true, this);
 	RV_TraceParams.bTraceComplex = true;
-	RV_TraceParams.bReturnPhysicalMaterial = false;
+	RV_TraceParams.bReturnPhysicalMaterial = true;
 
 	//Re-initialize hit info
 	FHitResult RV_Hit(ForceInit);
@@ -341,16 +368,31 @@ void ABaseHorse::SlopeCheck()
 		ECC_Pawn,
 		RV_TraceParams);
 
+	if (!RV_Hit.GetActor()->IsValidLowLevelFast())
+		return;
+	
+	// ASSIGN SLOPE TYPE
+
 	float SlopeTypeCalculation = FVector::DotProduct(RV_Hit.ImpactNormal, GetActorForwardVector());
 
 	// NEARLY EQUAL TO 0?
 	if (-0.0001 < SlopeTypeCalculation && SlopeTypeCalculation < 0.0001)
-	{
 		SlopeType = 0;
-	}
+	else
+		SlopeType = SlopeTypeCalculation > 0 ? 1 : -1;
+
+	// ASSIGN GROUND TYPE
+	if (!RV_Hit.PhysMaterial->IsValidLowLevelFast())
+		HazardModifier = 0.0f;
 	else
 	{
-		SlopeType = SlopeTypeCalculation > 0 ? 1 : -1;
+		// DO ALL MATERIALS IN TIME
+		if (RV_Hit.PhysMaterial.Get()->SurfaceType == SurfaceType1)
+			HazardModifier = 0.0f;
+		else if (RV_Hit.PhysMaterial->SurfaceType == SurfaceType2)
+			HazardModifier = -0.1f;
+		else
+			HazardModifier = 0.0f;
 	}
 }
 
@@ -426,8 +468,10 @@ void ABaseHorse::Respawn()
 void ABaseHorse::BeginRagdoll()
 {
 	bIsRagdoll = true;
-	GetMesh()->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndPhysics);
-	GetMesh()->SetSimulatePhysics(true);
+	HorseSkel->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndPhysics);
+	HorseSkel->SetSimulatePhysics(true);
+	RiderSkel->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndPhysics);
+	RiderSkel->SetSimulatePhysics(true);
 	GetCharacterMovement()->StopMovementImmediately();
 
 	GetWorldTimerManager().SetTimer(
@@ -441,10 +485,15 @@ void ABaseHorse::BeginRagdoll()
 void ABaseHorse::CeaseRagdoll()
 {
 	bIsRagdoll = false;
-	GetMesh()->SetCollisionEnabled(ECollisionEnabled::Type::QueryOnly);
-	GetMesh()->SetSimulatePhysics(false);
-	GetMesh()->AttachToComponent(GetCapsuleComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-	GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -90), FRotator(0, -90, 0));
+	HorseSkel->SetCollisionEnabled(ECollisionEnabled::Type::QueryOnly);
+	HorseSkel->SetSimulatePhysics(false);
+	HorseSkel->AttachToComponent(GetCapsuleComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+	HorseSkel->SetRelativeLocationAndRotation(FVector(0, 0, -90), FRotator(0, -90, 0));
+	
+	RiderSkel->SetCollisionEnabled(ECollisionEnabled::Type::QueryOnly);
+	RiderSkel->SetSimulatePhysics(false);
+	RiderSkel->AttachToComponent(GetCapsuleComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+	RiderSkel->SetRelativeLocationAndRotation(FVector(0, 0, -90), FRotator(0, -90, 0));
 }
 	
 	// ========================
