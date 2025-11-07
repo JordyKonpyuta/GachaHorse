@@ -3,6 +3,7 @@
 
 #include "CharactersData/BaseController.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameData/BaseGamemode.h"
 
 void ABaseController::BeginPlay()
 {
@@ -12,6 +13,10 @@ void ABaseController::BeginPlay()
 void ABaseController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
+
+	// ONLY FOR GAME GAMEMODE
+	if (!Cast<ABaseGamemode>(GetWorld()->GetAuthGameMode()))
+		return;
 
 	if (IsLocalPlayerController())
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))

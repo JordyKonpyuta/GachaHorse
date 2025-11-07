@@ -15,11 +15,23 @@ struct GACHAHORSE_API FHorseDataStruct : public FTableRowBase
 	GENERATED_BODY()
 
 public:
-	
+	// CARD DATA
+	UPROPERTY(BlueprintReadOnly, Blueprintable)
+	bool bHorsePossessed;
+	UPROPERTY(BlueprintReadOnly, Blueprintable)
+	int ShardNumber;
+	UPROPERTY(BlueprintReadOnly, Blueprintable)
+	int Level;
+
+	// DATA
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 HorseID;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Rarity;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString HorseName;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSoftObjectPtr<UTexture> HorsePicture;
 
 	// Stats
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -31,32 +43,44 @@ public:
 
 	// MESH
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<USkeletalMesh> HorseMesh;
+	TSoftObjectPtr<UMaterial> HorseMaterial;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<UAnimInstance> HorseAnimation;
+	TSoftObjectPtr<UMaterial> HairMaterial;
 
 	FHorseDataStruct()
 	{
+		bHorsePossessed = false;
+		ShardNumber = 0;
+		Level = 1;
 		HorseID = 0;
-		HorseName = "ThisIsntAHorse";
+		Rarity = 0;
+		HorseName = "ThisIsNotAHorse";
+		HorsePicture = nullptr;
 		AccelerationPerLevel = {0,0,0,0,0,0,0,0,0,0};
 		SpeedPerLevel= {0,0,0,0,0,0,0,0,0,0};
 		HandlingPerLevel= {0,0,0,0,0,0,0,0,0,0};
-		HorseMesh = nullptr;
-		HorseAnimation = nullptr;
+		HorseMaterial = nullptr;
+		HairMaterial = nullptr;
 	}
 
-	FHorseDataStruct(int32 NewID, FString NewName, TArray<int32> NewAccelerationLevelArray,
-		TArray<int32> NewSpeedLevelArray, TArray<int32> NewHandlingLevelArray, TSoftObjectPtr<USkeletalMesh> NewMesh,
-		TSoftObjectPtr<UAnimInstance> NewAnimation)
+	FHorseDataStruct(bool PossessHorse, int NewShards, int NewLevel, int32 NewID,
+		int32 NewRarity, FString NewName, TSoftObjectPtr<UTexture> NewHorsePic,
+		TArray<int32> NewAccelerationLevelArray, TArray<int32> NewSpeedLevelArray,
+		TArray<int32> NewHandlingLevelArray, TSoftObjectPtr<UMaterial> NewHorseMat,
+		TSoftObjectPtr<UMaterial> NewHairMat)
 	{
+		bHorsePossessed = PossessHorse;
+		ShardNumber = NewShards;
+		Level = NewLevel;
 		HorseID = NewID;
+		Rarity = NewRarity;
 		HorseName = NewName;
+		HorsePicture = NewHorsePic;
 		AccelerationPerLevel = NewAccelerationLevelArray;
 		SpeedPerLevel = NewSpeedLevelArray;
 		HandlingPerLevel = NewHandlingLevelArray;
-		HorseMesh = NewMesh;
-		HorseAnimation = NewAnimation;
+		HorseMaterial = NewHorseMat;
+		HairMaterial = NewHairMat;
 	}
 };
 
