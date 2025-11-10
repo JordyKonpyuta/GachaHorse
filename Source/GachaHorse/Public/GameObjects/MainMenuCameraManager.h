@@ -7,7 +7,7 @@
 #include "MainMenuCameraManager.generated.h"
 
 UENUM(BlueprintType)
-enum ECameraPosition : uint8
+enum class ECameraPosition : uint8
 {
 	Menu		UMETA(DisplayName = "Menu"),
 	Summoning   UMETA(DisplayName = "Summoning"),
