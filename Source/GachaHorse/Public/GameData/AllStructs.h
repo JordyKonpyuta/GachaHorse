@@ -56,9 +56,9 @@ public:
 		Rarity = 0;
 		HorseName = "ThisIsNotAHorse";
 		HorsePicture = nullptr;
-		AccelerationPerLevel = {0,0,0,0,0,0,0,0,0,0};
-		SpeedPerLevel= {0,0,0,0,0,0,0,0,0,0};
-		HandlingPerLevel= {0,0,0,0,0,0,0,0,0,0};
+		AccelerationPerLevel = {0,0,0,0,0,0};
+		SpeedPerLevel= {0,0,0,0,0,0};
+		HandlingPerLevel= {0,0,0,0,0,0};
 		HorseMaterial = nullptr;
 		HairMaterial = nullptr;
 	}
