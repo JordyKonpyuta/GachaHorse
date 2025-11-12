@@ -43,9 +43,9 @@ public:
 
 	// MESH
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<UMaterial> HorseMaterial;
+	TSoftObjectPtr<UMaterialInstance> HorseMaterial;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<UMaterial> HairMaterial;
+	TSoftObjectPtr<UMaterialInstance> HairMaterial;
 
 	FHorseDataStruct()
 	{
@@ -67,7 +67,7 @@ public:
 		int32 NewRarity, FString NewName, TSoftObjectPtr<UTexture> NewHorsePic,
 		TArray<int32> NewAccelerationLevelArray, TArray<int32> NewSpeedLevelArray,
 		TArray<int32> NewHandlingLevelArray, TSoftObjectPtr<UMaterial> NewHorseMat,
-		TSoftObjectPtr<UMaterial> NewHairMat)
+		TSoftObjectPtr<UMaterialInstance> NewHairMat)
 	{
 		bHorsePossessed = PossessHorse;
 		ShardNumber = NewShards;
@@ -117,7 +117,7 @@ public:
 
 	// MESH
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<UMaterial> EquipMaterial;
+	TSoftObjectPtr<UMaterialInstance> EquipMaterial;
 
 	FEquipDataStruct()
 	{
@@ -136,7 +136,7 @@ public:
 	FEquipDataStruct(bool PossessEquip, int NewLevel, int32 NewID, int32 NewRarity,
 		FString NewName, TSoftObjectPtr<UTexture> NewEquipPic,
 		TArray<int32> NewAccelerationLevelArray, TArray<int32> NewSpeedLevelArray,
-		TArray<int32> NewHandlingLevelArray, TSoftObjectPtr<UMaterial> NewEquipMat)
+		TArray<int32> NewHandlingLevelArray, TSoftObjectPtr<UMaterialInstance> NewEquipMat)
 	{
 		bEquipmentPossessed = PossessEquip;
 		Level = NewLevel;

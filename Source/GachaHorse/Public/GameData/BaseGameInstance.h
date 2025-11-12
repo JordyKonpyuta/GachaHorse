@@ -6,6 +6,8 @@
 #include "Engine/GameInstance.h"
 #include "BaseGameInstance.generated.h"
 
+struct FHorseDataStruct;
+class UHorseGameSave;
 /**
  * 
  */
@@ -16,11 +18,46 @@ class GACHAHORSE_API UBaseGameInstance : public UGameInstance
 
 	// UPROPERTIES
 public:
+	UPROPERTY(BlueprintReadWrite)
+	FString PlayerName = "You";
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UDataTable> InitialHorseData;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FHorseDataStruct> HorseData;
 
 private:
+	UPROPERTY()
+	FString SaveName = "OnlySave";
+	
+	UPROPERTY()
+	TObjectPtr<UHorseGameSave> SaveGameRef;
 
 	// UFUNCTIONS
 public:
+	// ==========================
+	// ==    Base Functions    ==
+	// ==========================
+	
+	UBaseGameInstance();
 
 private:
+	// ==========================
+	// ==    Base Functions    ==
+	// ==========================
+
+	UFUNCTION()
+	void CheckSaves();
+	
+	// =========================
+	// ==   Saves Functions   ==
+	// =========================
+
+	UFUNCTION()
+	void InitializeFirstSave();
+
+	UFUNCTION()
+	void SaveGame();
+
+	UFUNCTION()
+	void UpdateHorseData(int HorseID);
 };
