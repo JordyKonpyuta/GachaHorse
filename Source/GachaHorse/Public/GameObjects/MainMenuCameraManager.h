@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "MainMenuCameraManager.generated.h"
 
+class AMainMenuController;
+
 UENUM(BlueprintType)
 enum class ECameraPosition : uint8
 {
@@ -25,13 +27,19 @@ public:
 	// ==      References      ==
 	// ==========================
 
+	UPROPERTY(Blueprintable, BlueprintReadOnly)
+	TObjectPtr<AMainMenuController> ControllerRef;
+
+	UPROPERTY(EditAnywhere)
+	TMap<ECameraPosition, TObjectPtr<ACameraActor>> Cameras =
+		{
+		{ECameraPosition::Menu, nullptr},
+		{ECameraPosition::Summoning, nullptr},
+		{ECameraPosition::Management, nullptr}
+		};
+
 	UPROPERTY()
-	TObjectPtr<ACameraActor> MenuCamera;
-	UPROPERTY()
-	TObjectPtr<ACameraActor> SummoningCamera;
-	UPROPERTY()
-	TObjectPtr<ACameraActor> ManagementCamera;
-	
+	FTimerHandle WidgetCreationTimerHandle;
 	
 	// ==========================
 	// ==       Movement       ==
@@ -67,6 +75,23 @@ protected:
 	// ==========================
 	// ==    Base Functions    ==
 	// ==========================
+
+	UFUNCTION()
+	void CheckForPregameErrors();
 	
 	virtual void BeginPlay() override;
+	
+	// ===========================
+	// ==      Camera Move      ==
+	// ===========================
+
+	UFUNCTION(BlueprintCallable, Blueprintable)
+	void ChangeCameraView(ECameraPosition MenuType);
+	void ChangeCameraView();
+
+	UFUNCTION(BlueprintNativeEvent)
+	void CreateGameWidget(ECameraPosition MenuType);
+
+	UFUNCTION()
+	void ChangeMenu();
 };
