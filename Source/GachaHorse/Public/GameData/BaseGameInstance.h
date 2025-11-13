@@ -26,10 +26,10 @@ public:
 	// HORSES
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UDataTable> InitialHorseData;
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadOnly)
 	TArray<FHorseDataStruct> HorseData;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FHorseDataStruct ChosenHorseData = {
 		true, 25, 6, 1, 2, "TestWhorse",
 		nullptr, {5,7,8,10,11,13},
@@ -42,7 +42,7 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	TArray<FEquipDataStruct> EquipData;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FEquipDataStruct ChosenEquipData = {
 		true, 6, 2, 0, "TestSaddle",
 		nullptr, {2,3,5,7,8,12},

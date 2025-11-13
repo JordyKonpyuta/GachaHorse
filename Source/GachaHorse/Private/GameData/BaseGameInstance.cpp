@@ -96,7 +96,7 @@ TArray<int> UBaseGameInstance::CalculateHorseGains(bool bTenSummons)
 	return AllHorses;
 }
 
-// =========================
+	// =========================
 	// ==     Actual Game     ==
 	// =========================
 
