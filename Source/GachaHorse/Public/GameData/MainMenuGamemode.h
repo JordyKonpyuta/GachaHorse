@@ -64,7 +64,7 @@ public:
 	// ==   GACHA! GAMBLING!   ==
 	// ==========================
 
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintNativeEvent, Blueprintable, BlueprintCallable)
 	void DisplaySummonResults(int ThingID);
 
 protected:
