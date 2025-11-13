@@ -32,8 +32,8 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	FHorseDataStruct ChosenHorseData = {
 		true, 25, 6, 1, 2, "TestWhorse",
-		nullptr, {5,7,8,10,11,13},
-		{6,6,7,7,8,9}, {2,4,7,12,12,18},
+		nullptr, {5,7,8,10,11,25},
+		{6,6,7,7,8,25}, {2,4,7,12,12,25},
 		nullptr, nullptr};
 
 	// EQUIPMENTS
@@ -45,8 +45,8 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	FEquipDataStruct ChosenEquipData = {
 		true, 6, 2, 0, "TestSaddle",
-		nullptr, {2,3,5,7,8,12},
-		{3,4,5,6,9,13}, {5,5,6,6,7,9},
+		nullptr, {2,3,5,7,8,0},
+		{3,4,5,6,9,0}, {5,5,6,6,7,0},
 		nullptr};
 
 private:
