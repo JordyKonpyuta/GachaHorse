@@ -103,7 +103,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TMap<FName, float> Rankings;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<UTexture> LevelPicture;
+	TSoftObjectPtr<UTexture2D> WorldPicture;
 
 	FWorldMapDataStruct()
 	{
@@ -211,17 +211,17 @@ public:
 			{"Name98", 158.512},
 			{"Name99", 159.251},
 			{"Name100", 159.857}};
-		LevelPicture = nullptr;
+		WorldPicture = nullptr;
 	}
 
 	FWorldMapDataStruct(TSoftObjectPtr<UWorld> WorldChosen, float CurTime, FString Name,
-		TMap<FName, float> NewRankings, TSoftObjectPtr<UMaterialInstance> WorldPicture)
+		TMap<FName, float> NewRankings, TSoftObjectPtr<UTexture2D> TheWorldPicture)
 	{
 		WorldToLoad = WorldChosen;
 		BestPersonalTime = CurTime;
 		LevelName = Name;
 		Rankings = NewRankings;
-		LevelPicture = WorldPicture;
+		WorldPicture = TheWorldPicture;
 	}
 };
 

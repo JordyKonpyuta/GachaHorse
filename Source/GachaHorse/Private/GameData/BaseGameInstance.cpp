@@ -30,72 +30,6 @@ void UBaseGameInstance::CheckSaves()
 	}
 }
 
-TArray<int> UBaseGameInstance::CalculateHorseGains(bool bTenSummons)
-{
-	TArray<int> AllHorses;
-	int CurOdd = 0;
-
-	if (!bTenSummons)
-	{
-		CurOdd = FMath::RandRange(0.000f, 100.000f);
-
-		if (CurOdd >= 93.75)
-		{
-			// RARE HORSE :DDD
-			AllHorses.Add(FMath::RandRange(9, 12));
-		}
-		else if (CurOdd >= 62.5)
-		{
-			// UNCOMMON HORSE :)
-			AllHorses.Add(FMath::RandRange(5, 8));
-		}
-		else
-		{
-			// COMMON HORSE :(
-			AllHorses.Add(FMath::RandRange(0, 4));
-		}
-
-		return AllHorses;
-	}
-
-	for (int i = 0; i < 9; i++)
-	{
-		CurOdd = FMath::RandRange(0.000f, 100.000f);
-
-		if (CurOdd >= 93.75)
-		{
-			// RARE HORSE :DDD
-			AllHorses.Add(FMath::RandRange(9, 12));
-		}
-		else if (CurOdd >= 62.5)
-		{
-			// UNCOMMON HORSE :)
-			AllHorses.Add(FMath::RandRange(5, 8));
-		}
-		else
-		{
-			// COMMON HORSE :(
-			AllHorses.Add(FMath::RandRange(0, 4));
-		}
-	}
-
-	CurOdd = FMath::RandRange(0, 5);
-
-	if (CurOdd < 5)
-	{
-		// UNCOMMON HORSE DDD:
-		AllHorses.Add(FMath::RandRange(5, 8));
-	}
-	else
-	{
-		// RARE HORSE :DDD
-		AllHorses.Add(FMath::RandRange(9, 12));
-	}
-
-
-	return AllHorses;
-}
-
 	// =========================
 	// ==     Actual Game     ==
 	// =========================
@@ -123,6 +57,49 @@ void UBaseGameInstance::StartGame(TSoftObjectPtr<UWorld> WorldToLoad, int HorseI
 }
 
 	// =========================
+	// ==     Horses Data     ==
+	// =========================
+
+void UBaseGameInstance::ObtainedHorse(int HorseID)
+{
+	for (int i = 0; i < HorseData.Num(); i++)
+	{
+		if (HorseData[i].HorseID == HorseID)
+		{
+			if (!HorseData[i].bHorsePossessed)
+				HorseData[i].bHorsePossessed = true;
+			else
+				HorseData[i].ShardNumber += 1;
+			SaveGameRef->HorseData[i] = HorseData[i];
+			break;
+		}
+	}
+}
+
+void UBaseGameInstance::ObtainedEquip(int EquipID)
+{
+	for (int i = 0; i < HorseData.Num(); i++)
+	{
+		if (EquipData[i].EquipmentID == EquipID)
+		{
+			if (!EquipData[i].bEquipmentPossessed)
+				EquipData[i].bEquipmentPossessed = true;
+			else
+			{
+				if (EquipData[i].Rarity == 0)
+					ScrapMoney += 1;
+				else if (EquipData[i].Rarity == 1)
+					ScrapMoney += 3;
+				else
+					ScrapMoney += 10;
+			}
+			SaveGameRef->EquipData[i] = EquipData[i];
+			break;
+		}
+	}
+}
+
+	// =========================
 	// ==   Saves Functions   ==
 	// =========================
 
@@ -138,14 +115,14 @@ void UBaseGameInstance::SaveGame()
 {
 }
 
-void UBaseGameInstance::UpdateHorseData(int HorseID)
+void UBaseGameInstance::SaveHorseData()
 {
-	for (int i = 0; i < HorseData.Num(); i++)
-	{
-		if (HorseData[i].HorseID == HorseID)
-		{
-			SaveGameRef->HorseData[i] = HorseData[i];
-			break;
-		}
-	}
+	SaveGameRef->HorseData = HorseData;
+	SaveGameRef->SummonMoney = SummonMoney;
+}
+
+void UBaseGameInstance::SaveEquipData()
+{
+	SaveGameRef->EquipData = EquipData;
+	SaveGameRef->ScrapMoney = ScrapMoney;
 }

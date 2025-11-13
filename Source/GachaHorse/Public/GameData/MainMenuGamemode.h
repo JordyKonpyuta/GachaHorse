@@ -25,7 +25,10 @@ protected:
 	// =========================
 
 	UPROPERTY()
-	int HorseMoney = 0;
+	int SummonMoney = 0;
+
+	UPROPERTY()
+	int ScrapMoney = 0;
 	
 	// =========================
 	// ==      Summoning      ==
@@ -50,12 +53,25 @@ protected:
 	// ==========================
 	
 	virtual void BeginPlay() override;
+	
+	// ==========================
+	// ==   GACHA! GAMBLING!   ==
+	// ==========================
+
+	UFUNCTION()
+	TArray<int> CalculatePossibleGains(bool bTenSummons);
+
+	UFUNCTION()
+	void GachaGotHorses();
+
+	UFUNCTION()
+	void GachaGotEquips();
 
 	// ==========================
 	// ==        DEBOOG        ==
 	// ==========================
 
 	UFUNCTION()
-	void CrashForDebug();
+	void CheckPossibleCrash();
 	
 };

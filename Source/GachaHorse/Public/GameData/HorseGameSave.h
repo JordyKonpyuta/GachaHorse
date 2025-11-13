@@ -6,6 +6,7 @@
 #include "GameFramework/SaveGame.h"
 #include "HorseGameSave.generated.h"
 
+struct FEquipDataStruct;
 struct FHorseDataStruct;
 /**
  * 
@@ -18,10 +19,12 @@ class GACHAHORSE_API UHorseGameSave : public USaveGame
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FHorseDataStruct> HorseData;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FEquipDataStruct> EquipData;
 
 	// MONEYS
 	UPROPERTY()
 	int SummonMoney = 0;
 	UPROPERTY()
-	int Shards = 0;
+	int ScrapMoney = 0;
 };

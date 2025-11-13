@@ -55,6 +55,16 @@ private:
 	
 	UPROPERTY()
 	TObjectPtr<UHorseGameSave> SaveGameRef;
+	
+	// =========================
+	// ==        Money        ==
+	// =========================
+
+	UPROPERTY()
+	int SummonMoney = 0;
+
+	UPROPERTY()
+	int ScrapMoney = 0;
 
 	// UFUNCTIONS
 public:
@@ -72,19 +82,21 @@ private:
 	UFUNCTION()
 	void CheckSaves();
 	
-	// ==========================
-	// ==   GACHA! GAMBLING!   ==
-	// ==========================
-
-	UFUNCTION()
-	TArray<int> CalculateHorseGains(bool bTenSummons);
-	
 	// =========================
 	// ==     Actual Game     ==
 	// =========================
 
 	UFUNCTION(BlueprintCallable)
 	void StartGame(TSoftObjectPtr<UWorld> WorldToLoad, int HorseID, int EquipmentID);
+	
+	// =========================
+	// == Horses & Equip Data ==
+	// =========================
+
+	UFUNCTION()
+	void ObtainedHorse(int HorseID);
+	UFUNCTION()
+	void ObtainedEquip(int EquipID);
 	
 	// =========================
 	// ==   Saves Functions   ==
@@ -97,5 +109,8 @@ private:
 	void SaveGame();
 
 	UFUNCTION()
-	void UpdateHorseData(int HorseID);
+	void SaveHorseData();
+
+	UFUNCTION()
+	void SaveEquipData();
 };
