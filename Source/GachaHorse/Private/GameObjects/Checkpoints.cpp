@@ -112,7 +112,7 @@ void ACheckpoints::RegularCheckpointCrossed(ABaseHorse* HorseActor)
 	if (HorseActor->CurrentCheckpointIndex != CurrentIndex - 1)
 		return;
 
-	FTransform NewRespawn = FTransform(GetActorRotation(), GetActorLocation(),  FVector(1.0f,1.0f,1.0f));
+	FTransform NewRespawn = FTransform(GetActorRotation(), Arrow->GetComponentLocation(),  FVector(1.0f,1.0f,1.0f));
 	
 	HorseActor->SetPlayerRespawn(NewRespawn);
 	HorseActor->CurrentCheckpointIndex = CurrentIndex;
