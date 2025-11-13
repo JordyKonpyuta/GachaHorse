@@ -30,6 +30,98 @@ void UBaseGameInstance::CheckSaves()
 	}
 }
 
+TArray<int> UBaseGameInstance::CalculateHorseGains(bool bTenSummons)
+{
+	TArray<int> AllHorses;
+	int CurOdd = 0;
+
+	if (!bTenSummons)
+	{
+		CurOdd = FMath::RandRange(0.000f, 100.000f);
+
+		if (CurOdd >= 93.75)
+		{
+			// RARE HORSE :DDD
+			AllHorses.Add(FMath::RandRange(9, 12));
+		}
+		else if (CurOdd >= 62.5)
+		{
+			// UNCOMMON HORSE :)
+			AllHorses.Add(FMath::RandRange(5, 8));
+		}
+		else
+		{
+			// COMMON HORSE :(
+			AllHorses.Add(FMath::RandRange(0, 4));
+		}
+
+		return AllHorses;
+	}
+
+	for (int i = 0; i < 9; i++)
+	{
+		CurOdd = FMath::RandRange(0.000f, 100.000f);
+
+		if (CurOdd >= 93.75)
+		{
+			// RARE HORSE :DDD
+			AllHorses.Add(FMath::RandRange(9, 12));
+		}
+		else if (CurOdd >= 62.5)
+		{
+			// UNCOMMON HORSE :)
+			AllHorses.Add(FMath::RandRange(5, 8));
+		}
+		else
+		{
+			// COMMON HORSE :(
+			AllHorses.Add(FMath::RandRange(0, 4));
+		}
+	}
+
+	CurOdd = FMath::RandRange(0, 5);
+
+	if (CurOdd < 5)
+	{
+		// UNCOMMON HORSE DDD:
+		AllHorses.Add(FMath::RandRange(5, 8));
+	}
+	else
+	{
+		// RARE HORSE :DDD
+		AllHorses.Add(FMath::RandRange(9, 12));
+	}
+
+
+	return AllHorses;
+}
+
+// =========================
+	// ==     Actual Game     ==
+	// =========================
+
+void UBaseGameInstance::StartGame(TSoftObjectPtr<UWorld> WorldToLoad, int HorseID, int EquipmentID)
+{
+	for (int i = 0; i < HorseData.Num(); i++)
+	{
+		if (HorseData[i].HorseID == HorseID)
+		{
+			ChosenHorseData = HorseData[i];
+			break;
+		}
+	}
+	for (int i = 0; i < EquipData.Num(); i++)
+	{
+		if (EquipData[i].EquipmentID == EquipmentID)
+		{
+			ChosenEquipData = EquipData[i];
+			break;
+		}
+	}
+
+	UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(),WorldToLoad);
+}
+
 	// =========================
 	// ==   Saves Functions   ==
 	// =========================

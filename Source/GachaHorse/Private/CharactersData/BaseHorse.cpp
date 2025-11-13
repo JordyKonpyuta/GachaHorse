@@ -7,6 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
+#include "GameData/BaseGameInstance.h"
 #include "GameData/BaseGamemode.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -68,6 +69,11 @@ void ABaseHorse::BeginPlay()
 
 	// ????? CA FIXE LE RAGDOLL JE SUPPOSE
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ABaseHorse::OnHit);
+
+	// ZEROTH : GET STATS
+
+	GameInstanceRef = Cast<UBaseGameInstance>(GetGameInstance());
+	PrepareSetStats();
 
 	// FIRST : PREPARE RESPAWN
 
@@ -171,7 +177,7 @@ void ABaseHorse::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 		EnhancedInputComponent->BindAction(Speed_Action, ETriggerEvent::Completed, this, &ABaseHorse::StopChangeSpeed);
 	}
 }
-	
+
 	// =========================
 	// ==      Movements      ==
 	// =========================
@@ -280,6 +286,17 @@ void ABaseHorse::SetPlayerRespawn(const FTransform& RespawnLoc)
 	// ==        Stats        ==
 	// =========================
 
+void ABaseHorse::PrepareSetStats()
+{
+	TArray<int> NewStats = {0,0,0};
+	int CurHorseLevel = GameInstanceRef->ChosenHorseData.Level - 1;
+	int CurEquipLevel = GameInstanceRef->ChosenEquipData.Level - 1;
+	NewStats[0] = GameInstanceRef->ChosenHorseData.AccelerationPerLevel[CurHorseLevel] + GameInstanceRef->ChosenEquipData.AccelerationPerLevel[CurEquipLevel];
+	NewStats[1] = GameInstanceRef->ChosenHorseData.SpeedPerLevel[CurHorseLevel] + GameInstanceRef->ChosenEquipData.SpeedPerLevel[CurEquipLevel];
+	NewStats[2] = GameInstanceRef->ChosenHorseData.HandlingPerLevel[CurHorseLevel] + GameInstanceRef->ChosenEquipData.HandlingPerLevel[CurEquipLevel];
+	SetStats(NewStats);
+}
+
 void ABaseHorse::SetStats(TArray<int> StatsToSet)
 {
 	if (StatsToSet.Num() != 3)
@@ -308,17 +325,17 @@ float ABaseHorse::GetJumpPower()
 
 void ABaseHorse::InitAcceleration()
 {
-	GetCharacterMovement()->MaxAcceleration = 300 + (20 * Stats[0]);
+	GetCharacterMovement()->MaxAcceleration = 300 + (10 * Stats[0]);
 }
 
 void ABaseHorse::InitSpeed()
 {
-	SpeedTable[5] = 1750 + (Stats[1] * 25);
+	SpeedTable[5] = 1750 + (Stats[1] * 10);
 }
 
 void ABaseHorse::InitHandling()
 {
-	TurnRateFactor = 0.05 + (Stats[2] * 0.005);
+	TurnRateFactor = 0.05 + (Stats[2] * 0.001);
 }
 
 void ABaseHorse::PauseShiftSpeedPossibility(float TimeBeforeNewShift)

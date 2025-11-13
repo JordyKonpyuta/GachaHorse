@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AllStructs.h"
 #include "Engine/GameInstance.h"
 #include "BaseGameInstance.generated.h"
 
+struct FEquipDataStruct;
 struct FHorseDataStruct;
 class UHorseGameSave;
 /**
@@ -20,10 +22,32 @@ class GACHAHORSE_API UBaseGameInstance : public UGameInstance
 public:
 	UPROPERTY(BlueprintReadWrite)
 	FString PlayerName = "You";
+
+	// HORSES
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UDataTable> InitialHorseData;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	TArray<FHorseDataStruct> HorseData;
+
+	UPROPERTY()
+	FHorseDataStruct ChosenHorseData = {
+		true, 25, 6, 1, 2, "TestWhorse",
+		nullptr, {5,7,8,10,11,13},
+		{6,6,7,7,8,9}, {2,4,7,12,12,18},
+		nullptr, nullptr};
+
+	// EQUIPMENTS
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UDataTable> InitialEquipmentData;
+	UPROPERTY(BlueprintReadWrite)
+	TArray<FEquipDataStruct> EquipData;
+
+	UPROPERTY()
+	FEquipDataStruct ChosenEquipData = {
+		true, 6, 2, 0, "TestSaddle",
+		nullptr, {2,3,5,7,8,12},
+		{3,4,5,6,9,13}, {5,5,6,6,7,9},
+		nullptr};
 
 private:
 	UPROPERTY()
@@ -47,6 +71,20 @@ private:
 
 	UFUNCTION()
 	void CheckSaves();
+	
+	// ==========================
+	// ==   GACHA! GAMBLING!   ==
+	// ==========================
+
+	UFUNCTION()
+	TArray<int> CalculateHorseGains(bool bTenSummons);
+	
+	// =========================
+	// ==     Actual Game     ==
+	// =========================
+
+	UFUNCTION(BlueprintCallable)
+	void StartGame(TSoftObjectPtr<UWorld> WorldToLoad, int HorseID, int EquipmentID);
 	
 	// =========================
 	// ==   Saves Functions   ==

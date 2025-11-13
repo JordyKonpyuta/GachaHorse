@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "BaseHorse.generated.h"
 
+class UBaseGameInstance;
 class ABaseGamemode;
 struct FInputActionValue;
 class UCameraComponent;
@@ -65,6 +66,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<ABaseGamemode> GameModeRef;
+
+	UPROPERTY()
+	TObjectPtr<UBaseGameInstance> GameInstanceRef;
 	
 	// ==========================
 	// ==      Components      ==
@@ -91,19 +95,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category="SkeletonComponent")
 	TObjectPtr<USkeletalMeshComponent> ReinsSkel;
 	
-	// =========================
-	// ==        Stats        ==
-	// =========================
-
-	/**
-	 * Array with three ints. \n
-	 * First Stat : Acceleration \n
-	 * Second Stat : Speed \n
-	 * Third Stat : Handling
-	 */
-	/*UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Stats")
-	TArray<int> Stats = {5,5,5};
-	*/
 	// =========================
 	// ==        Speed        ==
 	// =========================
@@ -211,6 +202,9 @@ public:
 	// ==        Stats        ==
 	// =========================
 
+	UFUNCTION()
+	void PrepareSetStats();
+	
 	UFUNCTION()
 	void SetStats(TArray<int> StatsToSet);
 	void SetStats(int StatAccel, int StatSpeed, int StatHandling);
