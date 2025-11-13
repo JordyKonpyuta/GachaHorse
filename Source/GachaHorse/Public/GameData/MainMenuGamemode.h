@@ -32,7 +32,7 @@ protected:
 	// =========================
 
 	UPROPERTY()
-	int SummonMoney = 10000000000000000000;
+	int SummonMoney = 1000000;
 
 	UPROPERTY()
 	int ScrapMoney = 0;
