@@ -31,7 +31,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString HorseName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<UTexture> HorsePicture;
+	TSoftObjectPtr<UTexture2D> HorsePicture;
 
 	// Stats
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -64,7 +64,7 @@ public:
 	}
 
 	FHorseDataStruct(bool PossessHorse, int NewShards, int NewLevel, int32 NewID,
-		int32 NewRarity, FString NewName, TSoftObjectPtr<UTexture> NewHorsePic,
+		int32 NewRarity, FString NewName, TSoftObjectPtr<UTexture2D> NewHorsePic,
 		TArray<int32> NewAccelerationLevelArray, TArray<int32> NewSpeedLevelArray,
 		TArray<int32> NewHandlingLevelArray, TSoftObjectPtr<UMaterial> NewHorseMat,
 		TSoftObjectPtr<UMaterialInstance> NewHairMat)
@@ -246,7 +246,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString EquipmentName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<UTexture> EquipmentPicture;
+	TSoftObjectPtr<UTexture2D> EquipmentPicture;
 
 	// Stats
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -275,7 +275,7 @@ public:
 	}
 
 	FEquipDataStruct(bool PossessEquip, int NewLevel, int32 NewID, int32 NewRarity,
-		FString NewName, TSoftObjectPtr<UTexture> NewEquipPic,
+		FString NewName, TSoftObjectPtr<UTexture2D> NewEquipPic,
 		TArray<int32> NewAccelerationLevelArray, TArray<int32> NewSpeedLevelArray,
 		TArray<int32> NewHandlingLevelArray, TSoftObjectPtr<UMaterialInstance> NewEquipMat)
 	{
