@@ -119,7 +119,7 @@ void AMainMenuGamemode::GachaPullEquips(bool bTenSummons)
 	
 }
 
-void AMainMenuGamemode::DisplaySummonResults_Implementation(bool bIsHorses, bool bIsTenSummons, int ThingID)
+void AMainMenuGamemode::DisplaySummonResults_Implementation(bool bIsHorses, int ThingID)
 {
 }
 
