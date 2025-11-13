@@ -94,6 +94,6 @@ protected:
 	UFUNCTION(BlueprintNativeEvent)
 	void CreateGameWidget(ECameraPosition MenuType);
 
-	UFUNCTION()
+	UFUNCTION(Blueprintable, BlueprintCallable)
 	void ChangeMenu();
 };
