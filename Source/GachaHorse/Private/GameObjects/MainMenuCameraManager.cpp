@@ -75,7 +75,7 @@ void AMainMenuCameraManager::ChangeCameraView()
 void AMainMenuCameraManager::ChangeCameraView(ECameraPosition MenuType)
 {
 	if (!((MenuType == ECameraPosition::HorseSummoning || MenuType == ECameraPosition::EquipSummoning)
-		&& (CurrentCameraPosition == ECameraPosition::EquipSummoning || MenuType == ECameraPosition::HorseSummoning)))
+		&& (CurrentCameraPosition == ECameraPosition::EquipSummoning || CurrentCameraPosition == ECameraPosition::HorseSummoning)))
 	{
 		GetWorldTimerManager().SetTimer(
         		WidgetCreationTimerHandle,
