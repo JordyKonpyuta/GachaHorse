@@ -117,6 +117,13 @@ void AMainMenuGamemode::GachaPullEquips(bool bTenSummons)
 	if (SummonMoney < Price)
 		return;
 	
+	TArray<int> AllGains = CalculatePossibleGains(bTenSummons);
+
+	for (int CurrentHorseID : AllGains)
+	{
+		DisplaySummonResults(true, CurrentHorseID);
+		InstanceRef->ObtainedHorse(CurrentHorseID);
+	}
 }
 
 void AMainMenuGamemode::DisplaySummonResults_Implementation(bool bIsHorses, int ThingID)

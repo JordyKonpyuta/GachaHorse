@@ -81,10 +81,10 @@ protected:
 	UFUNCTION()
 	TArray<int> CalculatePossibleGains(bool bTenSummons);
 
-	UFUNCTION()
+	UFUNCTION(Blueprintable, BlueprintCallable)
 	void GachaPullHorses(bool bTenSummons);
 
-	UFUNCTION()
+	UFUNCTION(Blueprintable, BlueprintCallable)
 	void GachaPullEquips(bool bTenSummons);
 
 	// ==========================
