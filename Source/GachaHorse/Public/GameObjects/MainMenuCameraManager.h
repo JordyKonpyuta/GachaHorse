@@ -13,7 +13,7 @@ enum class ECameraPosition : uint8
 {
 	Menu			UMETA(DisplayName = "Menu"),
 	HorseSummoning	UMETA(DisplayName = "Horse Summoning"),
-	EquipSummoning	UMETA(DisplayName = "Horse Summoning"),
+	EquipSummoning	UMETA(DisplayName = "Equipment Summoning"),
 	Management		UMETA(DisplayName = "Management")
 };
 
@@ -36,6 +36,7 @@ public:
 		{
 		{ECameraPosition::Menu, nullptr},
 		{ECameraPosition::HorseSummoning, nullptr},
+		{ECameraPosition::EquipSummoning, nullptr},
 		{ECameraPosition::Management, nullptr}
 		};
 
