@@ -105,8 +105,8 @@ void AMainMenuGamemode::GachaPullHorses(bool bTenSummons)
 
 	for (int CurrentHorseID : AllGains)
 	{
-		InstanceRef->ObtainedHorse(CurrentHorseID);
 		DisplaySummonResults(CurrentHorseID);
+		InstanceRef->ObtainedHorse(CurrentHorseID);
 	}
 }
 

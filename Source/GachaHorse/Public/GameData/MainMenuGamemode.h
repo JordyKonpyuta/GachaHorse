@@ -53,6 +53,19 @@ public:
 	AMainMenuGamemode();
 	
 	virtual void Tick(float DeltaTime) override;
+	
+	// =========================================================
+	// ==         █     █ █████ ███  ██    ████ █████         ==
+	// ==          █ █ █    █   █  █ █ ███ ██     █           ==
+	// ==           █ █   █████ ███  ████  ████   █           ==
+	// =========================================================
+	
+	// ==========================
+	// ==   GACHA! GAMBLING!   ==
+	// ==========================
+
+	UFUNCTION(BlueprintNativeEvent)
+	void DisplaySummonResults(int ThingID);
 
 protected:
 	// ==========================
@@ -73,19 +86,6 @@ protected:
 
 	UFUNCTION()
 	void GachaPullEquips(bool bTenSummons);
-	
-	// =========================================================
-	// ==         █     █ █████ ███  ██    ████ █████         ==
-	// ==          █ █ █    █   █  █ █ ███ ██     █           ==
-	// ==           █ █   █████ ███  ████  ████   █           ==
-	// =========================================================
-	
-	// ==========================
-	// ==   GACHA! GAMBLING!   ==
-	// ==========================
-
-	UFUNCTION(BlueprintNativeEvent)
-	void DisplaySummonResults(int ThingID);
 
 	// ==========================
 	// ==        DEBOOG        ==
