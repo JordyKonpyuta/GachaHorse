@@ -65,7 +65,7 @@ public:
 	// ==========================
 
 	UFUNCTION(BlueprintNativeEvent, Blueprintable, BlueprintCallable)
-	void DisplaySummonResults(int ThingID);
+	void DisplaySummonResults(bool bIsHorses, int ThingID);
 
 protected:
 	// ==========================
