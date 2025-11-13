@@ -5,7 +5,6 @@
 
 #include "GameData/AllStructs.h"
 #include "GameData/BaseGameInstance.h"
-#include "GameData/BaseGamemode.h"
 
 AMainMenuGamemode::AMainMenuGamemode()
 {
@@ -21,6 +20,8 @@ void AMainMenuGamemode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	InstanceRef = Cast<UBaseGameInstance>(GetWorld()->GetGameInstance());
+	
 	CheckPossibleCrash();
 }
 	
@@ -93,15 +94,33 @@ TArray<int> AMainMenuGamemode::CalculatePossibleGains(bool bTenSummons)
 	return AllHorses;
 }
 
-void AMainMenuGamemode::GachaGotHorses()
+void AMainMenuGamemode::GachaPullHorses(bool bTenSummons)
 {
-	UBaseGameInstance* InstanceRef = Cast<UBaseGameInstance>(GetWorld()->GetGameInstance());
+	// MAKE SURE WE HAVE ENOUGH MONEY (baka :>)
+	int Price = bTenSummons ? 1000 : 100;
+	if (SummonMoney < Price)
+		return;
+	
+	TArray<int> AllGains = CalculatePossibleGains(bTenSummons);
+
+	for (int CurrentHorseID : AllGains)
+	{
+		InstanceRef->ObtainedHorse(CurrentHorseID);
+		DisplaySummonResults(CurrentHorseID);
+	}
+}
+
+void AMainMenuGamemode::GachaPullEquips(bool bTenSummons)
+{
+	// MAKE SURE WE HAVE ENOUGH MONEY (dummy :>)
+	int Price = bTenSummons ? 1000 : 100;
+	if (SummonMoney < Price)
+		return;
 	
 }
 
-void AMainMenuGamemode::GachaGotEquips()
+void AMainMenuGamemode::DisplaySummonResults_Implementation(int ThingID)
 {
-	
 }
 
 	// ==========================
@@ -111,6 +130,12 @@ void AMainMenuGamemode::GachaGotEquips()
 void AMainMenuGamemode::CheckPossibleCrash()
 {
 	bool ErrorFound = false;
+
+	if (!InstanceRef->IsValidLowLevelFast())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("INSTANCEREF IS NOT SET, SHUTTING THE GAME DOWN"));
+		ErrorFound = true;
+	}
 
 	if (!AllHorsesPossessed->IsValidLowLevelFast())
 	{

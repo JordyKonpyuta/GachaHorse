@@ -74,16 +74,20 @@ void AMainMenuCameraManager::ChangeCameraView()
 
 void AMainMenuCameraManager::ChangeCameraView(ECameraPosition MenuType)
 {
+	if (!((MenuType == ECameraPosition::HorseSummoning || MenuType == ECameraPosition::EquipSummoning)
+		&& (CurrentCameraPosition == ECameraPosition::EquipSummoning || MenuType == ECameraPosition::HorseSummoning)))
+	{
+		GetWorldTimerManager().SetTimer(
+        		WidgetCreationTimerHandle,
+        		this,
+        		&AMainMenuCameraManager::ChangeMenu,
+        		1.25f,
+        		false);
+	}
+	
 	CurrentCameraPosition = MenuType;
 	ACameraActor* NewCamera = Cameras[CurrentCameraPosition];
 	ControllerRef->SetViewTargetWithBlend(NewCamera, 1.0f);
-	
-	GetWorldTimerManager().SetTimer(
-		WidgetCreationTimerHandle,
-		this,
-		&AMainMenuCameraManager::ChangeMenu,
-		1.25f,
-		false);
 }
 
 void AMainMenuCameraManager::ChangeMenu()

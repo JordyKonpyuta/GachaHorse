@@ -7,6 +7,7 @@
 #include "MainMenuGamemode.generated.h"
 
 
+class UBaseGameInstance;
 struct FHorseDataStruct;
 /**
  * 
@@ -18,6 +19,12 @@ class GACHAHORSE_API AMainMenuGamemode : public AGameModeBase
 
 	// UPROPERTIES
 public:
+	// ==========================
+	// ==      References      ==
+	// ==========================
+
+	UPROPERTY()
+	TObjectPtr<UBaseGameInstance> InstanceRef;
 
 protected:
 	// =========================
@@ -62,10 +69,23 @@ protected:
 	TArray<int> CalculatePossibleGains(bool bTenSummons);
 
 	UFUNCTION()
-	void GachaGotHorses();
+	void GachaPullHorses(bool bTenSummons);
 
 	UFUNCTION()
-	void GachaGotEquips();
+	void GachaPullEquips(bool bTenSummons);
+	
+	// =========================================================
+	// ==         █     █ █████ ███  ██    ████ █████         ==
+	// ==          █ █ █    █   █  █ █ ███ ██     █           ==
+	// ==           █ █   █████ ███  ████  ████   █           ==
+	// =========================================================
+	
+	// ==========================
+	// ==   GACHA! GAMBLING!   ==
+	// ==========================
+
+	UFUNCTION(BlueprintNativeEvent)
+	void DisplaySummonResults(int ThingID);
 
 	// ==========================
 	// ==        DEBOOG        ==

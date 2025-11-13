@@ -73,6 +73,15 @@ public:
 	// ==========================
 	
 	UBaseGameInstance();
+	
+	// =========================
+	// == Horses & Equip Data ==
+	// =========================
+
+	UFUNCTION()
+	void ObtainedHorse(int HorseID);
+	UFUNCTION()
+	void ObtainedEquip(int EquipID);
 
 private:
 	// ==========================
@@ -88,15 +97,6 @@ private:
 
 	UFUNCTION(BlueprintCallable)
 	void StartGame(TSoftObjectPtr<UWorld> WorldToLoad, int HorseID, int EquipmentID);
-	
-	// =========================
-	// == Horses & Equip Data ==
-	// =========================
-
-	UFUNCTION()
-	void ObtainedHorse(int HorseID);
-	UFUNCTION()
-	void ObtainedEquip(int EquipID);
 	
 	// =========================
 	// ==   Saves Functions   ==
