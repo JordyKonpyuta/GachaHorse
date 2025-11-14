@@ -79,13 +79,19 @@ protected:
 	// ==========================
 
 	UFUNCTION()
-	TArray<int> CalculatePossibleGains(bool bTenSummons);
+	TArray<int> CalculatePossibleHorseGains(bool bTenSummons);
+
+	UFUNCTION()
+	TArray<int> CalculatePossibleEquipGains(bool bTenSummons);
 
 	UFUNCTION(Blueprintable, BlueprintCallable)
 	void GachaPullHorses(bool bTenSummons);
 
 	UFUNCTION(Blueprintable, BlueprintCallable)
 	void GachaPullEquips(bool bTenSummons);
+
+	UFUNCTION()
+	void PrepareSummonResults(bool bIsHorses, int ThingID, float Delay);
 
 	// ==========================
 	// ==        DEBOOG        ==

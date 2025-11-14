@@ -24,12 +24,12 @@ void AMainMenuGamemode::BeginPlay()
 	
 	CheckPossibleCrash();
 }
-	
+
 	// ==========================
 	// ==   GACHA! GAMBLING!   ==
 	// ==========================
 
-TArray<int> AMainMenuGamemode::CalculatePossibleGains(bool bTenSummons)
+TArray<int> AMainMenuGamemode::CalculatePossibleHorseGains(bool bTenSummons)
 {
 	TArray<int> AllHorses;
 	int CurOdd;
@@ -94,6 +94,71 @@ TArray<int> AMainMenuGamemode::CalculatePossibleGains(bool bTenSummons)
 	return AllHorses;
 }
 
+TArray<int> AMainMenuGamemode::CalculatePossibleEquipGains(bool bTenSummons)
+{
+	TArray<int> AllEquips;
+	int CurOdd;
+
+	if (!bTenSummons)
+	{
+		CurOdd = FMath::RandRange(0.000f, 100.000f);
+
+		if (CurOdd >= 93.75)
+		{
+			// RARE HORSE :DDD
+			AllEquips.Add(FMath::RandRange(6, 8));
+		}
+		else if (CurOdd >= 62.5)
+		{
+			// UNCOMMON HORSE :)
+			AllEquips.Add(FMath::RandRange(3, 5));
+		}
+		else
+		{
+			// COMMON HORSE :(
+			AllEquips.Add(FMath::RandRange(0, 2));
+		}
+
+		return AllEquips;
+	}
+
+	for (int i = 0; i < 9; i++)
+	{
+		CurOdd = FMath::RandRange(0.000f, 100.000f);
+
+		if (CurOdd >= 93.75)
+		{
+			// RARE HORSE :DDD
+			AllEquips.Add(FMath::RandRange(6, 8));
+		}
+		else if (CurOdd >= 62.5)
+		{
+			// UNCOMMON HORSE :)
+			AllEquips.Add(FMath::RandRange(3, 5));
+		}
+		else
+		{
+			// COMMON HORSE :(
+			AllEquips.Add(FMath::RandRange(0, 2));
+		}
+	}
+
+	CurOdd = FMath::RandRange(0, 5);
+
+	if (CurOdd < 5)
+	{
+		// UNCOMMON HORSE DDD:
+		AllEquips.Add(FMath::RandRange(3, 5));
+	}
+	else
+	{
+		// RARE HORSE :DDD
+		AllEquips.Add(FMath::RandRange(6, 8));
+	}
+	
+	return AllEquips;
+}
+
 void AMainMenuGamemode::GachaPullHorses(bool bTenSummons)
 {
 	// MAKE SURE WE HAVE ENOUGH MONEY (baka :>)
@@ -101,12 +166,15 @@ void AMainMenuGamemode::GachaPullHorses(bool bTenSummons)
 	if (SummonMoney < Price)
 		return;
 	
-	TArray<int> AllGains = CalculatePossibleGains(bTenSummons);
+	TArray<int> AllGains = CalculatePossibleHorseGains(bTenSummons);
+	float Delay = 0.25f;
 
 	for (int CurrentHorseID : AllGains)
 	{
-		DisplaySummonResults(true, CurrentHorseID);
+		PrepareSummonResults(true, CurrentHorseID, Delay);
 		InstanceRef->ObtainedHorse(CurrentHorseID);
+		Delay += 0.5f;
+		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, FString::SanitizeFloat(Delay));
 	}
 }
 
@@ -117,17 +185,34 @@ void AMainMenuGamemode::GachaPullEquips(bool bTenSummons)
 	if (SummonMoney < Price)
 		return;
 	
-	TArray<int> AllGains = CalculatePossibleGains(bTenSummons);
-
-	for (int CurrentHorseID : AllGains)
+	TArray<int> AllGains = CalculatePossibleEquipGains(bTenSummons);
+	float Delay = 0.25f;
+	
+	for (int CurrentEquipID : AllGains)
 	{
-		DisplaySummonResults(false, CurrentHorseID);
-		InstanceRef->ObtainedHorse(CurrentHorseID);
+		PrepareSummonResults(false, CurrentEquipID, Delay);
+		InstanceRef->ObtainedHorse(CurrentEquipID);
+		Delay += 0.5f;
 	}
+}
+
+void AMainMenuGamemode::PrepareSummonResults(bool bIsHorses, int ThingID, float Delay)
+{
+	FTimerHandle TempSummonHandle;
+	FTimerDelegate TempSummonDelegate;
+
+	TempSummonDelegate.BindUFunction(this, "DisplaySummonResults", bool(bIsHorses), int(ThingID));
+
+	GetWorldTimerManager().SetTimer(
+		TempSummonHandle,
+		TempSummonDelegate,
+		Delay,
+		false);
 }
 
 void AMainMenuGamemode::DisplaySummonResults_Implementation(bool bIsHorses, int ThingID)
 {
+	
 }
 
 	// ==========================
