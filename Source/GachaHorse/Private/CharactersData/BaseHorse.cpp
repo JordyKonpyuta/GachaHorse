@@ -124,12 +124,50 @@ void ABaseHorse::Tick(float DeltaTime)
 		JumpCharge = 0.0f;
 	}
 
-	float MaxAvailableSpeed = (1 + SlopeType * 0.15) * TargetSpeed * (1 + HazardModifier);
+	if (SlopeType == 0)
+	{
+		MaxAvailableSpeed = TargetSpeed * (1 + HazardModifier);
+	}
+	else if (SlopeType == 1)
+	{
+		MaxAvailableSpeed = TargetSpeed * (1 + HazardModifier) * 1.15;
+	}
+	else if (SlopeType == -1)
+	{
+		MaxAvailableSpeed = TargetSpeed * (1 + HazardModifier) * (1- FMath::Max(0, 0.15 + 0.005 * Stats[0]));
+	}
+	else
+	{
+		MaxAvailableSpeed = TargetSpeed * (1 + HazardModifier);
+	}
 
+	/*
 	if (!(MaxAvailableSpeed - 1 < CurrentSpeed && CurrentSpeed < MaxAvailableSpeed + 1))
 		if (!bIsRagdoll && GetCharacterMovement()->IsMovingOnGround())
 			AddMovementInput(GetActorForwardVector(),
 				SlopeType * 0.5 + (CurrentSpeed <= MaxAvailableSpeed ? 1 : -1), false);
+	*/
+	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Blue, FString::FromInt(SlopeType));
+	
+	if (CurrentSpeed > MaxAvailableSpeed + 1)
+	{
+		if (!bIsRagdoll && GetCharacterMovement()->IsMovingOnGround())
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, FString::SanitizeFloat(-(1 - SlopeType * 0.5)));
+			GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, "A");
+			AddMovementInput(GetActorForwardVector(),
+				-(1 - SlopeType * 0.5), false);
+		}
+	}
+	else if (CurrentSpeed < MaxAvailableSpeed - 1)
+	{
+		if (!bIsRagdoll && GetCharacterMovement()->IsMovingOnGround())
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, FString::SanitizeFloat(1 + SlopeType * 0.5));
+			AddMovementInput(GetActorForwardVector(),
+				1 + SlopeType * 0.5, false);
+		}
+	}
 
 	// MOVE HORSEY LEFTY RIGHTY
 	if (!(-0.1 < SideSpeed && SideSpeed < 0.1))

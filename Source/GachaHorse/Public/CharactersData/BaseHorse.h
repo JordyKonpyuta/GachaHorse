@@ -102,6 +102,8 @@ protected:
 	// TARGETS
 	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Speed Targets")
 	float TargetSpeed = 0.0f;
+	UPROPERTY()
+	float MaxAvailableSpeed = 0.0f;
 	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Speed Targets")
 	int CurrentSpeedIndex = 1;
 	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Speed Targets")
@@ -115,6 +117,11 @@ protected:
 	float SideSpeed = 0.0f;
 
 	// SLOPE
+	/**
+	 * - 1 = Going Down (because it's positive)
+	 * - 0 = flat
+	 * - -1 = Going Up (because it's negative) 
+	 */
 	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Slope")
 	int SlopeType;
 
