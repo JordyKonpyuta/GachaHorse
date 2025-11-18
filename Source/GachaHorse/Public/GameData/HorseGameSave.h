@@ -6,6 +6,7 @@
 #include "GameFramework/SaveGame.h"
 #include "HorseGameSave.generated.h"
 
+struct FWorldMapDataStruct;
 struct FEquipDataStruct;
 struct FHorseDataStruct;
 /**
@@ -21,6 +22,8 @@ public:
 	TArray<FHorseDataStruct> HorseData;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FEquipDataStruct> EquipData;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FWorldMapDataStruct> LevelData;
 
 	// MONEYS
 	UPROPERTY()

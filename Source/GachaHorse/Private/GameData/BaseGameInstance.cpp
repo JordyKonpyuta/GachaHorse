@@ -16,18 +16,35 @@ UBaseGameInstance::UBaseGameInstance()
 	
 }
 
-void UBaseGameInstance::CheckSaves()
+void UBaseGameInstance::Init()
 {
-	if (UGameplayStatics::DoesSaveGameExist(SaveName, 0))
-	{
-		SaveGameRef = Cast<UHorseGameSave>(UGameplayStatics::LoadGameFromSlot(SaveName, 0));
-	}
-	else
-	{
-		SaveGameRef = Cast<UHorseGameSave>(UGameplayStatics::CreateSaveGameObject(UHorseGameSave::StaticClass()));
-		UGameplayStatics::SaveGameToSlot(SaveGameRef, SaveName, 0);
-		InitializeFirstSave();
-	}
+	Super::Init();
+
+	CheckSaves();
+}
+	
+	// =========================
+	// ==     Money Gains     ==
+	// =========================
+
+void UBaseGameInstance::AddMoney(int MoneyAdded)
+{
+	SummonMoney += MoneyAdded;
+}
+
+void UBaseGameInstance::SetMoney(int NewMoney)
+{
+	SummonMoney = NewMoney;
+}
+
+void UBaseGameInstance::AddScrap(int MoneyAdded)
+{
+	ScrapMoney += MoneyAdded;
+}
+
+void UBaseGameInstance::SetScrap(int NewMoney)
+{
+	ScrapMoney = NewMoney;
 }
 
 	// =========================
@@ -53,7 +70,15 @@ void UBaseGameInstance::StartGame(TSoftObjectPtr<UWorld> WorldToLoad, int HorseI
 		}
 	}
 
-	UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(),WorldToLoad);
+	for (int i = 0; i < LevelData.Num(); i++)
+	{
+		if (LevelData[i].WorldToLoad == WorldToLoad)
+		{
+			LevelSelected = i;
+			UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(),WorldToLoad);
+			break;
+		}
+	}
 }
 
 	// =========================
@@ -62,18 +87,28 @@ void UBaseGameInstance::StartGame(TSoftObjectPtr<UWorld> WorldToLoad, int HorseI
 
 void UBaseGameInstance::ObtainedHorse(int HorseID)
 {
+	GEngine->AddOnScreenDebugMessage(-1,50.f, FColor::Red, "A");
 	for (int i = 0; i < HorseData.Num(); i++)
 	{
+		GEngine->AddOnScreenDebugMessage(-1,50.f, FColor::Red, "B");
+		
 		if (HorseData[i].HorseID == HorseID)
 		{
+			GEngine->AddOnScreenDebugMessage(-1,50.f, FColor::Red, "C");
+			
 			if (!HorseData[i].bHorsePossessed)
 				HorseData[i].bHorsePossessed = true;
 			else
 				HorseData[i].ShardNumber += 1;
-			SaveGameRef->HorseData[i] = HorseData[i];
+			
+			if (SaveGameRef->IsValidLowLevelFast())
+				SaveGameRef->HorseData[i] = HorseData[i];
+				
 			break;
 		}
+		
 	}
+	GEngine->AddOnScreenDebugMessage(-1,50.f, FColor::Red, "D");
 }
 
 void UBaseGameInstance::ObtainedEquip(int EquipID)
@@ -103,16 +138,45 @@ void UBaseGameInstance::ObtainedEquip(int EquipID)
 	// ==   Saves Functions   ==
 	// =========================
 
+void UBaseGameInstance::CheckSaves()
+{
+	if (UGameplayStatics::DoesSaveGameExist(SaveName, 0))
+	{
+		SaveGameRef = Cast<UHorseGameSave>(UGameplayStatics::LoadGameFromSlot(SaveName, 0));
+	}
+	else
+	{
+		SaveGameRef = Cast<UHorseGameSave>(UGameplayStatics::CreateSaveGameObject(UHorseGameSave::StaticClass()));
+		UGameplayStatics::SaveGameToSlot(SaveGameRef, SaveName, 0);
+		InitializeFirstSave();
+	}
+}
+
 void UBaseGameInstance::InitializeFirstSave()
 {
 	for (FName CurrentRowName : InitialHorseData->GetRowNames())
 	{
 		HorseData.Add(*InitialHorseData->FindRow<FHorseDataStruct>(CurrentRowName, "Horse Data Creation...", true));
 	}
+	
+	for (FName CurrentRowName : InitialEquipmentData->GetRowNames())
+	{
+		EquipData.Add(*InitialEquipmentData->FindRow<FEquipDataStruct>(CurrentRowName, "Horse Data Creation...", true));
+	}
+	
+	for (FName CurrentRowName : InitialLevelData->GetRowNames())
+	{
+		LevelData.Add(*InitialLevelData->FindRow<FWorldMapDataStruct>(CurrentRowName, "Horse Data Creation...", true));
+	}
+
+	SaveGame();
 }
 
 void UBaseGameInstance::SaveGame()
 {
+	SaveHorseData();
+	SaveEquipData();
+	SaveWorldData();
 }
 
 void UBaseGameInstance::SaveHorseData()
@@ -125,4 +189,21 @@ void UBaseGameInstance::SaveEquipData()
 {
 	SaveGameRef->EquipData = EquipData;
 	SaveGameRef->ScrapMoney = ScrapMoney;
+}
+
+void UBaseGameInstance::SaveWorldData()
+{
+	SaveGameRef->LevelData = LevelData;
+}
+
+void UBaseGameInstance::LoadData()
+{
+	if (!SaveGameRef->IsValidLowLevelFast())
+		return;
+	
+	HorseData = SaveGameRef->HorseData;
+	EquipData = SaveGameRef->EquipData;
+	LevelData = SaveGameRef->LevelData;
+	SummonMoney = SaveGameRef->SummonMoney;
+	ScrapMoney = SaveGameRef->ScrapMoney;
 }

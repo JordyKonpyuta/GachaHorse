@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "BaseGamemode.generated.h"
 
+class UBaseGameInstance;
 class ABaseHorse;
 class ACheckpoints;
 /**
@@ -23,6 +24,9 @@ public:
 	// ==========================
 	
 	UPROPERTY()
+	TObjectPtr<UBaseGameInstance> BaseGameInstanceRef;
+	
+	UPROPERTY()
 	TObjectPtr<ACheckpoints> StartCheckpointRef;
 
 	UPROPERTY()
@@ -33,13 +37,14 @@ public:
 	// ===========================
 
 	UPROPERTY()
-	float Timer = -5.0f;
+	float Timer = -7.0f;
 
 	UPROPERTY()
 	bool bThreeBeforeGo = false;
 	bool bTwoBeforeGo = false;
 	bool bOneBeforeGo = false;
 	bool bHasStartedRun = false;
+	bool bHasEndedRun = false;
 
 protected:
 
@@ -52,6 +57,20 @@ public:
 	ABaseGamemode();
 	
 	virtual void Tick(float DeltaTime) override;
+	
+	// =========================
+	// ==       Widgets       ==
+	// =========================
+
+	UFUNCTION(BlueprintCallable, Blueprintable, BlueprintNativeEvent)
+	void HideAwayTimer();
+	
+	// =========================
+	// ==       EndGame       ==
+	// =========================
+
+	UFUNCTION()
+	void Victory();
 
 protected:
 	// ==========================
@@ -72,7 +91,7 @@ protected:
 	// =========================
 
 	UFUNCTION()
-	void Victory();
+	int CalculateRank(float TimeOfRank) const;
 	
 	// =========================
 	// ==       Widgets       ==
@@ -92,5 +111,5 @@ protected:
 	void WidgetTimerUpdate(float CurrentTimer);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void WidgetVictory(float CurrentTimer);
+	void WidgetVictory(float CurrentTimer, int OldRank, int NewRank, int RewardAmount);
 };

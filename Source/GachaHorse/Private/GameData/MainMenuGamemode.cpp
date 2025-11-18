@@ -2,7 +2,6 @@
 
 
 #include "GameData/MainMenuGamemode.h"
-
 #include "GameData/AllStructs.h"
 #include "GameData/BaseGameInstance.h"
 
@@ -15,7 +14,6 @@ void AMainMenuGamemode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
-
 void AMainMenuGamemode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -214,6 +212,40 @@ void AMainMenuGamemode::DisplaySummonResults_Implementation(bool bIsHorses, int 
 {
 	
 }
+	
+	// ==========================
+	// ==   Rankings Results   ==
+	// ==========================
+
+void AMainMenuGamemode::PrepareRankingResults(int CurrentWorldSelected)
+{
+	bool bPlayerAppeared = false;
+	for (TPair<FName, float>& CurrentRanking : InstanceRef->LevelData[CurrentWorldSelected].Rankings)
+	{
+		if (!bPlayerAppeared)
+		{
+			if (InstanceRef->LevelData[CurrentWorldSelected].BestPersonalTime < CurrentRanking.Value)
+			{
+				DisplayRankingsResults(true, FName(*InstanceRef->PlayerName), InstanceRef->LevelData[CurrentWorldSelected].BestPersonalTime);
+				bPlayerAppeared = true;
+				DisplayRankingsResults(false, CurrentRanking.Key, CurrentRanking.Value);
+			}
+			else
+			{
+				DisplayRankingsResults(false, CurrentRanking.Key, CurrentRanking.Value);
+			}
+		}
+		else
+		{
+			DisplayRankingsResults(false, CurrentRanking.Key, CurrentRanking.Value);
+		}
+	}
+}
+
+void AMainMenuGamemode::DisplayRankingsResults_Implementation(bool bIsPlayer, FName CurRankName, float CurRankTime)
+{
+}
+
 
 	// ==========================
 	// ==        DEBOOG        ==

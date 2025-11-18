@@ -66,6 +66,13 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, Blueprintable, BlueprintCallable)
 	void DisplaySummonResults(bool bIsHorses, int ThingID);
+	
+	// ==========================
+	// ==   Rankings Results   ==
+	// ==========================
+
+	UFUNCTION(Blueprintable, BlueprintCallable)
+	void PrepareRankingResults(int CurrentWorldSelected);
 
 protected:
 	// ==========================
@@ -92,6 +99,13 @@ protected:
 
 	UFUNCTION()
 	void PrepareSummonResults(bool bIsHorses, int ThingID, float Delay);
+	
+	// ==========================
+	// ==   Rankings Results   ==
+	// ==========================
+
+	UFUNCTION(BlueprintNativeEvent, Blueprintable, BlueprintCallable)
+	void DisplayRankingsResults(bool bIsPlayer, FName CurRankName, float CurRankTime);
 
 	// ==========================
 	// ==        DEBOOG        ==

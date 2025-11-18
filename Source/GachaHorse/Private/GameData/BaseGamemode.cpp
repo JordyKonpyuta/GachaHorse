@@ -4,7 +4,12 @@
 #include "GameData/BaseGamemode.h"
 
 #include "CharactersData/BaseHorse.h"
+#include "GameData/BaseGameInstance.h"
 #include "GameObjects/Checkpoints.h"
+
+	// ==========================
+	// ==    Base Functions    ==
+	// ==========================
 
 ABaseGamemode::ABaseGamemode()
 {
@@ -15,24 +20,24 @@ void ABaseGamemode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	Timer += DeltaTime;
-	GEngine->AddOnScreenDebugMessage(-1,0.f,FColor::Red, FString::SanitizeFloat(Timer));
+	if (!bHasEndedRun)
+		Timer += DeltaTime;
 
 	if (!bHasStartedRun)
 	{
-		if (Timer >= -4.5f && !bThreeBeforeGo)
+		if (Timer >= -6.0f && !bThreeBeforeGo)
 		{
 			bThreeBeforeGo = true;
 			Widget_ReadyToGo(3);
 			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "3");
 		}
-		if (Timer >= -3.0f && !bTwoBeforeGo)
+		if (Timer >= -4.0f && !bTwoBeforeGo)
 		{
 			bTwoBeforeGo = true;
 			Widget_ReadyToGo(2);
 			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "2");
 		}
-		if (Timer >= -1.5f && !bOneBeforeGo)
+		if (Timer >= -2.0f && !bOneBeforeGo)
 		{
 			bOneBeforeGo = true;
 			Widget_ReadyToGo(1);
@@ -52,8 +57,14 @@ void ABaseGamemode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	BaseGameInstanceRef = Cast<UBaseGameInstance>(GetGameInstance());
+
 	SetupWidgets();
 }
+	
+	// ==========================
+	// ==      Beginnings      ==
+	// ==========================
 
 void ABaseGamemode::StartGame()
 {
@@ -70,14 +81,16 @@ void ABaseGamemode::StartGame()
 
 	StartCheckpointRef->UnblockStart();
 }
-
-void ABaseGamemode::Victory()
-{
-	WidgetVictory(Timer);
-	HorseRef->SetTargetSpeed(1);
-}
+	
+	// =========================
+	// ==       Widgets       ==
+	// =========================
 
 void ABaseGamemode::SetupWidgets_Implementation()
+{
+}
+
+void ABaseGamemode::HideAwayTimer_Implementation()
 {
 }
 
@@ -90,6 +103,45 @@ void ABaseGamemode::WidgetTimerUpdate_Implementation(float CurrentTimer)
 {
 }
 
-void ABaseGamemode::WidgetVictory_Implementation(float CurrentTimer)
+void ABaseGamemode::WidgetVictory_Implementation(float CurrentTimer, int OldRank, int NewRank, int RewardAmount)
 {
+}
+	
+	// =========================
+	// ==       EndGame       ==
+	// =========================
+
+int ABaseGamemode::CalculateRank(float TimeOfRank) const
+{
+	int NewRank = 1;
+
+	int CurrentWorld = BaseGameInstanceRef->LevelSelected;
+	
+	for (TPair<FName, float>& CurrentRanking : BaseGameInstanceRef->LevelData[CurrentWorld].Rankings)
+	{
+		if (TimeOfRank < CurrentRanking.Value)
+			break;
+		NewRank +=1;
+	}
+
+	return NewRank;
+}
+
+void ABaseGamemode::Victory()
+{
+	bHasEndedRun = true;
+
+	int OldRank = CalculateRank(BaseGameInstanceRef->LevelData[BaseGameInstanceRef->LevelSelected].BestPersonalTime);
+	int NewRank = CalculateRank(Timer);
+
+	int MoneyAdded = 10;
+
+	if (NewRank >= OldRank)
+	{
+		MoneyAdded = 10 + (OldRank - NewRank) * 10;
+		BaseGameInstanceRef->AddMoney(MoneyAdded);
+	}
+	
+	WidgetVictory(Timer, OldRank, NewRank, MoneyAdded);
+	HorseRef->SetTargetSpeed(1);
 }

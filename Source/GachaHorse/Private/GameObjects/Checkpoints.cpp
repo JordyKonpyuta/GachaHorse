@@ -39,6 +39,8 @@ void ACheckpoints::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GamemodeRef = Cast<ABaseGamemode>(GetWorld()->GetAuthGameMode());
+
 	TArray<AActor*> AllCheckpointsFound;
 
 	switch (CurrentCheckpointType)
@@ -69,7 +71,6 @@ void ACheckpoints::BeginPlay()
 }
 
 
-
 // Called every frame
 void ACheckpoints::Tick(float DeltaTime)
 {
@@ -92,6 +93,7 @@ void ACheckpoints::OnComponentBeginOverlap(class UPrimitiveComponent* Overlapped
 		break;
 	case ECheckpointType::LastGen :
 		RegularCheckpointCrossed(OurHorse);
+		GamemodeRef->HideAwayTimer();
 		break;
 	case ECheckpointType::Start :
 		StartCheckPointCrossed(OurHorse);
@@ -106,9 +108,12 @@ void ACheckpoints::UnblockStart()
 	CheckpointArea->SetCollisionResponseToAllChannels(ECR_Overlap);
 }
 
+void ACheckpoints::HideAwayTimer_Implementation()
+{
+}
+
 void ACheckpoints::RegularCheckpointCrossed(ABaseHorse* HorseActor)
 {
-	GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, FString::FromInt(CurrentIndex));
 	if (HorseActor->CurrentCheckpointIndex != CurrentIndex - 1)
 		return;
 
@@ -120,10 +125,10 @@ void ACheckpoints::RegularCheckpointCrossed(ABaseHorse* HorseActor)
 
 void ACheckpoints::StartCheckPointCrossed(ABaseHorse* HorseActor)
 {
-	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, FString::FromInt(HorseActor->CurrentCheckpointIndex ));
-	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, FString::FromInt(CurrentIndex));
 	if (HorseActor->CurrentCheckpointIndex != CurrentIndex)
 		return;
 
+	Cast<ABaseGamemode>(GetWorld()->GetAuthGameMode())->Victory();
+	
 	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "WIN");
 }

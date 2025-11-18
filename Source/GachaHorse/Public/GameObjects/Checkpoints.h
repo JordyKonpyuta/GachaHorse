@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Checkpoints.generated.h"
 
+class ABaseGamemode;
 class ABaseHorse;
 class UArrowComponent;
 class UBoxComponent;
@@ -26,6 +27,13 @@ class GACHAHORSE_API ACheckpoints : public AActor
 
 	// UPROPERTIES
 public:	
+	// ==========================
+	// ==      References      ==
+	// ==========================
+
+	UPROPERTY()
+	TObjectPtr<ABaseGamemode> GamemodeRef;
+	
 	// ==========================
 	// ==      Components      ==
 	// ==========================
@@ -70,6 +78,13 @@ public:
 
 	UFUNCTION()
 	void UnblockStart();
+	
+	// ===========================
+	// ==        Widgets        ==
+	// ===========================
+
+	UFUNCTION(BlueprintCallable, Blueprintable, BlueprintNativeEvent)
+	void HideAwayTimer();
 
 protected:
 	// ==========================
@@ -77,10 +92,6 @@ protected:
 	// ==========================
 	
 	virtual void BeginPlay() override;
-	
-	// ==========================
-	// ==    Race Functions    ==
-	// ==========================
 	
 	// ===========================
 	// ==   Overlap Functions   ==

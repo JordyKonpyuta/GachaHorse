@@ -125,36 +125,19 @@ void ABaseHorse::Tick(float DeltaTime)
 	}
 
 	if (SlopeType == 0)
-	{
 		MaxAvailableSpeed = TargetSpeed * (1 + HazardModifier);
-	}
 	else if (SlopeType == 1)
-	{
 		MaxAvailableSpeed = TargetSpeed * (1 + HazardModifier) * 1.15;
-	}
 	else if (SlopeType == -1)
-	{
-		MaxAvailableSpeed = TargetSpeed * (1 + HazardModifier) * (1- FMath::Max(0, 0.15 + 0.005 * Stats[0]));
-	}
+		MaxAvailableSpeed = TargetSpeed * (1 + HazardModifier) * (1 - FMath::Max(0, 0.15 - 0.005 * Stats[0]));
 	else
-	{
 		MaxAvailableSpeed = TargetSpeed * (1 + HazardModifier);
-	}
-
-	/*
-	if (!(MaxAvailableSpeed - 1 < CurrentSpeed && CurrentSpeed < MaxAvailableSpeed + 1))
-		if (!bIsRagdoll && GetCharacterMovement()->IsMovingOnGround())
-			AddMovementInput(GetActorForwardVector(),
-				SlopeType * 0.5 + (CurrentSpeed <= MaxAvailableSpeed ? 1 : -1), false);
-	*/
-	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Blue, FString::FromInt(SlopeType));
+	
 	
 	if (CurrentSpeed > MaxAvailableSpeed + 1)
 	{
 		if (!bIsRagdoll && GetCharacterMovement()->IsMovingOnGround())
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, FString::SanitizeFloat(-(1 - SlopeType * 0.5)));
-			GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, "A");
 			AddMovementInput(GetActorForwardVector(),
 				-(1 - SlopeType * 0.5), false);
 		}
@@ -163,7 +146,6 @@ void ABaseHorse::Tick(float DeltaTime)
 	{
 		if (!bIsRagdoll && GetCharacterMovement()->IsMovingOnGround())
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, FString::SanitizeFloat(1 + SlopeType * 0.5));
 			AddMovementInput(GetActorForwardVector(),
 				1 + SlopeType * 0.5, false);
 		}

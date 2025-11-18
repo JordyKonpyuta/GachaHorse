@@ -20,6 +20,10 @@ class GACHAHORSE_API UBaseGameInstance : public UGameInstance
 
 	// UPROPERTIES
 public:
+	// =========================
+	// ==   All Data Values   ==
+	// =========================
+	
 	UPROPERTY(BlueprintReadWrite)
 	FString PlayerName = "You";
 
@@ -31,7 +35,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	FHorseDataStruct ChosenHorseData = {
-		true, 25, 6, 1, 2, "TestWhorse",
+		true, 25, 1, 1, 2, "TestWhorse",
 		nullptr, {5,7,8,10,11,25},
 		{6,6,7,7,8,25}, {2,4,7,12,12,25},
 		nullptr, nullptr};
@@ -44,10 +48,18 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	FEquipDataStruct ChosenEquipData = {
-		true, 6, 2, 0, "TestSaddle",
+		true, 1, 2, 0, "TestSaddle",
 		nullptr, {2,3,5,7,8,0},
 		{3,4,5,6,9,0}, {5,5,6,6,7,0},
 		nullptr};
+
+	// Levels
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UDataTable> InitialLevelData;
+	UPROPERTY(BlueprintReadWrite)
+	TArray<FWorldMapDataStruct> LevelData;
+	UPROPERTY(BlueprintReadWrite)
+	int LevelSelected = 0;
 
 private:
 	UPROPERTY()
@@ -75,6 +87,20 @@ public:
 	UBaseGameInstance();
 	
 	// =========================
+	// ==     Money Gains     ==
+	// =========================
+
+	UFUNCTION()
+	void AddMoney(int MoneyAdded);
+	UFUNCTION()
+	void SetMoney(int NewMoney);
+	
+	UFUNCTION()
+	void AddScrap(int MoneyAdded);
+	UFUNCTION()
+	void SetScrap(int NewMoney);
+	
+	// =========================
 	// == Horses & Equip Data ==
 	// =========================
 
@@ -87,6 +113,8 @@ private:
 	// ==========================
 	// ==    Base Functions    ==
 	// ==========================
+
+	virtual void Init() override;
 
 	UFUNCTION()
 	void CheckSaves();
@@ -113,4 +141,10 @@ private:
 
 	UFUNCTION()
 	void SaveEquipData();
+
+	UFUNCTION()
+	void SaveWorldData();
+
+	UFUNCTION()
+	void LoadData();
 };
