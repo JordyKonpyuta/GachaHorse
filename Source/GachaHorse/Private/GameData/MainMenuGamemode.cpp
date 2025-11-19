@@ -250,7 +250,7 @@ void AMainMenuGamemode::GachaPullHorses(bool bTenSummons)
 {
 	// MAKE SURE WE HAVE ENOUGH MONEY (baka :>)
 	int Price = bTenSummons ? 1000 : 100;
-	if (SummonMoney < Price)
+	if (InstanceRef->GetMoney() < Price)
 		return;
 	
 	TArray<int> AllGains = CalculatePossibleHorseGains(bTenSummons);
@@ -269,7 +269,7 @@ void AMainMenuGamemode::GachaPullEquips(bool bTenSummons)
 {
 	// MAKE SURE WE HAVE ENOUGH MONEY (dummy :>)
 	int Price = bTenSummons ? 1000 : 100;
-	if (SummonMoney < Price)
+	if (InstanceRef->GetMoney() < Price)
 		return;
 	
 	TArray<int> AllGains = CalculatePossibleEquipGains(bTenSummons);

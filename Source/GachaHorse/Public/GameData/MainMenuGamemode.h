@@ -27,16 +27,6 @@ public:
 	TObjectPtr<UBaseGameInstance> InstanceRef;
 
 protected:
-	// =========================
-	// ==        Money        ==
-	// =========================
-
-	UPROPERTY()
-	int SummonMoney = 1000000;
-
-	UPROPERTY()
-	int ScrapMoney = 0;
-	
 	// ==========================
 	// ==       Missions       ==
 	// ==========================

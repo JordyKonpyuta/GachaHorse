@@ -22,13 +22,16 @@ void UBaseGameInstance::Init()
 	Super::Init();
 
 	CheckSaves();
-
-	//MissionDateRef = FDateTime::Now();
 }
 	
 	// =========================
 	// ==     Money Gains     ==
 	// =========================
+
+int UBaseGameInstance::GetMoney()
+{
+	return SummonMoney;
+}
 
 void UBaseGameInstance::AddMoney(int MoneyAdded)
 {
@@ -44,6 +47,11 @@ void UBaseGameInstance::SetMoney(int NewMoney)
 	
 	SaveGameRef->SummonMoney = SummonMoney;
 	SaveMoneyData();
+}
+
+int UBaseGameInstance::GetScrap()
+{
+	return ScrapMoney;
 }
 
 void UBaseGameInstance::AddScrap(int MoneyAdded)

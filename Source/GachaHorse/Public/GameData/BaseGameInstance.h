@@ -105,14 +105,18 @@ public:
 	UBaseGameInstance();
 	
 	// =========================
-	// ==     Money Gains     ==
+	// ==        Money        ==
 	// =========================
 
+	UFUNCTION(Blueprintable, BlueprintCallable)
+	int GetMoney();
 	UFUNCTION()
 	void AddMoney(int MoneyAdded);
 	UFUNCTION()
 	void SetMoney(int NewMoney);
 	
+	UFUNCTION(Blueprintable, BlueprintCallable)
+	int GetScrap();
 	UFUNCTION()
 	void AddScrap(int MoneyAdded);
 	UFUNCTION()
