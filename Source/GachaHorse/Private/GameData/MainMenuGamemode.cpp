@@ -220,6 +220,10 @@ void AMainMenuGamemode::DisplaySummonResults_Implementation(bool bIsHorses, int 
 void AMainMenuGamemode::PrepareRankingResults(int CurrentWorldSelected)
 {
 	bool bPlayerAppeared = false;
+
+	if (InstanceRef->LevelData.IsEmpty())
+		return;
+	
 	for (TPair<FName, float>& CurrentRanking : InstanceRef->LevelData[CurrentWorldSelected].Rankings)
 	{
 		if (!bPlayerAppeared)

@@ -30,21 +30,33 @@ void UBaseGameInstance::Init()
 void UBaseGameInstance::AddMoney(int MoneyAdded)
 {
 	SummonMoney += MoneyAdded;
+	
+	SaveGameRef->SummonMoney = SummonMoney;
+	SaveMoneyData();
 }
 
 void UBaseGameInstance::SetMoney(int NewMoney)
 {
 	SummonMoney = NewMoney;
+	
+	SaveGameRef->SummonMoney = SummonMoney;
+	SaveMoneyData();
 }
 
 void UBaseGameInstance::AddScrap(int MoneyAdded)
 {
 	ScrapMoney += MoneyAdded;
+	
+	SaveGameRef->ScrapMoney = ScrapMoney;
+	SaveMoneyData();
 }
 
 void UBaseGameInstance::SetScrap(int NewMoney)
 {
 	ScrapMoney = NewMoney;
+	
+	SaveGameRef->ScrapMoney = ScrapMoney;
+	SaveMoneyData();
 }
 
 	// =========================
@@ -87,15 +99,10 @@ void UBaseGameInstance::StartGame(TSoftObjectPtr<UWorld> WorldToLoad, int HorseI
 
 void UBaseGameInstance::ObtainedHorse(int HorseID)
 {
-	GEngine->AddOnScreenDebugMessage(-1,50.f, FColor::Red, "A");
 	for (int i = 0; i < HorseData.Num(); i++)
 	{
-		GEngine->AddOnScreenDebugMessage(-1,50.f, FColor::Red, "B");
-		
 		if (HorseData[i].HorseID == HorseID)
 		{
-			GEngine->AddOnScreenDebugMessage(-1,50.f, FColor::Red, "C");
-			
 			if (!HorseData[i].bHorsePossessed)
 				HorseData[i].bHorsePossessed = true;
 			else
@@ -106,9 +113,7 @@ void UBaseGameInstance::ObtainedHorse(int HorseID)
 				
 			break;
 		}
-		
 	}
-	GEngine->AddOnScreenDebugMessage(-1,50.f, FColor::Red, "D");
 }
 
 void UBaseGameInstance::ObtainedEquip(int EquipID)
@@ -128,7 +133,8 @@ void UBaseGameInstance::ObtainedEquip(int EquipID)
 				else
 					ScrapMoney += 10;
 			}
-			SaveGameRef->EquipData[i] = EquipData[i];
+			if (SaveGameRef->IsValidLowLevelFast())
+				SaveGameRef->EquipData[i] = EquipData[i];
 			break;
 		}
 	}
@@ -143,11 +149,11 @@ void UBaseGameInstance::CheckSaves()
 	if (UGameplayStatics::DoesSaveGameExist(SaveName, 0))
 	{
 		SaveGameRef = Cast<UHorseGameSave>(UGameplayStatics::LoadGameFromSlot(SaveName, 0));
+		LoadData();
 	}
 	else
 	{
 		SaveGameRef = Cast<UHorseGameSave>(UGameplayStatics::CreateSaveGameObject(UHorseGameSave::StaticClass()));
-		UGameplayStatics::SaveGameToSlot(SaveGameRef, SaveName, 0);
 		InitializeFirstSave();
 	}
 }
@@ -177,6 +183,8 @@ void UBaseGameInstance::SaveGame()
 	SaveHorseData();
 	SaveEquipData();
 	SaveWorldData();
+	SaveMoneyData();
+	UGameplayStatics::SaveGameToSlot(SaveGameRef, SaveName, 0);
 }
 
 void UBaseGameInstance::SaveHorseData()
@@ -194,6 +202,12 @@ void UBaseGameInstance::SaveEquipData()
 void UBaseGameInstance::SaveWorldData()
 {
 	SaveGameRef->LevelData = LevelData;
+}
+
+void UBaseGameInstance::SaveMoneyData()
+{
+	 SaveGameRef->SummonMoney = SummonMoney;
+	 SaveGameRef->ScrapMoney = ScrapMoney;
 }
 
 void UBaseGameInstance::LoadData()

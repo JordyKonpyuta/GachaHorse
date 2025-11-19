@@ -146,5 +146,8 @@ private:
 	void SaveWorldData();
 
 	UFUNCTION()
+	void SaveMoneyData();
+
+	UFUNCTION()
 	void LoadData();
 };
