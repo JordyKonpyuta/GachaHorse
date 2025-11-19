@@ -66,6 +66,7 @@ public:
 	// =========================
 
 	FDateTime MissionNextResetRef;
+	bool MissionUnavailable = false;
 
 	// TRACK MISSION
 	UPROPERTY(Blueprintable, BlueprintReadOnly)

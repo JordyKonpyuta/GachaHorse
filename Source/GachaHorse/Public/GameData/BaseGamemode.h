@@ -47,6 +47,12 @@ public:
 	bool bHasEndedRun = false;
 
 protected:
+	// =========================
+	// ==       EndGame       ==
+	// =========================
+
+	UPROPERTY()
+	int RankAchieved = 101;
 
 	// UFUNCTIONS
 public:
@@ -71,6 +77,9 @@ public:
 
 	UFUNCTION()
 	void Victory();
+
+	UFUNCTION()
+	void CheckMissions();
 
 protected:
 	// ==========================
@@ -112,4 +121,22 @@ protected:
 	// =========================
 
 	UFUNCTION()
-	int CalculateRank(float TimeOfRank) const;};
+	int CalculateRank(float TimeOfRank) const;
+
+	UFUNCTION()
+	void CheckFirstMission();
+	UFUNCTION()
+	void CheckSecondMission();
+	UFUNCTION()
+	void CheckThirdMission();
+
+	UFUNCTION(BlueprintNativeEvent, Blueprintable)
+	void FirstMissionWidget(int Prize);
+	UFUNCTION(BlueprintNativeEvent, Blueprintable)
+	void SecondMissionWidget(int Prize);
+	UFUNCTION(BlueprintNativeEvent, Blueprintable)
+	void ThirdMissionWidget(int Prize);
+	UFUNCTION(BlueprintNativeEvent, Blueprintable)
+	void MissionsCanceled();
+	
+};

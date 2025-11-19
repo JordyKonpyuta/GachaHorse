@@ -132,16 +132,98 @@ void ABaseGamemode::Victory()
 	bHasEndedRun = true;
 
 	int OldRank = CalculateRank(BaseGameInstanceRef->LevelData[BaseGameInstanceRef->LevelSelected].BestPersonalTime);
-	int NewRank = CalculateRank(Timer);
+	RankAchieved = CalculateRank(Timer);
 
 	int MoneyAdded = 10;
 
-	if (NewRank >= OldRank)
+	if (RankAchieved >= OldRank)
 	{
-		MoneyAdded = 10 + (OldRank - NewRank) * 10;
+		MoneyAdded = 10 + (OldRank - RankAchieved) * 10;
 		BaseGameInstanceRef->AddMoney(MoneyAdded);
 	}
 	
-	WidgetVictory(Timer, OldRank, NewRank, MoneyAdded);
+	WidgetVictory(Timer, OldRank, RankAchieved, MoneyAdded);
 	HorseRef->SetTargetSpeed(1);
+	CheckMissions();
+}
+
+void ABaseGamemode::CheckMissions()
+{
+	if (BaseGameInstanceRef->MissionUnavailable)
+	{
+		MissionsCanceled();
+		return;
+	}
+	FTimerHandle MissionHandle;
+	
+	// FIRST : THE COURSE YOU RAN THROUGH
+	GetWorldTimerManager().SetTimer(
+		MissionHandle,
+		this,
+		&ABaseGamemode::CheckFirstMission,
+		0.25f,
+		false);
+	
+	// SECOND : RANK MISSION TARGET
+	GetWorldTimerManager().SetTimer(
+		MissionHandle,
+		this,
+		&ABaseGamemode::CheckSecondMission,
+		0.50f,
+		false);
+	
+	// THIRD : evil and intimidating horse
+	GetWorldTimerManager().SetTimer(
+		MissionHandle,
+		this,
+		&ABaseGamemode::CheckThirdMission,
+		0.75f,
+		false);
+}
+
+void ABaseGamemode::CheckFirstMission()
+{
+	if (GetWorld() == BaseGameInstanceRef->TrackMissionTarget)
+	{
+		BaseGameInstanceRef->AddMoney(100);
+
+		FirstMissionWidget(100);
+	}
+}
+
+void ABaseGamemode::CheckSecondMission()
+{
+	if (BaseGameInstanceRef->RankMissionTarget <= RankAchieved)
+	{
+		int Reward = 101 - RankAchieved * 3;
+		BaseGameInstanceRef->AddMoney(Reward);
+
+		SecondMissionWidget(Reward);
+	}
+}
+
+void ABaseGamemode::CheckThirdMission()
+{
+	if (BaseGameInstanceRef->HorseIDMissionTarget == BaseGameInstanceRef->ChosenHorseData.HorseID)
+	{
+		BaseGameInstanceRef->AddMoney(100);
+
+		ThirdMissionWidget(100);
+	}
+}
+
+void ABaseGamemode::FirstMissionWidget_Implementation(int Prize)
+{
+}
+
+void ABaseGamemode::SecondMissionWidget_Implementation(int Prize)
+{
+}
+
+void ABaseGamemode::ThirdMissionWidget_Implementation(int Prize)
+{
+}
+
+void ABaseGamemode::MissionsCanceled_Implementation()
+{
 }
