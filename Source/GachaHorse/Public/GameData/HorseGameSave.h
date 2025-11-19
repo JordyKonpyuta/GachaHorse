@@ -30,4 +30,15 @@ public:
 	int SummonMoney = 0;
 	UPROPERTY()
 	int ScrapMoney = 0;
+
+	// MISSIONS
+	UPROPERTY()
+	FDateTime MissionNextResetRef;
+	UPROPERTY(Blueprintable, BlueprintReadOnly)
+	TSoftObjectPtr<UWorld> TrackMissionTarget;
+	UPROPERTY(Blueprintable, BlueprintReadOnly)
+	int RankMissionTarget;
+	UPROPERTY(Blueprintable, BlueprintReadOnly)
+	int HorseIDMissionTarget;
+	
 };

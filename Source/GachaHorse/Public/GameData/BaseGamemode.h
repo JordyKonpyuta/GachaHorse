@@ -87,13 +87,6 @@ protected:
 	void StartGame();
 	
 	// =========================
-	// ==       EndGame       ==
-	// =========================
-
-	UFUNCTION()
-	int CalculateRank(float TimeOfRank) const;
-	
-	// =========================
 	// ==       Widgets       ==
 	// =========================
 
@@ -112,4 +105,11 @@ protected:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void WidgetVictory(float CurrentTimer, int OldRank, int NewRank, int RewardAmount);
-};
+
+	
+	// =========================
+	// ==       EndGame       ==
+	// =========================
+
+	UFUNCTION()
+	int CalculateRank(float TimeOfRank) const;};

@@ -37,6 +37,12 @@ protected:
 	UPROPERTY()
 	int ScrapMoney = 0;
 	
+	// ==========================
+	// ==       Missions       ==
+	// ==========================
+
+	FTimerHandle MissionTimerHandle;
+	
 	// =========================
 	// ==      Summoning      ==
 	// =========================
@@ -68,6 +74,13 @@ public:
 	void DisplaySummonResults(bool bIsHorses, int ThingID);
 	
 	// ==========================
+	// ==    Fission Mailed    ==
+	// ==========================
+
+	UFUNCTION(BlueprintNativeEvent, Blueprintable)
+	void DisplayMissionsWidget(FString& TrackMissionName, int RankMissionNumber, FString& HorseMissionName);
+	
+	// ==========================
 	// ==   Rankings Results   ==
 	// ==========================
 
@@ -80,6 +93,22 @@ protected:
 	// ==========================
 	
 	virtual void BeginPlay() override;
+	
+	// ==========================
+	// ==       Missions       ==
+	// ==========================
+
+	UFUNCTION()
+	void DoWeNeedToRefreshNow();
+
+	UFUNCTION()
+	void RefreshMissions();
+
+	UFUNCTION()
+	float CalculateTimeBeforeNextRefresh(FDateTime NextMissionTime);
+
+	UFUNCTION()
+	void PrepareDisplayMissions();
 	
 	// ==========================
 	// ==   GACHA! GAMBLING!   ==

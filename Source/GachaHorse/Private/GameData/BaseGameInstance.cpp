@@ -5,6 +5,7 @@
 
 #include "GameData/AllStructs.h"
 #include "GameData/HorseGameSave.h"
+#include "GameData/MainMenuGamemode.h"
 #include "Kismet/GameplayStatics.h"
 
 	// ==========================
@@ -21,6 +22,8 @@ void UBaseGameInstance::Init()
 	Super::Init();
 
 	CheckSaves();
+
+	//MissionDateRef = FDateTime::Now();
 }
 	
 	// =========================
@@ -57,6 +60,41 @@ void UBaseGameInstance::SetScrap(int NewMoney)
 	
 	SaveGameRef->ScrapMoney = ScrapMoney;
 	SaveMoneyData();
+}
+	
+	// ==========================
+	// ==   Prepare Missions   ==
+	// ==========================
+
+void UBaseGameInstance::PrepareMissions()
+{
+	// MISSION : LEVEL
+	int LevelTarget = FMath::RandRange(0, LevelData.Num() - 1);
+	TrackMissionTarget = LevelData[LevelTarget].WorldToLoad;
+
+	// MISSION : RANK
+	int TargetDifficulty = FMath::RandRange(0, 10);
+	
+	if (TargetDifficulty == 0)
+		RankMissionTarget = FMath::RandRange(1, 5);
+	else if (TargetDifficulty == 1)
+		RankMissionTarget = FMath::RandRange(6, 15);
+	else if (TargetDifficulty == 2 || TargetDifficulty == 3)
+		RankMissionTarget = FMath::RandRange(16, 30);
+	else if (4 <= TargetDifficulty && TargetDifficulty <= 6)
+		RankMissionTarget = FMath::RandRange(31, 70);
+	else if (TargetDifficulty == 7 || TargetDifficulty == 8)
+		RankMissionTarget = FMath::RandRange(71, 85);
+	else if (TargetDifficulty == 9)
+		RankMissionTarget = FMath::RandRange(86, 95);
+	else
+		RankMissionTarget = FMath::RandRange(96, 101);
+
+	// MISSION : HORSE
+	HorseIDMissionTarget = FMath::RandRange(0, HorseData.Num() - 1);
+	
+
+	Cast<AMainMenuGamemode>(GetWorld()->GetAuthGameMode())->DisplayMissionsWidget(LevelData[LevelSelected].LevelName, RankMissionTarget, HorseData[HorseIDMissionTarget].HorseName);
 }
 
 	// =========================
@@ -184,6 +222,7 @@ void UBaseGameInstance::SaveGame()
 	SaveEquipData();
 	SaveWorldData();
 	SaveMoneyData();
+	SaveMissionData();
 	UGameplayStatics::SaveGameToSlot(SaveGameRef, SaveName, 0);
 }
 
@@ -210,6 +249,14 @@ void UBaseGameInstance::SaveMoneyData()
 	 SaveGameRef->ScrapMoney = ScrapMoney;
 }
 
+void UBaseGameInstance::SaveMissionData()
+{
+	 SaveGameRef->MissionNextResetRef = MissionNextResetRef;
+	 SaveGameRef->TrackMissionTarget = TrackMissionTarget;
+	 SaveGameRef->RankMissionTarget = RankMissionTarget;
+	 SaveGameRef->HorseIDMissionTarget = HorseIDMissionTarget;
+}
+
 void UBaseGameInstance::LoadData()
 {
 	if (!SaveGameRef->IsValidLowLevelFast())
@@ -220,4 +267,138 @@ void UBaseGameInstance::LoadData()
 	LevelData = SaveGameRef->LevelData;
 	SummonMoney = SaveGameRef->SummonMoney;
 	ScrapMoney = SaveGameRef->ScrapMoney;
+	MissionNextResetRef = SaveGameRef->MissionNextResetRef;
+	TrackMissionTarget = SaveGameRef->TrackMissionTarget;
+	RankMissionTarget = SaveGameRef->RankMissionTarget;
+	HorseIDMissionTarget = SaveGameRef->HorseIDMissionTarget;
+
+	CheckFileIntegrity();
+}
+	
+// =========================
+// ==   Saves Integrity   ==
+// =========================
+
+void UBaseGameInstance::CheckFileIntegrity()
+{
+	if (!SaveGameRef->IsValidLowLevelFast())
+		return;
+
+	CheckHorseIntegrity();
+	CheckEquipIntegrity();
+	CheckWorldIntegrity();
+	CheckMoneyIntegrity();
+	CheckMissionIntegrity();
+}
+
+void UBaseGameInstance::CheckHorseIntegrity()
+{
+	if (SaveGameRef->HorseData.Num() == InitialHorseData->GetRowNames().Num())
+		return;
+
+	TArray<FHorseDataStruct> TempHorseData;
+	bool bCheckIfExists = false;
+	
+	for (FName CurrentRowName : InitialHorseData->GetRowNames())
+	{
+		bCheckIfExists = false;
+		FString CurHorseName = *InitialHorseData->FindRow<FHorseDataStruct>(CurrentRowName, "Horse Data Analysis...", true)->HorseName;
+		for (FHorseDataStruct CurDataAnalyzed : SaveGameRef->HorseData)
+		{
+			if (CurHorseName == CurDataAnalyzed.HorseName)
+			{
+				TempHorseData.Add(CurDataAnalyzed);
+				bCheckIfExists = true;
+				break;
+			}
+		}
+		if (!bCheckIfExists)
+		{
+			TempHorseData.Add(*InitialHorseData->FindRow<FHorseDataStruct>(CurrentRowName, "Horse Data Missing! Creation...", true));
+		}
+	}
+
+	HorseData = TempHorseData;
+	SaveHorseData();
+}
+
+void UBaseGameInstance::CheckEquipIntegrity()
+{
+	if (SaveGameRef->EquipData.Num() == InitialEquipmentData->GetRowNames().Num())
+		return;
+
+	TArray<FEquipDataStruct> TempEquipData;
+	bool bCheckIfExists = false;
+	
+	for (FName CurrentRowName : InitialEquipmentData->GetRowNames())
+	{
+		bCheckIfExists = false;
+		FString CurEquipName = *InitialEquipmentData->FindRow<FEquipDataStruct>(CurrentRowName, "Equip Data Analysis...", true)->EquipmentName;
+		for (FEquipDataStruct CurDataAnalyzed : SaveGameRef->EquipData)
+		{
+			if (CurEquipName == CurDataAnalyzed.EquipmentName)
+			{
+				TempEquipData.Add(CurDataAnalyzed);
+				bCheckIfExists = true;
+				break;
+			}
+		}
+		if (!bCheckIfExists)
+		{
+			TempEquipData.Add(*InitialEquipmentData->FindRow<FEquipDataStruct>(CurrentRowName, "Equip Data Missing! Creation...", true));
+		}
+	}
+
+	EquipData = TempEquipData;
+	SaveEquipData();
+}
+
+void UBaseGameInstance::CheckWorldIntegrity()
+{
+	if (SaveGameRef->LevelData.Num() == InitialLevelData->GetRowNames().Num())
+		return;
+
+	TArray<FWorldMapDataStruct> TempWorldData;
+	bool bCheckIfExists = false;
+	
+	for (FName CurrentRowName : InitialLevelData->GetRowNames())
+	{
+		bCheckIfExists = false;
+		FString CurLevelName = *InitialLevelData->FindRow<FWorldMapDataStruct>(CurrentRowName, "World Data Analysis...", true)->LevelName;
+		for (FWorldMapDataStruct CurDataAnalyzed : SaveGameRef->LevelData)
+		{
+			if (CurLevelName == CurDataAnalyzed.LevelName)
+			{
+				TempWorldData.Add(CurDataAnalyzed);
+				bCheckIfExists = true;
+				break;
+			}
+		}
+		if (!bCheckIfExists)
+		{
+			TempWorldData.Add(*InitialLevelData->FindRow<FWorldMapDataStruct>(CurrentRowName, "World Data Missing! Creation...", true));
+		}
+	}
+
+	LevelData = TempWorldData;
+	SaveWorldData();
+}
+
+void UBaseGameInstance::CheckMoneyIntegrity()
+{
+	if (SummonMoney < 0)
+		SummonMoney = 0;
+
+	if (ScrapMoney < 0)
+		ScrapMoney = 0;
+
+	SaveMoneyData();
+}
+
+void UBaseGameInstance::CheckMissionIntegrity()
+{
+	if (MissionNextResetRef.GetYear() < 1900)
+		MissionNextResetRef = FDateTime::Now();
+
+	
 }

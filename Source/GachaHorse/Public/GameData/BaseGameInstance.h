@@ -60,6 +60,24 @@ public:
 	TArray<FWorldMapDataStruct> LevelData;
 	UPROPERTY(BlueprintReadWrite)
 	int LevelSelected = 0;
+	
+	// =========================
+	// == All Missions Values ==
+	// =========================
+
+	FDateTime MissionNextResetRef;
+
+	// TRACK MISSION
+	UPROPERTY(Blueprintable, BlueprintReadOnly)
+	TSoftObjectPtr<UWorld> TrackMissionTarget;
+
+	// RANK MISSION
+	UPROPERTY(Blueprintable, BlueprintReadOnly)
+	int RankMissionTarget = 101;
+
+	// HORSE MISSION
+	UPROPERTY(Blueprintable, BlueprintReadOnly)
+	int HorseIDMissionTarget = 0;
 
 private:
 	UPROPERTY()
@@ -99,6 +117,13 @@ public:
 	void AddScrap(int MoneyAdded);
 	UFUNCTION()
 	void SetScrap(int NewMoney);
+	
+	// ==========================
+	// ==   Prepare Missions   ==
+	// ==========================
+
+	UFUNCTION()
+	void PrepareMissions();
 	
 	// =========================
 	// == Horses & Equip Data ==
@@ -149,5 +174,30 @@ private:
 	void SaveMoneyData();
 
 	UFUNCTION()
+	void SaveMissionData();
+
+	UFUNCTION()
 	void LoadData();
+	
+	// =========================
+	// ==   Saves Integrity   ==
+	// =========================
+
+	UFUNCTION()
+	void CheckFileIntegrity();
+
+	UFUNCTION()
+	void CheckHorseIntegrity();
+
+	UFUNCTION()
+	void CheckEquipIntegrity();
+
+	UFUNCTION()
+	void CheckWorldIntegrity();
+
+	UFUNCTION()
+	void CheckMoneyIntegrity();
+
+	UFUNCTION()
+	void CheckMissionIntegrity();
 };
