@@ -39,6 +39,7 @@ void UBaseGameInstance::AddMoney(int MoneyAdded)
 	
 	SaveGameRef->SummonMoney = SummonMoney;
 	SaveMoneyData();
+	UpdateMoney();
 }
 
 void UBaseGameInstance::SetMoney(int NewMoney)
@@ -47,6 +48,7 @@ void UBaseGameInstance::SetMoney(int NewMoney)
 	
 	SaveGameRef->SummonMoney = SummonMoney;
 	SaveMoneyData();
+	UpdateMoney();
 }
 
 int UBaseGameInstance::GetScrap()
@@ -60,6 +62,7 @@ void UBaseGameInstance::AddScrap(int MoneyAdded)
 	
 	SaveGameRef->ScrapMoney = ScrapMoney;
 	SaveMoneyData();
+	UpdateMoney();
 }
 
 void UBaseGameInstance::SetScrap(int NewMoney)
@@ -68,8 +71,17 @@ void UBaseGameInstance::SetScrap(int NewMoney)
 	
 	SaveGameRef->ScrapMoney = ScrapMoney;
 	SaveMoneyData();
+	UpdateMoney();
 }
 	
+	// ==========================
+	// ==     Money Widget     ==
+	// ==========================
+
+void UBaseGameInstance::UpdateMoney_Implementation()
+{
+}
+
 	// ==========================
 	// ==   Prepare Missions   ==
 	// ==========================

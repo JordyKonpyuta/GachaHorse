@@ -253,6 +253,8 @@ void AMainMenuGamemode::GachaPullHorses(bool bTenSummons)
 	if (InstanceRef->GetMoney() < Price)
 		return;
 	
+	InstanceRef->AddMoney(Price);
+	
 	TArray<int> AllGains = CalculatePossibleHorseGains(bTenSummons);
 	float Delay = 0.25f;
 
@@ -261,7 +263,6 @@ void AMainMenuGamemode::GachaPullHorses(bool bTenSummons)
 		PrepareSummonResults(true, CurrentHorseID, Delay);
 		InstanceRef->ObtainedHorse(CurrentHorseID);
 		Delay += 0.5f;
-		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, FString::SanitizeFloat(Delay));
 	}
 }
 
@@ -271,6 +272,8 @@ void AMainMenuGamemode::GachaPullEquips(bool bTenSummons)
 	int Price = bTenSummons ? 1000 : 100;
 	if (InstanceRef->GetMoney() < Price)
 		return;
+
+	InstanceRef->AddMoney(Price);
 	
 	TArray<int> AllGains = CalculatePossibleEquipGains(bTenSummons);
 	float Delay = 0.25f;

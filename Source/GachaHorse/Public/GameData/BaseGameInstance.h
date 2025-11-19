@@ -123,6 +123,13 @@ public:
 	void SetScrap(int NewMoney);
 	
 	// ==========================
+	// ==     Money Widget     ==
+	// ==========================
+
+	UFUNCTION(BlueprintNativeEvent, Blueprintable)
+	void UpdateMoney();
+	
+	// ==========================
 	// ==   Prepare Missions   ==
 	// ==========================
 
