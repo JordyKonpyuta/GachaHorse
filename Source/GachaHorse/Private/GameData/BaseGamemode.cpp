@@ -155,6 +155,10 @@ void ABaseGamemode::CheckMissions()
 		return;
 	}
 	FTimerHandle MissionHandle;
+	FirstMissionWidget(true, 100);
+	int Reward = 101 - BaseGameInstanceRef->RankMissionTarget * 3;
+	FirstMissionWidget(true, Reward);
+	FirstMissionWidget(true, 100);
 	
 	// FIRST : THE COURSE YOU RAN THROUGH
 	GetWorldTimerManager().SetTimer(
@@ -187,7 +191,7 @@ void ABaseGamemode::CheckFirstMission()
 	{
 		BaseGameInstanceRef->AddMoney(100);
 
-		FirstMissionWidget(100);
+		FirstMissionWidget(false, 100);
 	}
 }
 
@@ -198,7 +202,7 @@ void ABaseGamemode::CheckSecondMission()
 		int Reward = 101 - RankAchieved * 3;
 		BaseGameInstanceRef->AddMoney(Reward);
 
-		SecondMissionWidget(Reward);
+		SecondMissionWidget(false, Reward);
 	}
 }
 
@@ -208,19 +212,19 @@ void ABaseGamemode::CheckThirdMission()
 	{
 		BaseGameInstanceRef->AddMoney(100);
 
-		ThirdMissionWidget(100);
+		ThirdMissionWidget(false, 100);
 	}
 }
 
-void ABaseGamemode::FirstMissionWidget_Implementation(int Prize)
+void ABaseGamemode::FirstMissionWidget_Implementation(bool bAnimation, int Prize)
 {
 }
 
-void ABaseGamemode::SecondMissionWidget_Implementation(int Prize)
+void ABaseGamemode::SecondMissionWidget_Implementation(bool bAnimation, int Prize)
 {
 }
 
-void ABaseGamemode::ThirdMissionWidget_Implementation(int Prize)
+void ABaseGamemode::ThirdMissionWidget_Implementation(bool bAnimation, int Prize)
 {
 }
 

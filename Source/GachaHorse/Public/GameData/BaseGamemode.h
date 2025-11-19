@@ -131,11 +131,11 @@ protected:
 	void CheckThirdMission();
 
 	UFUNCTION(BlueprintNativeEvent, Blueprintable)
-	void FirstMissionWidget(int Prize);
+	void FirstMissionWidget(bool bAnimation, int Prize);
 	UFUNCTION(BlueprintNativeEvent, Blueprintable)
-	void SecondMissionWidget(int Prize);
+	void SecondMissionWidget(bool bAnimation, int Prize);
 	UFUNCTION(BlueprintNativeEvent, Blueprintable)
-	void ThirdMissionWidget(int Prize);
+	void ThirdMissionWidget(bool bAnimation, int Prize);
 	UFUNCTION(BlueprintNativeEvent, Blueprintable)
 	void MissionsCanceled();
 	
