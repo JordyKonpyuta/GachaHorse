@@ -58,7 +58,7 @@ public:
 	void LevelUpHorse();
 
 	UFUNCTION(BlueprintNativeEvent, Blueprintable)
-	void LevelUpHorseWidgetUpdate();
+	void LevelUpHorseWidgetUpdate(FHorseDataStruct HorseDisplayed);
 	
 	// =========================
 	// == Equipment Selection ==
@@ -74,7 +74,7 @@ public:
 	void LevelUpEquip();
 
 	UFUNCTION(BlueprintNativeEvent, Blueprintable)
-	void LevelUpEquipWidgetUpdate();
+	void LevelUpEquipWidgetUpdate(FEquipDataStruct EquipDisplayed);
 	
 	// =========================================================
 	// ==         █     █ █████ ███  ██    ████ █████         ==

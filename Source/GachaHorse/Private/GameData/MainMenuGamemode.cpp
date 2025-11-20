@@ -49,11 +49,13 @@ void AMainMenuGamemode::SelectHorseWidget_Implementation(FHorseDataStruct HorseD
 
 void AMainMenuGamemode::LevelUpHorse()
 {
+	InstanceRef->LevelUpHorse();
 }
 
-void AMainMenuGamemode::LevelUpHorseWidgetUpdate_Implementation()
+void AMainMenuGamemode::LevelUpHorseWidgetUpdate_Implementation(FHorseDataStruct HorseDisplayed)
 {
 }
+
 	// =========================
 	// == Equipment Selection ==
 	// =========================
@@ -69,9 +71,10 @@ void AMainMenuGamemode::SelectEquipWidget_Implementation(FEquipDataStruct EquipD
 
 void AMainMenuGamemode::LevelUpEquip()
 {
+	InstanceRef->LevelUpEquip();
 }
 
-void AMainMenuGamemode::LevelUpEquipWidgetUpdate_Implementation()
+void AMainMenuGamemode::LevelUpEquipWidgetUpdate_Implementation(FEquipDataStruct EquipDisplayed)
 {
 }
 

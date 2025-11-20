@@ -266,7 +266,48 @@ void UBaseGameInstance::CheckAvailableEquip(bool bCheckingLeft)
 	}
 }
 
-// =========================
+void UBaseGameInstance::LevelUpHorse()
+{
+	for (int i = 0; i < HorseData.Num(); i++)
+	{
+		if (HorseData[i].HorseID == ChosenHorseData.HorseID)
+		{
+			HorseData[i].ShardNumber -= 2 ^ (HorseData[i].Level - 1);
+			HorseData[i].Level += 1;
+			ChosenHorseData = HorseData[i];
+
+			SaveHorseData();
+			break;
+		}
+	}
+	Cast<AMainMenuGamemode>(GetWorld()->GetAuthGameMode())->LevelUpHorseWidgetUpdate(ChosenHorseData);
+}
+
+void UBaseGameInstance::LevelUpEquip()
+{
+	for (int i = 0; i < EquipData.Num(); i++)
+	{
+		if (EquipData[i].EquipmentID == ChosenEquipData.EquipmentID)
+		{
+			int BaseCost = 0;
+			if (EquipData[i].Rarity == 0)
+				BaseCost = 2;
+			else if (EquipData[i].Rarity == 1)
+				BaseCost = 5;
+			else
+				BaseCost = 25;
+			AddScrap(BaseCost * (2 ^ (EquipData[i].Level - 1)));
+			EquipData[i].Level += 1;
+			ChosenEquipData = EquipData[i];
+
+			SaveEquipData();
+			break;
+		}
+	}
+	Cast<AMainMenuGamemode>(GetWorld()->GetAuthGameMode())->LevelUpEquipWidgetUpdate(ChosenEquipData);
+}
+
+	// =========================
 	// ==   Saves Functions   ==
 	// =========================
 

@@ -156,6 +156,11 @@ public:
 	UFUNCTION()
 	void CheckAvailableEquip(bool bCheckingLeft);
 
+	UFUNCTION()
+	void LevelUpHorse();
+	UFUNCTION()
+	void LevelUpEquip();
+
 private:
 	// ==========================
 	// ==    Base Functions    ==
