@@ -40,6 +40,7 @@ void ACheckpoints::BeginPlay()
 	Super::BeginPlay();
 
 	GamemodeRef = Cast<ABaseGamemode>(GetWorld()->GetAuthGameMode());
+	bIsTraining = GamemodeRef->bIsTrainingMode;
 
 	TArray<AActor*> AllCheckpointsFound;
 
@@ -93,7 +94,8 @@ void ACheckpoints::OnComponentBeginOverlap(class UPrimitiveComponent* Overlapped
 		break;
 	case ECheckpointType::LastGen :
 		RegularCheckpointCrossed(OurHorse);
-		GamemodeRef->HideAwayTimer();
+		if (!bIsTraining)
+			GamemodeRef->HideAwayTimer();
 		break;
 	case ECheckpointType::Start :
 		StartCheckPointCrossed(OurHorse);
@@ -128,6 +130,13 @@ void ACheckpoints::StartCheckPointCrossed(ABaseHorse* HorseActor)
 	if (HorseActor->CurrentCheckpointIndex != CurrentIndex)
 		return;
 
+	if (bIsTraining)
+	{
+
+
+		return;
+	}
+	
 	Cast<ABaseGamemode>(GetWorld()->GetAuthGameMode())->Victory();
 	
 	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "WIN");

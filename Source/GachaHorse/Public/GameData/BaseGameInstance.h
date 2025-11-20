@@ -183,7 +183,7 @@ private:
 	// =========================
 
 	UFUNCTION(BlueprintCallable)
-	void StartGame(TSoftObjectPtr<UWorld> WorldToLoad, int HorseID, int EquipmentID);
+	void StartGame(TSoftObjectPtr<UWorld> WorldToLoad, int HorseID, int EquipmentID, bool bGoesToTrainingMode);
 	
 	// =========================
 	// ==   Saves Functions   ==

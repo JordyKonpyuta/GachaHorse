@@ -57,7 +57,11 @@ void ABaseGamemode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	BaseGameInstanceRef = Cast<UBaseGameInstance>(GetGameInstance());
+	InstanceRef = Cast<UBaseGameInstance>(GetGameInstance());
+
+	bIsTrainingMode = InstanceRef->bIsTrainingMode;
+	BestTime = InstanceRef->LevelData[InstanceRef->LevelSelected].BestPersonalTime;
+	BestTimeSplits = InstanceRef->LevelData[InstanceRef->LevelSelected].PersonalTimeSplits;
 
 	SetupWidgets();
 }
@@ -115,9 +119,9 @@ int ABaseGamemode::CalculateRank(float TimeOfRank) const
 {
 	int NewRank = 1;
 
-	int CurrentWorld = BaseGameInstanceRef->LevelSelected;
+	int CurrentWorld = InstanceRef->LevelSelected;
 	
-	for (TPair<FName, float>& CurrentRanking : BaseGameInstanceRef->LevelData[CurrentWorld].Rankings)
+	for (TPair<FName, float>& CurrentRanking : InstanceRef->LevelData[CurrentWorld].Rankings)
 	{
 		if (TimeOfRank < CurrentRanking.Value)
 			break;
@@ -129,9 +133,15 @@ int ABaseGamemode::CalculateRank(float TimeOfRank) const
 
 void ABaseGamemode::Victory()
 {
+	BestTime = Timer;
+	if (bIsTrainingMode)
+	{
+		Timer = 0.0f;
+		return;
+	}
 	bHasEndedRun = true;
 
-	int OldRank = CalculateRank(BaseGameInstanceRef->LevelData[BaseGameInstanceRef->LevelSelected].BestPersonalTime);
+	int OldRank = CalculateRank(InstanceRef->LevelData[InstanceRef->LevelSelected].BestPersonalTime);
 	RankAchieved = CalculateRank(Timer);
 
 	int MoneyAdded = 10;
@@ -139,7 +149,7 @@ void ABaseGamemode::Victory()
 	if (RankAchieved >= OldRank)
 	{
 		MoneyAdded = 10 + (OldRank - RankAchieved) * 10;
-		BaseGameInstanceRef->AddMoney(MoneyAdded);
+		InstanceRef->AddMoney(MoneyAdded);
 	}
 	
 	WidgetVictory(Timer, OldRank, RankAchieved, MoneyAdded);
@@ -149,14 +159,14 @@ void ABaseGamemode::Victory()
 
 void ABaseGamemode::CheckMissions()
 {
-	if (BaseGameInstanceRef->MissionUnavailable)
+	if (InstanceRef->MissionUnavailable)
 	{
 		MissionsCanceled();
 		return;
 	}
 	FTimerHandle MissionHandle;
 	FirstMissionWidget(true, 100);
-	int Reward = 101 - BaseGameInstanceRef->RankMissionTarget * 3;
+	int Reward = 101 - InstanceRef->RankMissionTarget * 3;
 	FirstMissionWidget(true, Reward);
 	FirstMissionWidget(true, 100);
 	
@@ -187,9 +197,9 @@ void ABaseGamemode::CheckMissions()
 
 void ABaseGamemode::CheckFirstMission()
 {
-	if (GetWorld() == BaseGameInstanceRef->TrackMissionTarget)
+	if (GetWorld() == InstanceRef->TrackMissionTarget)
 	{
-		BaseGameInstanceRef->AddMoney(100);
+		InstanceRef->AddMoney(100);
 
 		FirstMissionWidget(false, 100);
 	}
@@ -197,10 +207,10 @@ void ABaseGamemode::CheckFirstMission()
 
 void ABaseGamemode::CheckSecondMission()
 {
-	if (BaseGameInstanceRef->RankMissionTarget <= RankAchieved)
+	if (InstanceRef->RankMissionTarget <= RankAchieved)
 	{
 		int Reward = 101 - RankAchieved * 3;
-		BaseGameInstanceRef->AddMoney(Reward);
+		InstanceRef->AddMoney(Reward);
 
 		SecondMissionWidget(false, Reward);
 	}
@@ -208,9 +218,9 @@ void ABaseGamemode::CheckSecondMission()
 
 void ABaseGamemode::CheckThirdMission()
 {
-	if (BaseGameInstanceRef->HorseIDMissionTarget == BaseGameInstanceRef->ChosenHorseData.HorseID)
+	if (InstanceRef->HorseIDMissionTarget == InstanceRef->ChosenHorseData.HorseID)
 	{
-		BaseGameInstanceRef->AddMoney(100);
+		InstanceRef->AddMoney(100);
 
 		ThirdMissionWidget(false, 100);
 	}

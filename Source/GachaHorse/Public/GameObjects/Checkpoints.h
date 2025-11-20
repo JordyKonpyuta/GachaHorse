@@ -35,6 +35,13 @@ public:
 	TObjectPtr<ABaseGamemode> GamemodeRef;
 	
 	// ==========================
+	// ==       Training       ==
+	// ==========================
+
+	UPROPERTY()
+	bool bIsTraining = false;
+	
+	// ==========================
 	// ==      Components      ==
 	// ==========================
 	

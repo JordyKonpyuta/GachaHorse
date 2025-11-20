@@ -121,8 +121,10 @@ void UBaseGameInstance::PrepareMissions()
 	// ==     Actual Game     ==
 	// =========================
 
-void UBaseGameInstance::StartGame(TSoftObjectPtr<UWorld> WorldToLoad, int HorseID, int EquipmentID)
+void UBaseGameInstance::StartGame(TSoftObjectPtr<UWorld> WorldToLoad, int HorseID, int EquipmentID, bool bGoesToTrainingMode)
 {
+	bIsTrainingMode = bGoesToTrainingMode;
+	
 	for (int i = 0; i < HorseData.Num(); i++)
 	{
 		if (HorseData[i].HorseID == HorseID)

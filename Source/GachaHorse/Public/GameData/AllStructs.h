@@ -66,7 +66,7 @@ public:
 	FHorseDataStruct(bool PossessHorse, int NewShards, int NewLevel, int32 NewID,
 		int32 NewRarity, FString NewName, TSoftObjectPtr<UTexture2D> NewHorsePic,
 		TArray<int32> NewAccelerationLevelArray, TArray<int32> NewSpeedLevelArray,
-		TArray<int32> NewHandlingLevelArray, TSoftObjectPtr<UMaterial> NewHorseMat,
+		TArray<int32> NewHandlingLevelArray, TSoftObjectPtr<UMaterialInstance> NewHorseMat,
 		TSoftObjectPtr<UMaterialInstance> NewHairMat)
 	{
 		bHorsePossessed = PossessHorse;
@@ -99,6 +99,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float BestPersonalTime;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> PersonalTimeSplits;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString LevelName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TMap<FName, float> Rankings;
@@ -108,7 +110,8 @@ public:
 	FWorldMapDataStruct()
 	{
 		WorldToLoad = nullptr;
-		BestPersonalTime = 0;
+		BestPersonalTime = 1000.0;
+		PersonalTimeSplits.Empty();
 		LevelName = "LevelName";
 		Rankings = {
 			{"Name1", 100.000},
@@ -214,11 +217,12 @@ public:
 		WorldPicture = nullptr;
 	}
 
-	FWorldMapDataStruct(TSoftObjectPtr<UWorld> WorldChosen, float CurTime, FString Name,
-		TMap<FName, float> NewRankings, TSoftObjectPtr<UTexture2D> TheWorldPicture)
+	FWorldMapDataStruct(TSoftObjectPtr<UWorld> WorldChosen, float CurTime, TArray<float> Splits,
+		FString Name, TMap<FName, float> NewRankings, TSoftObjectPtr<UTexture2D> TheWorldPicture)
 	{
 		WorldToLoad = WorldChosen;
 		BestPersonalTime = CurTime;
+		PersonalTimeSplits = Splits;
 		LevelName = Name;
 		Rankings = NewRankings;
 		WorldPicture = TheWorldPicture;

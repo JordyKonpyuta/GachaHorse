@@ -24,7 +24,7 @@ public:
 	// ==========================
 	
 	UPROPERTY()
-	TObjectPtr<UBaseGameInstance> BaseGameInstanceRef;
+	TObjectPtr<UBaseGameInstance> InstanceRef;
 	
 	UPROPERTY()
 	TObjectPtr<ACheckpoints> StartCheckpointRef;
@@ -45,6 +45,18 @@ public:
 	bool bOneBeforeGo = false;
 	bool bHasStartedRun = false;
 	bool bHasEndedRun = false;
+
+	UPROPERTY()
+	float BestTime = 1000.0f;
+	UPROPERTY()
+	TArray<float> BestTimeSplits;
+	
+	// ===========================
+	// ==         Timer         ==
+	// ===========================
+
+	UPROPERTY()
+	bool bIsTrainingMode = false;
 
 protected:
 	// =========================

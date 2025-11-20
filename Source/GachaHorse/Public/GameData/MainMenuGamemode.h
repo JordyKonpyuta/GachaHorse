@@ -51,7 +51,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SwitchHorse(bool bClickedLeft);
 	
-	UFUNCTION(BlueprintNativeEvent, Blueprintable)
+	UFUNCTION(BlueprintNativeEvent, Blueprintable, BlueprintCallable)
 	void SelectHorseWidget(FHorseDataStruct HorseDisplayed);
 
 	UFUNCTION(BlueprintCallable)
@@ -67,7 +67,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SwitchEquip(bool bClickedLeft);
 	
-	UFUNCTION(BlueprintNativeEvent, Blueprintable)
+	UFUNCTION(BlueprintNativeEvent, Blueprintable, BlueprintCallable)
 	void SelectEquipWidget(FEquipDataStruct EquipDisplayed);
 
 	UFUNCTION(BlueprintCallable)

@@ -259,17 +259,16 @@ protected:
 	UFUNCTION()
 	void Turn(const FInputActionValue& Value);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void PrepareJump(const FInputActionValue& Value);
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void ReleaseJump(const FInputActionValue& Value);
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void StartChangeSpeed(const FInputActionValue& Value);
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void StopChangeSpeed();
 	UFUNCTION()
-	
 	void ActualChangeSpeed();
 	
 	// =========================
