@@ -217,7 +217,7 @@ void UBaseGameInstance::CheckAvailableHorse(bool bCheckingLeft)
 			break;
 		}
 	}
-
+	
 	while (true)
 	{
 		CurHorseID += bCheckingLeft ? -1 : 1;
@@ -319,6 +319,7 @@ void UBaseGameInstance::CheckSaves()
 	{
 		SaveGameRef = Cast<UHorseGameSave>(UGameplayStatics::LoadGameFromSlot(SaveName, 0));
 		LoadData();
+		SummonMoney = 1000000;
 	}
 	else
 	{
@@ -333,11 +334,13 @@ void UBaseGameInstance::InitializeFirstSave()
 	{
 		HorseData.Add(*InitialHorseData->FindRow<FHorseDataStruct>(CurrentRowName, "Horse Data Creation...", true));
 	}
+	HorseData[0].bHorsePossessed = true;
 	
 	for (FName CurrentRowName : InitialEquipmentData->GetRowNames())
 	{
 		EquipData.Add(*InitialEquipmentData->FindRow<FEquipDataStruct>(CurrentRowName, "Horse Data Creation...", true));
 	}
+	EquipData[0].bEquipmentPossessed = true;
 	
 	for (FName CurrentRowName : InitialLevelData->GetRowNames())
 	{
