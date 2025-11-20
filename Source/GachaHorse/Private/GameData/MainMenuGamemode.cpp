@@ -46,12 +46,32 @@ void AMainMenuGamemode::SelectHorseWidget_Implementation(FHorseDataStruct HorseD
 {
 }
 
+
+void AMainMenuGamemode::LevelUpHorse()
+{
+}
+
+void AMainMenuGamemode::LevelUpHorseWidgetUpdate_Implementation()
+{
+}
+	// =========================
+	// == Equipment Selection ==
+	// =========================
+
 void AMainMenuGamemode::SwitchEquip(bool bClickedLeft)
 {
 	InstanceRef->CheckAvailableEquip(bClickedLeft);
 }
- 
+
 void AMainMenuGamemode::SelectEquipWidget_Implementation(FEquipDataStruct EquipDisplayed)
+{
+}
+
+void AMainMenuGamemode::LevelUpEquip()
+{
+}
+
+void AMainMenuGamemode::LevelUpEquipWidgetUpdate_Implementation()
 {
 }
 

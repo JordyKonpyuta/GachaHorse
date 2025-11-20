@@ -24,7 +24,7 @@ public:
 	// ==      References      ==
 	// ==========================
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UBaseGameInstance> InstanceRef;
 
 protected:
@@ -53,6 +53,12 @@ public:
 	
 	UFUNCTION(BlueprintNativeEvent, Blueprintable)
 	void SelectHorseWidget(FHorseDataStruct HorseDisplayed);
+
+	UFUNCTION(BlueprintCallable)
+	void LevelUpHorse();
+
+	UFUNCTION(BlueprintNativeEvent, Blueprintable)
+	void LevelUpHorseWidgetUpdate();
 	
 	// =========================
 	// == Equipment Selection ==
@@ -63,6 +69,12 @@ public:
 	
 	UFUNCTION(BlueprintNativeEvent, Blueprintable)
 	void SelectEquipWidget(FEquipDataStruct EquipDisplayed);
+
+	UFUNCTION(BlueprintCallable)
+	void LevelUpEquip();
+
+	UFUNCTION(BlueprintNativeEvent, Blueprintable)
+	void LevelUpEquipWidgetUpdate();
 	
 	// =========================================================
 	// ==         █     █ █████ ███  ██    ████ █████         ==

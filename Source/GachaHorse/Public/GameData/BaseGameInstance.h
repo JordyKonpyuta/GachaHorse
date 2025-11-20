@@ -109,14 +109,14 @@ public:
 	// ==        Money        ==
 	// =========================
 
-	UFUNCTION(Blueprintable, BlueprintCallable)
+	UFUNCTION(Blueprintable, BlueprintCallable, BlueprintPure)
 	int GetMoney();
 	UFUNCTION()
 	void AddMoney(int MoneyAdded);
 	UFUNCTION()
 	void SetMoney(int NewMoney);
 	
-	UFUNCTION(Blueprintable, BlueprintCallable)
+	UFUNCTION(Blueprintable, BlueprintCallable, BlueprintPure)
 	int GetScrap();
 	UFUNCTION()
 	void AddScrap(int MoneyAdded);
