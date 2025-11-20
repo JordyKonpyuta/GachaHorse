@@ -85,12 +85,28 @@ void ABaseGamemode::StartGame()
 
 	StartCheckpointRef->UnblockStart();
 }
+	
+	// =========================
+	// ==        Timer        ==
+	// =========================
+
+void ABaseGamemode::DisplaySplit(int CheckpointIndex)
+{
+	float TimeDifference = BestTimeSplits[CheckpointIndex] - Timer;
+	CurrentTimeSplits[CheckpointIndex] = Timer;
+
+	DisplaySplitWidget(TimeDifference);
+}
 
 	// =========================
 	// ==       Widgets       ==
 	// =========================
 
 void ABaseGamemode::SetupWidgets_Implementation()
+{
+}
+
+void ABaseGamemode::DisplaySplitWidget_Implementation(float Difference)
 {
 }
 

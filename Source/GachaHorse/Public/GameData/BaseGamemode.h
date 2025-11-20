@@ -50,6 +50,8 @@ public:
 	float BestTime = 1000.0f;
 	UPROPERTY()
 	TArray<float> BestTimeSplits;
+	UPROPERTY()
+	TArray<float> CurrentTimeSplits;
 	
 	// ===========================
 	// ==         Timer         ==
@@ -75,6 +77,13 @@ public:
 	ABaseGamemode();
 	
 	virtual void Tick(float DeltaTime) override;
+	
+	// =========================
+	// ==        Timer        ==
+	// =========================
+
+	UFUNCTION()
+	void DisplaySplit(int CheckpointIndex);
 	
 	// =========================
 	// ==       Widgets       ==
@@ -113,6 +122,9 @@ protected:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void SetupWidgets();
+
+	UFUNCTION(BlueprintCallable, Blueprintable, BlueprintNativeEvent)
+	void DisplaySplitWidget(float Difference);
 
 	/**
 	 * Widget called to do that "3,2,1, go!" thing

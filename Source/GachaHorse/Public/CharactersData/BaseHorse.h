@@ -260,9 +260,9 @@ protected:
 	void Turn(const FInputActionValue& Value);
 
 	UFUNCTION(BlueprintCallable)
-	void PrepareJump(const FInputActionValue& Value);
+	void PrepareJump();
 	UFUNCTION(BlueprintCallable)
-	void ReleaseJump(const FInputActionValue& Value);
+	void ReleaseJump();
 	
 	UFUNCTION(BlueprintCallable)
 	void StartChangeSpeed(const FInputActionValue& Value);

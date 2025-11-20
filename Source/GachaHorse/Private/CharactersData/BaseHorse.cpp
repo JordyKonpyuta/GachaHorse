@@ -214,7 +214,7 @@ void ABaseHorse::Turn(const FInputActionValue& Value)
 	GetCharacterMovement()->Velocity = UKismetMathLibrary::RotateAngleAxis(GetCharacterMovement()->Velocity, TurnAngle * GetWorld()->GetDeltaSeconds(), FVector(0, 0, 1));
 }
 
-void ABaseHorse::PrepareJump(const FInputActionValue& Value)
+void ABaseHorse::PrepareJump()
 {
 	// DON'T BEGIN THE CHARGING IF IN THE AIR OR ALREADY CHARGING
 	if (bIsChargingJump || !GetCharacterMovement()->IsMovingOnGround())
@@ -229,9 +229,8 @@ void ABaseHorse::PrepareJump(const FInputActionValue& Value)
 	Widget_ShowCharge();
 }
 
-void ABaseHorse::ReleaseJump(const FInputActionValue& Value)
+void ABaseHorse::ReleaseJump()
 {
-	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "STOP JUMP");
 	// DON'T KEEP THE CHARGING IF IN THE AIR
 	if (!GetCharacterMovement()->IsMovingOnGround())
 	{
@@ -254,13 +253,11 @@ void ABaseHorse::StartChangeSpeed(const FInputActionValue& Value)
 {
 	NewSpeedValue = Value.Get<float>();
 	bCheckSpeedShift = true;
-	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "START");
 }
 
 void ABaseHorse::StopChangeSpeed()
 {
 	bCheckSpeedShift = false;
-	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "STOP");
 }
 
 void ABaseHorse::ActualChangeSpeed()

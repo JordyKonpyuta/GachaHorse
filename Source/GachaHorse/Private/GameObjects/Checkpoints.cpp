@@ -101,7 +101,7 @@ void ACheckpoints::OnComponentBeginOverlap(class UPrimitiveComponent* Overlapped
 		StartCheckPointCrossed(OurHorse);
 		break;
 	default:
-		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, "Wait wat");
+		break;
 	}
 }
 
@@ -123,6 +123,8 @@ void ACheckpoints::RegularCheckpointCrossed(ABaseHorse* HorseActor)
 	
 	HorseActor->SetPlayerRespawn(NewRespawn);
 	HorseActor->CurrentCheckpointIndex = CurrentIndex;
+
+	
 }
 
 void ACheckpoints::StartCheckPointCrossed(ABaseHorse* HorseActor)
