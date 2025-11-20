@@ -32,6 +32,19 @@ void AMainMenuGamemode::BeginPlay()
 		true
 		);
 }
+	
+	// =========================
+	// ==   Horse Selection   ==
+	// =========================
+
+void AMainMenuGamemode::SwitchHorse(bool bClickedLeft)
+{
+	InstanceRef->CheckAvailableHorse(bClickedLeft);
+}
+
+void AMainMenuGamemode::SelectHorseWidget_Implementation(FHorseDataStruct HorseDisplayed)
+{
+}
 
 	// ==========================
 	// ==       Missions       ==
@@ -364,28 +377,6 @@ void AMainMenuGamemode::CheckPossibleCrash()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("INSTANCEREF IS NOT SET, SHUTTING THE GAME DOWN"));
 		ErrorFound = true;
-	}
-
-	if (!AllHorsesPossessed->IsValidLowLevelFast())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("DATA TABLE FOR HORSES NOT FOUND, SHUTTING THE GAME DOWN"));
-		ErrorFound = true;
-	}
-	else
-	{
-		if (!AllHorsesPossessed->RowStruct->IsValidLowLevelFast())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("DATA TABLE APPEARS TO BE CORRUPTED, SHUTTING THE GAME DOWN"));
-			ErrorFound = true;
-		}
-		else
-		{
-			if (AllHorsesPossessed->RowStruct != FHorseDataStruct::StaticStruct())
-			{
-				UE_LOG(LogTemp, Warning, TEXT("DATA TABLE IS NOT OF THE CORRECT TYPE, SHUTTING THE GAME DOWN"));
-				ErrorFound = true;
-			}
-		}
 	}
 	
 	if (ErrorFound)

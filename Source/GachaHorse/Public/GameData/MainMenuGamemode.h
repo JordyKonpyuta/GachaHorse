@@ -32,13 +32,6 @@ protected:
 	// ==========================
 
 	FTimerHandle MissionTimerHandle;
-	
-	// =========================
-	// ==      Summoning      ==
-	// =========================
-
-	UPROPERTY(EditAnywhere, Category="GameData")
-	UDataTable* AllHorsesPossessed;
 
 	// UFUNCTIONS
 public:
@@ -49,6 +42,16 @@ public:
 	AMainMenuGamemode();
 	
 	virtual void Tick(float DeltaTime) override;
+	
+	// =========================
+	// ==   Horse Selection   ==
+	// =========================
+
+	UFUNCTION()
+	void SwitchHorse(bool bClickedLeft);
+	
+	UFUNCTION(BlueprintNativeEvent, Blueprintable)
+	void SelectHorseWidget(FHorseDataStruct HorseDisplayed);
 	
 	// =========================================================
 	// ==         █     █ █████ ███  ██    ████ █████         ==

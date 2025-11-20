@@ -176,7 +176,7 @@ void UBaseGameInstance::ObtainedHorse(int HorseID)
 
 void UBaseGameInstance::ObtainedEquip(int EquipID)
 {
-	for (int i = 0; i < HorseData.Num(); i++)
+	for (int i = 0; i < EquipData.Num(); i++)
 	{
 		if (EquipData[i].EquipmentID == EquipID)
 		{
@@ -193,6 +193,40 @@ void UBaseGameInstance::ObtainedEquip(int EquipID)
 			}
 			if (SaveGameRef->IsValidLowLevelFast())
 				SaveGameRef->EquipData[i] = EquipData[i];
+			break;
+		}
+	}
+}
+
+void UBaseGameInstance::SelectHorse(int HorseID)
+{
+	ChosenHorseData = HorseData[HorseID];
+	Cast<AMainMenuGamemode>(GetWorld()->GetAuthGameMode())->SelectHorseWidget(ChosenHorseData);
+}
+
+void UBaseGameInstance::CheckAvailableHorse(bool bCheckingLeft)
+{
+	int CurHorseID = 0;
+	for (int i = 0; i < HorseData.Num(); i++)
+	{
+		if (HorseData[i].HorseID == ChosenHorseData.HorseID)
+		{
+			CurHorseID = i;
+			break;
+		}
+	}
+
+	while (true)
+	{
+		CurHorseID += bCheckingLeft ? -1 : 1;
+		if (CurHorseID < 0)
+			CurHorseID = HorseData.Num() - 1;
+		else if (CurHorseID >= HorseData.Num())
+			CurHorseID = 0;
+
+		if (HorseData[CurHorseID].bHorsePossessed == true)
+		{
+			SelectHorse(CurHorseID);
 			break;
 		}
 	}
