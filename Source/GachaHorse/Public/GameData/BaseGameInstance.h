@@ -151,6 +151,11 @@ public:
 	UFUNCTION()
 	void CheckAvailableHorse(bool bCheckingLeft);
 
+	UFUNCTION()
+	void SelectEquip(int EquipID);
+	UFUNCTION()
+	void CheckAvailableEquip(bool bCheckingLeft);
+
 private:
 	// ==========================
 	// ==    Base Functions    ==

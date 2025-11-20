@@ -46,6 +46,15 @@ void AMainMenuGamemode::SelectHorseWidget_Implementation(FHorseDataStruct HorseD
 {
 }
 
+void AMainMenuGamemode::SwitchEquip(bool bClickedLeft)
+{
+	InstanceRef->CheckAvailableEquip(bClickedLeft);
+}
+ 
+void AMainMenuGamemode::SelectEquipWidget_Implementation(FEquipDataStruct EquipDisplayed)
+{
+}
+
 	// ==========================
 	// ==       Missions       ==
 	// ==========================

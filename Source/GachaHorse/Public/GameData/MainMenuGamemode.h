@@ -7,6 +7,7 @@
 #include "MainMenuGamemode.generated.h"
 
 
+struct FEquipDataStruct;
 class UBaseGameInstance;
 struct FHorseDataStruct;
 /**
@@ -52,6 +53,16 @@ public:
 	
 	UFUNCTION(BlueprintNativeEvent, Blueprintable)
 	void SelectHorseWidget(FHorseDataStruct HorseDisplayed);
+	
+	// =========================
+	// == Equipment Selection ==
+	// =========================
+	
+	UFUNCTION()
+	void SwitchEquip(bool bClickedLeft);
+	
+	UFUNCTION(BlueprintNativeEvent, Blueprintable)
+	void SelectEquipWidget(FEquipDataStruct EquipDisplayed);
 	
 	// =========================================================
 	// ==         █     █ █████ ███  ██    ████ █████         ==

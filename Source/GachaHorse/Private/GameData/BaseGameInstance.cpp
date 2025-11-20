@@ -232,7 +232,41 @@ void UBaseGameInstance::CheckAvailableHorse(bool bCheckingLeft)
 	}
 }
 
-	// =========================
+void UBaseGameInstance::SelectEquip(int EquipID)
+{
+	ChosenEquipData = EquipData[EquipID];
+	Cast<AMainMenuGamemode>(GetWorld()->GetAuthGameMode())->SelectEquipWidget(ChosenEquipData);
+}
+
+void UBaseGameInstance::CheckAvailableEquip(bool bCheckingLeft)
+{
+	int CurEquipID = 0;
+	for (int i = 0; i < EquipData.Num(); i++)
+	{
+		if (EquipData[i].EquipmentID == ChosenEquipData.EquipmentID)
+		{
+			CurEquipID = i;
+			break;
+		}
+	}
+
+	while (true)
+	{
+		CurEquipID += bCheckingLeft ? -1 : 1;
+		if (CurEquipID < 0)
+			CurEquipID = EquipData.Num() - 1;
+		else if (CurEquipID >= EquipData.Num())
+			CurEquipID = 0;
+
+		if (EquipData[CurEquipID].bEquipmentPossessed == true)
+		{
+			SelectEquip(CurEquipID);
+			break;
+		}
+	}
+}
+
+// =========================
 	// ==   Saves Functions   ==
 	// =========================
 
