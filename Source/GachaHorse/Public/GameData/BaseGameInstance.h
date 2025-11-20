@@ -79,6 +79,13 @@ public:
 	// HORSE MISSION
 	UPROPERTY(Blueprintable, BlueprintReadOnly)
 	int HorseIDMissionTarget = 0;
+	
+	// =========================
+	// ==  Other Game Values  ==
+	// =========================
+
+	UPROPERTY()
+	bool bIsTrainingMode = false;
 
 private:
 	UPROPERTY()

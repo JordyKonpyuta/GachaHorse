@@ -48,7 +48,7 @@ public:
 	// ==   Horse Selection   ==
 	// =========================
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void SwitchHorse(bool bClickedLeft);
 	
 	UFUNCTION(BlueprintNativeEvent, Blueprintable)
@@ -64,7 +64,7 @@ public:
 	// == Equipment Selection ==
 	// =========================
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void SwitchEquip(bool bClickedLeft);
 	
 	UFUNCTION(BlueprintNativeEvent, Blueprintable)
