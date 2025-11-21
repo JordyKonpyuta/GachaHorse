@@ -11,6 +11,7 @@ class AMainMenuController;
 UENUM(BlueprintType)
 enum class ECameraPosition : uint8
 {
+	TitleScreen		UMETA(DisplayName = "Title Screen"),
 	Menu			UMETA(DisplayName = "Menu"),
 	HorseSummoning	UMETA(DisplayName = "Horse Summoning"),
 	EquipSummoning	UMETA(DisplayName = "Equipment Summoning"),
@@ -34,6 +35,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	TMap<ECameraPosition, TObjectPtr<ACameraActor>> Cameras =
 		{
+		{ECameraPosition::TitleScreen, nullptr},
 		{ECameraPosition::Menu, nullptr},
 		{ECameraPosition::HorseSummoning, nullptr},
 		{ECameraPosition::EquipSummoning, nullptr},
