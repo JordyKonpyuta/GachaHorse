@@ -26,6 +26,13 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UBaseGameInstance> InstanceRef;
+	
+	// ==========================
+	// ==      Management      ==
+	// ==========================
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsCheckingHorse = true;
 
 protected:
 	// ==========================

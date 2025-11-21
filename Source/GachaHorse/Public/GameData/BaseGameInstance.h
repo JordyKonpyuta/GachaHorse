@@ -35,7 +35,15 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	FHorseDataStruct ChosenHorseData = {
-		true, 25, 1, 1, 2, "TestWhorse",
+		true, 25, 6, 1, 2, "TestWhorse",
+		nullptr, {5,7,8,10,11,25},
+		{6,6,7,7,8,25}, {2,4,7,12,12,25},
+		nullptr, nullptr};
+
+
+	UPROPERTY(BlueprintReadWrite)
+	FHorseDataStruct ViewedHorseData = {
+		true, 25, 6, 1, 2, "TestWhorse",
 		nullptr, {5,7,8,10,11,25},
 		{6,6,7,7,8,25}, {2,4,7,12,12,25},
 		nullptr, nullptr};
@@ -48,7 +56,14 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	FEquipDataStruct ChosenEquipData = {
-		true, 1, 2, 0, "TestSaddle",
+		true, 6, 2, 0, "TestSaddle",
+		nullptr, {2,3,5,7,8,0},
+		{3,4,5,6,9,0}, {5,5,6,6,7,0},
+		nullptr};
+
+	UPROPERTY(BlueprintReadWrite)
+	FEquipDataStruct ViewedEquipData = {
+		true, 6, 2, 0, "TestSaddle",
 		nullptr, {2,3,5,7,8,0},
 		{3,4,5,6,9,0}, {5,5,6,6,7,0},
 		nullptr};
@@ -153,15 +168,19 @@ public:
 	UFUNCTION()
 	void ObtainedEquip(int EquipID);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Blueprintable)
 	void SelectHorse(int HorseID);
 	UFUNCTION()
 	void CheckAvailableHorse(bool bCheckingLeft);
+	UFUNCTION(BlueprintCallable, Blueprintable)
+	void EquipHorse();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Blueprintable)
 	void SelectEquip(int EquipID);
 	UFUNCTION()
 	void CheckAvailableEquip(bool bCheckingLeft);
+	UFUNCTION(BlueprintCallable, Blueprintable)
+	void EquipEquips();
 
 	UFUNCTION()
 	void LevelUpHorse();

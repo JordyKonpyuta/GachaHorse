@@ -38,7 +38,7 @@ void UBaseGameInstance::AddMoney(int MoneyAdded)
 	SummonMoney += MoneyAdded;
 	
 	SaveGameRef->SummonMoney = SummonMoney;
-	SaveMoneyData();
+	SaveGame();
 	UpdateMoney();
 }
 
@@ -47,7 +47,7 @@ void UBaseGameInstance::SetMoney(int NewMoney)
 	SummonMoney = NewMoney;
 	
 	SaveGameRef->SummonMoney = SummonMoney;
-	SaveMoneyData();
+	SaveGame();
 	UpdateMoney();
 }
 
@@ -61,7 +61,7 @@ void UBaseGameInstance::AddScrap(int MoneyAdded)
 	ScrapMoney += MoneyAdded;
 	
 	SaveGameRef->ScrapMoney = ScrapMoney;
-	SaveMoneyData();
+	SaveGame();
 	UpdateMoney();
 }
 
@@ -70,7 +70,7 @@ void UBaseGameInstance::SetScrap(int NewMoney)
 	ScrapMoney = NewMoney;
 	
 	SaveGameRef->ScrapMoney = ScrapMoney;
-	SaveMoneyData();
+	SaveGame();
 	UpdateMoney();
 }
 	
@@ -202,8 +202,8 @@ void UBaseGameInstance::ObtainedEquip(int EquipID)
 
 void UBaseGameInstance::SelectHorse(int HorseID)
 {
-	ChosenHorseData = HorseData[HorseID];
-	Cast<AMainMenuGamemode>(GetWorld()->GetAuthGameMode())->SelectHorseWidget(ChosenHorseData);
+	ViewedHorseData = HorseData[HorseID];
+	Cast<AMainMenuGamemode>(GetWorld()->GetAuthGameMode())->SelectHorseWidget(ViewedHorseData);
 }
 
 void UBaseGameInstance::CheckAvailableHorse(bool bCheckingLeft)
@@ -211,7 +211,7 @@ void UBaseGameInstance::CheckAvailableHorse(bool bCheckingLeft)
 	int CurHorseID = 0;
 	for (int i = 0; i < HorseData.Num(); i++)
 	{
-		if (HorseData[i].HorseID == ChosenHorseData.HorseID)
+		if (HorseData[i].HorseID == ViewedHorseData.HorseID)
 		{
 			CurHorseID = i;
 			break;
@@ -234,10 +234,15 @@ void UBaseGameInstance::CheckAvailableHorse(bool bCheckingLeft)
 	}
 }
 
+void UBaseGameInstance::EquipHorse()
+{
+	ChosenHorseData = ViewedHorseData;
+}
+
 void UBaseGameInstance::SelectEquip(int EquipID)
 {
-	ChosenEquipData = EquipData[EquipID];
-	Cast<AMainMenuGamemode>(GetWorld()->GetAuthGameMode())->SelectEquipWidget(ChosenEquipData);
+	ViewedEquipData = EquipData[EquipID];
+	Cast<AMainMenuGamemode>(GetWorld()->GetAuthGameMode())->SelectEquipWidget(ViewedEquipData);
 }
 
 void UBaseGameInstance::CheckAvailableEquip(bool bCheckingLeft)
@@ -245,7 +250,7 @@ void UBaseGameInstance::CheckAvailableEquip(bool bCheckingLeft)
 	int CurEquipID = 0;
 	for (int i = 0; i < EquipData.Num(); i++)
 	{
-		if (EquipData[i].EquipmentID == ChosenEquipData.EquipmentID)
+		if (EquipData[i].EquipmentID == ViewedEquipData.EquipmentID)
 		{
 			CurEquipID = i;
 			break;
@@ -268,29 +273,41 @@ void UBaseGameInstance::CheckAvailableEquip(bool bCheckingLeft)
 	}
 }
 
+void UBaseGameInstance::EquipEquips()
+{
+	ChosenEquipData = ViewedEquipData;
+}
+
 void UBaseGameInstance::LevelUpHorse()
 {
 	for (int i = 0; i < HorseData.Num(); i++)
 	{
-		if (HorseData[i].HorseID == ChosenHorseData.HorseID)
+		if (HorseData[i].HorseID == ViewedHorseData.HorseID)
 		{
-			HorseData[i].ShardNumber -= 2 ^ (HorseData[i].Level - 1);
+			if (HorseData[i].Level >= 6)
+				return;
+			
+			HorseData[i].ShardNumber -= FMath::Pow(2.0f, HorseData[i].Level - 1);
+			GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, FString::FromInt(HorseData[i].Level));
 			HorseData[i].Level += 1;
-			ChosenHorseData = HorseData[i];
+			ViewedHorseData = HorseData[i];
 
-			SaveHorseData();
+			SaveGame();
 			break;
 		}
 	}
-	Cast<AMainMenuGamemode>(GetWorld()->GetAuthGameMode())->LevelUpHorseWidgetUpdate(ChosenHorseData);
+	Cast<AMainMenuGamemode>(GetWorld()->GetAuthGameMode())->SelectHorseWidget(ViewedHorseData);
 }
 
 void UBaseGameInstance::LevelUpEquip()
 {
 	for (int i = 0; i < EquipData.Num(); i++)
 	{
-		if (EquipData[i].EquipmentID == ChosenEquipData.EquipmentID)
+		if (EquipData[i].EquipmentID == ViewedEquipData.EquipmentID)
 		{
+			if (EquipData[i].Level >= 6)
+				return;
+			
 			int BaseCost = 0;
 			if (EquipData[i].Rarity == 0)
 				BaseCost = 2;
@@ -298,15 +315,15 @@ void UBaseGameInstance::LevelUpEquip()
 				BaseCost = 5;
 			else
 				BaseCost = 25;
-			AddScrap(BaseCost * (2 ^ (EquipData[i].Level - 1)));
+			AddScrap(-(BaseCost * FMath::Pow(2.0f, EquipData[i].Level - 1)));
 			EquipData[i].Level += 1;
-			ChosenEquipData = EquipData[i];
+			ViewedEquipData = EquipData[i];
 
-			SaveEquipData();
+			SaveGame();
 			break;
 		}
 	}
-	Cast<AMainMenuGamemode>(GetWorld()->GetAuthGameMode())->LevelUpEquipWidgetUpdate(ChosenEquipData);
+	Cast<AMainMenuGamemode>(GetWorld()->GetAuthGameMode())->SelectEquipWidget(ViewedEquipData);
 }
 
 	// =========================
@@ -319,7 +336,6 @@ void UBaseGameInstance::CheckSaves()
 	{
 		SaveGameRef = Cast<UHorseGameSave>(UGameplayStatics::LoadGameFromSlot(SaveName, 0));
 		LoadData();
-		SummonMoney = 1000000;
 	}
 	else
 	{
@@ -335,17 +351,22 @@ void UBaseGameInstance::InitializeFirstSave()
 		HorseData.Add(*InitialHorseData->FindRow<FHorseDataStruct>(CurrentRowName, "Horse Data Creation...", true));
 	}
 	HorseData[0].bHorsePossessed = true;
+	ChosenHorseData = HorseData[0];
+	ViewedHorseData = ChosenHorseData;
 	
 	for (FName CurrentRowName : InitialEquipmentData->GetRowNames())
 	{
 		EquipData.Add(*InitialEquipmentData->FindRow<FEquipDataStruct>(CurrentRowName, "Horse Data Creation...", true));
 	}
 	EquipData[0].bEquipmentPossessed = true;
+	ChosenEquipData = EquipData[0];
+	ViewedEquipData = ChosenEquipData;
 	
 	for (FName CurrentRowName : InitialLevelData->GetRowNames())
 	{
 		LevelData.Add(*InitialLevelData->FindRow<FWorldMapDataStruct>(CurrentRowName, "Horse Data Creation...", true));
 	}
+	SummonMoney = 1000000;
 
 	SaveGame();
 }
@@ -363,13 +384,13 @@ void UBaseGameInstance::SaveGame()
 void UBaseGameInstance::SaveHorseData()
 {
 	SaveGameRef->HorseData = HorseData;
-	SaveGameRef->SummonMoney = SummonMoney;
+	SaveGameRef->ChosenHorseData = ChosenHorseData;
 }
 
 void UBaseGameInstance::SaveEquipData()
 {
 	SaveGameRef->EquipData = EquipData;
-	SaveGameRef->ScrapMoney = ScrapMoney;
+	SaveGameRef->ChosenEquipData = ChosenEquipData;
 }
 
 void UBaseGameInstance::SaveWorldData()
@@ -399,8 +420,13 @@ void UBaseGameInstance::LoadData()
 	HorseData = SaveGameRef->HorseData;
 	EquipData = SaveGameRef->EquipData;
 	LevelData = SaveGameRef->LevelData;
+
+	ChosenHorseData = SaveGameRef->ChosenHorseData;
+	ChosenEquipData = SaveGameRef->ChosenEquipData;
+	
 	SummonMoney = SaveGameRef->SummonMoney;
 	ScrapMoney = SaveGameRef->ScrapMoney;
+	
 	MissionNextResetRef = SaveGameRef->MissionNextResetRef;
 	TrackMissionTarget = SaveGameRef->TrackMissionTarget;
 	RankMissionTarget = SaveGameRef->RankMissionTarget;
@@ -423,6 +449,7 @@ void UBaseGameInstance::CheckFileIntegrity()
 	CheckWorldIntegrity();
 	CheckMoneyIntegrity();
 	CheckMissionIntegrity();
+	UGameplayStatics::SaveGameToSlot(SaveGameRef, SaveName, 0);
 }
 
 void UBaseGameInstance::CheckHorseIntegrity()

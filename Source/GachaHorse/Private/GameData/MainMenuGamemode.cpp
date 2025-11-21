@@ -23,9 +23,9 @@ void AMainMenuGamemode::BeginPlay()
 	
 	CheckPossibleCrash();
 
-	FTimerHandle FuckYou;
+	FTimerHandle InitialMissionTimerHandle;
 	GetWorldTimerManager().SetTimer(
-		FuckYou,
+		InitialMissionTimerHandle,
 		this,
 		&AMainMenuGamemode::DoWeNeedToRefreshNow,
 		1.0f,
@@ -298,7 +298,7 @@ void AMainMenuGamemode::GachaPullHorses(bool bTenSummons)
 	if (InstanceRef->GetMoney() < Price)
 		return;
 	
-	InstanceRef->AddMoney(Price);
+	InstanceRef->AddMoney(-Price);
 	
 	TArray<int> AllGains = CalculatePossibleHorseGains(bTenSummons);
 	float Delay = 0.25f;
@@ -318,7 +318,7 @@ void AMainMenuGamemode::GachaPullEquips(bool bTenSummons)
 	if (InstanceRef->GetMoney() < Price)
 		return;
 
-	InstanceRef->AddMoney(Price);
+	InstanceRef->AddMoney(-Price);
 	
 	TArray<int> AllGains = CalculatePossibleEquipGains(bTenSummons);
 	float Delay = 0.25f;

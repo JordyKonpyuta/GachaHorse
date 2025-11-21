@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AllStructs.h"
 #include "GameFramework/SaveGame.h"
 #include "HorseGameSave.generated.h"
 
@@ -21,7 +22,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FHorseDataStruct> HorseData;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FHorseDataStruct ChosenHorseData;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FEquipDataStruct> EquipData;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FEquipDataStruct ChosenEquipData;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FWorldMapDataStruct> LevelData;
 

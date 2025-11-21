@@ -89,6 +89,8 @@ void ABaseHorse::BeginPlay()
 	// THIRD : SET SPEED
 
 	SetTargetSpeed(1);
+	GEngine->AddOnScreenDebugMessage(-1, 100.f, FColor::Green, GameInstanceRef->ChosenHorseData.HorseName);
+	GEngine->AddOnScreenDebugMessage(-1, 100.f, FColor::Green, FString::FromInt(GameInstanceRef->ChosenHorseData.Level));
 
 	// FOURTH : CREATE WIDGET
 	
@@ -138,8 +140,10 @@ void ABaseHorse::Tick(float DeltaTime)
 	{
 		if (!bIsRagdoll && GetCharacterMovement()->IsMovingOnGround())
 		{
+			GEngine->AddOnScreenDebugMessage(-2, 0.f, FColor::Red, FString::FromInt(-(1 - SlopeType * 0.5)));
 			AddMovementInput(GetActorForwardVector(),
-				-(1 - SlopeType * 0.5), false);
+				-(150 - SlopeType * 75) * DeltaTime, false);
+			
 		}
 	}
 	else if (CurrentSpeed < MaxAvailableSpeed - 1)
@@ -147,9 +151,11 @@ void ABaseHorse::Tick(float DeltaTime)
 		if (!bIsRagdoll && GetCharacterMovement()->IsMovingOnGround())
 		{
 			AddMovementInput(GetActorForwardVector(),
-				1 + SlopeType * 0.5, false);
+				(120 + SlopeType * 60) * DeltaTime, false);
 		}
 	}
+
+	GEngine->AddOnScreenDebugMessage(-2, 0.f, FColor::Blue, FString::SanitizeFloat(CurrentSpeed));
 
 	// MOVE HORSEY LEFTY RIGHTY
 	if (!(-0.1 < SideSpeed && SideSpeed < 0.1))
@@ -347,6 +353,11 @@ void ABaseHorse::InitAcceleration()
 
 void ABaseHorse::InitSpeed()
 {
+	SpeedTable[0] = -175 - Stats[1];
+	SpeedTable[1] = 0;
+	SpeedTable[2] = 350 + (Stats[1] * 2);
+	SpeedTable[3] = 875 + (Stats[1] * 5);
+	SpeedTable[4] = 1400 + (Stats[1] * 8);
 	SpeedTable[5] = 1750 + (Stats[1] * 10);
 }
 

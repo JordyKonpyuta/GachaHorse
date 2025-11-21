@@ -50,7 +50,7 @@ public:
 	// ==========================
 
 	UPROPERTY()
-	ECameraPosition CurrentCameraPosition = ECameraPosition::Menu;
+	ECameraPosition CurrentCameraPosition = ECameraPosition::TitleScreen;
 	
 	// ===========================
 	// ==         Timer         ==
