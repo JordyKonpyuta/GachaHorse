@@ -121,26 +121,9 @@ void UBaseGameInstance::PrepareMissions()
 	// ==     Actual Game     ==
 	// =========================
 
-void UBaseGameInstance::StartGame(TSoftObjectPtr<UWorld> WorldToLoad, int HorseID, int EquipmentID, bool bGoesToTrainingMode)
+void UBaseGameInstance::StartGame(TSoftObjectPtr<UWorld> WorldToLoad, bool bGoesToTrainingMode)
 {
 	bIsTrainingMode = bGoesToTrainingMode;
-	
-	for (int i = 0; i < HorseData.Num(); i++)
-	{
-		if (HorseData[i].HorseID == HorseID)
-		{
-			ChosenHorseData = HorseData[i];
-			break;
-		}
-	}
-	for (int i = 0; i < EquipData.Num(); i++)
-	{
-		if (EquipData[i].EquipmentID == EquipmentID)
-		{
-			ChosenEquipData = EquipData[i];
-			break;
-		}
-	}
 
 	for (int i = 0; i < LevelData.Num(); i++)
 	{
@@ -178,10 +161,13 @@ void UBaseGameInstance::ObtainedHorse(int HorseID)
 
 void UBaseGameInstance::ObtainedEquip(int EquipID)
 {
+	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "A");
 	for (int i = 0; i < EquipData.Num(); i++)
 	{
+		GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "B");
 		if (EquipData[i].EquipmentID == EquipID)
 		{
+			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "NINJA");
 			if (!EquipData[i].bEquipmentPossessed)
 				EquipData[i].bEquipmentPossessed = true;
 			else
@@ -195,6 +181,8 @@ void UBaseGameInstance::ObtainedEquip(int EquipID)
 			}
 			if (SaveGameRef->IsValidLowLevelFast())
 				SaveGameRef->EquipData[i] = EquipData[i];
+
+			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, EquipData[i].EquipmentName);
 			break;
 		}
 	}
@@ -237,6 +225,7 @@ void UBaseGameInstance::CheckAvailableHorse(bool bCheckingLeft)
 void UBaseGameInstance::EquipHorse()
 {
 	ChosenHorseData = ViewedHorseData;
+	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, ChosenHorseData.HorseName);
 }
 
 void UBaseGameInstance::SelectEquip(int EquipID)
@@ -276,6 +265,7 @@ void UBaseGameInstance::CheckAvailableEquip(bool bCheckingLeft)
 void UBaseGameInstance::EquipEquips()
 {
 	ChosenEquipData = ViewedEquipData;
+	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, ChosenEquipData.EquipmentName);
 }
 
 void UBaseGameInstance::LevelUpHorse()
@@ -284,13 +274,20 @@ void UBaseGameInstance::LevelUpHorse()
 	{
 		if (HorseData[i].HorseID == ViewedHorseData.HorseID)
 		{
-			if (HorseData[i].Level >= 6)
+			int Price = FMath::Pow(2.0, HorseData[i].Level - 1);
+			
+			GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, FString::FromInt(Price));
+			
+			if (HorseData[i].Level >= 6 || HorseData[i].ShardNumber < Price)
 				return;
 			
 			HorseData[i].ShardNumber -= FMath::Pow(2.0f, HorseData[i].Level - 1);
 			GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, FString::FromInt(HorseData[i].Level));
 			HorseData[i].Level += 1;
 			ViewedHorseData = HorseData[i];
+
+			if (ViewedHorseData.HorseID == ChosenHorseData.HorseID)
+				ChosenHorseData = ViewedHorseData;
 
 			SaveGame();
 			break;
@@ -315,9 +312,15 @@ void UBaseGameInstance::LevelUpEquip()
 				BaseCost = 5;
 			else
 				BaseCost = 25;
+
+			if (GetScrap() < BaseCost * FMath::Pow(2.0f, EquipData[i].Level - 1))
+				return;
 			AddScrap(-(BaseCost * FMath::Pow(2.0f, EquipData[i].Level - 1)));
 			EquipData[i].Level += 1;
 			ViewedEquipData = EquipData[i];
+
+			if (ViewedEquipData.EquipmentID == ChosenEquipData.EquipmentID)
+				ChosenEquipData = ViewedEquipData;
 
 			SaveGame();
 			break;
@@ -422,7 +425,9 @@ void UBaseGameInstance::LoadData()
 	LevelData = SaveGameRef->LevelData;
 
 	ChosenHorseData = SaveGameRef->ChosenHorseData;
+	ViewedHorseData = ChosenHorseData;
 	ChosenEquipData = SaveGameRef->ChosenEquipData;
+	ViewedEquipData = ChosenEquipData;
 	
 	SummonMoney = SaveGameRef->SummonMoney;
 	ScrapMoney = SaveGameRef->ScrapMoney;

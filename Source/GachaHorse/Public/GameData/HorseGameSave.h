@@ -19,6 +19,7 @@ class GACHAHORSE_API UHorseGameSave : public USaveGame
 	GENERATED_BODY()
 
 public:
+	// CHARACTER
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FHorseDataStruct> HorseData;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

@@ -31,7 +31,7 @@ public:
 	// ==      Management      ==
 	// ==========================
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadWrite)
 	bool bIsCheckingHorse = true;
 
 protected:

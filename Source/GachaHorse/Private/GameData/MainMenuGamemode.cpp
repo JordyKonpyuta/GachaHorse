@@ -326,7 +326,7 @@ void AMainMenuGamemode::GachaPullEquips(bool bTenSummons)
 	for (int CurrentEquipID : AllGains)
 	{
 		PrepareSummonResults(false, CurrentEquipID, Delay);
-		InstanceRef->ObtainedHorse(CurrentEquipID);
+		InstanceRef->ObtainedEquip(CurrentEquipID);
 		Delay += 0.5f;
 	}
 }
