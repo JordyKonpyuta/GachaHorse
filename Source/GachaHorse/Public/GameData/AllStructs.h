@@ -94,6 +94,8 @@ public:
 	// WORLD DATA
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSoftObjectPtr<UWorld> WorldToLoad;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int WorldID;
 
 	// DATA
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -110,6 +112,7 @@ public:
 	FWorldMapDataStruct()
 	{
 		WorldToLoad = nullptr;
+		WorldID = -1;
 		BestPersonalTime = 1000.0;
 		PersonalTimeSplits.Empty();
 		LevelName = "LevelName";
@@ -217,10 +220,12 @@ public:
 		WorldPicture = nullptr;
 	}
 
-	FWorldMapDataStruct(TSoftObjectPtr<UWorld> WorldChosen, float CurTime, TArray<float> Splits,
-		FString Name, TMap<FName, float> NewRankings, TSoftObjectPtr<UTexture2D> TheWorldPicture)
+	FWorldMapDataStruct(TSoftObjectPtr<UWorld> WorldChosen, int ThisWorldID, float CurTime,
+		TArray<float> Splits, FString Name, TMap<FName, float> NewRankings,
+		TSoftObjectPtr<UTexture2D> TheWorldPicture)
 	{
 		WorldToLoad = WorldChosen;
+		WorldID = ThisWorldID;
 		BestPersonalTime = CurTime;
 		PersonalTimeSplits = Splits;
 		LevelName = Name;

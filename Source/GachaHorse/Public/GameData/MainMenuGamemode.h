@@ -157,7 +157,7 @@ protected:
 	// ==========================
 
 	UFUNCTION(BlueprintNativeEvent, Blueprintable, BlueprintCallable)
-	void DisplayRankingsResults(bool bIsPlayer, FName CurRankName, float CurRankTime);
+	void DisplayRankingsResults(bool bIsPlayer, FName CurRankName, float CurRankTime, int CurrentRank);
 
 	// ==========================
 	// ==        DEBOOG        ==

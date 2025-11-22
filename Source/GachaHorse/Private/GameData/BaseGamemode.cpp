@@ -162,10 +162,11 @@ void ABaseGamemode::Victory()
 
 	int MoneyAdded = 10;
 
-	if (RankAchieved >= OldRank)
+	if (RankAchieved < OldRank)
 	{
 		MoneyAdded = 10 + (OldRank - RankAchieved) * 10;
 		InstanceRef->AddMoney(MoneyAdded);
+		InstanceRef->LevelData[InstanceRef->LevelSelected].BestPersonalTime = BestTime;
 	}
 	
 	WidgetVictory(Timer, OldRank, RankAchieved, MoneyAdded);
@@ -183,8 +184,8 @@ void ABaseGamemode::CheckMissions()
 	FTimerHandle MissionHandle;
 	FirstMissionWidget(true, 100);
 	int Reward = 101 - InstanceRef->RankMissionTarget * 3;
-	FirstMissionWidget(true, Reward);
-	FirstMissionWidget(true, 100);
+	SecondMissionWidget(true, Reward);
+	ThirdMissionWidget(true, 100);
 	
 	// FIRST : THE COURSE YOU RAN THROUGH
 	GetWorldTimerManager().SetTimer(

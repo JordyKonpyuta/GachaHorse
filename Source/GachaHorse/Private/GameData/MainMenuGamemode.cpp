@@ -366,6 +366,7 @@ void AMainMenuGamemode::DisplayMissionsWidget_Implementation(FString& TrackMissi
 void AMainMenuGamemode::PrepareRankingResults(int CurrentWorldSelected)
 {
 	bool bPlayerAppeared = false;
+	int CurRank = 1;
 
 	if (InstanceRef->LevelData.IsEmpty())
 		return;
@@ -376,23 +377,28 @@ void AMainMenuGamemode::PrepareRankingResults(int CurrentWorldSelected)
 		{
 			if (InstanceRef->LevelData[CurrentWorldSelected].BestPersonalTime < CurrentRanking.Value)
 			{
-				DisplayRankingsResults(true, FName(*InstanceRef->PlayerName), InstanceRef->LevelData[CurrentWorldSelected].BestPersonalTime);
+				DisplayRankingsResults(true, FName(*InstanceRef->PlayerName), InstanceRef->LevelData[CurrentWorldSelected].BestPersonalTime, CurRank);
 				bPlayerAppeared = true;
-				DisplayRankingsResults(false, CurrentRanking.Key, CurrentRanking.Value);
+				CurRank++;
+				DisplayRankingsResults(false, CurrentRanking.Key, CurrentRanking.Value, CurRank);
 			}
 			else
 			{
-				DisplayRankingsResults(false, CurrentRanking.Key, CurrentRanking.Value);
+				DisplayRankingsResults(false, CurrentRanking.Key, CurrentRanking.Value, CurRank);
 			}
 		}
 		else
 		{
-			DisplayRankingsResults(false, CurrentRanking.Key, CurrentRanking.Value);
+			DisplayRankingsResults(false, CurrentRanking.Key, CurrentRanking.Value, CurRank);
 		}
+		CurRank++;
 	}
+
+	if (!bPlayerAppeared)
+		DisplayRankingsResults(true, FName(*InstanceRef->PlayerName), InstanceRef->LevelData[CurrentWorldSelected].BestPersonalTime, CurRank);
 }
 
-void AMainMenuGamemode::DisplayRankingsResults_Implementation(bool bIsPlayer, FName CurRankName, float CurRankTime)
+void AMainMenuGamemode::DisplayRankingsResults_Implementation(bool bIsPlayer, FName CurRankName, float CurRankTime, int CurrentRank)
 {
 }
 
