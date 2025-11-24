@@ -34,7 +34,7 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsCheckingHorse = true;
 
-protected:
+protected:	
 	// ==========================
 	// ==       Missions       ==
 	// ==========================

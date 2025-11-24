@@ -316,10 +316,18 @@ protected:
 	// ==       Ragdoll       ==
 	// =========================
 
+	UFUNCTION(BlueprintNativeEvent)
+	void VFXOnHit(bool bIsHorseKill);
+
 	UFUNCTION()
 	void BeginRagdoll();
 	UFUNCTION()
 	void CeaseRagdoll();
+
+	UFUNCTION(BlueprintNativeEvent, Blueprintable)
+	void TimeBeginsSlow();
+	UFUNCTION(Blueprintable, BlueprintCallable)
+	void TimeManipulation(float GameSpeed);
 	
 	// ========================
 	// ==       Damage       ==

@@ -2,8 +2,11 @@
 
 
 #include "GameObjects/MainMenuCameraManager.h"
+
+#include "AssetTypeActions/AssetDefinition_SoundBase.h"
 #include "Camera/CameraActor.h"
 #include "CharactersData/MainMenuController.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AMainMenuCameraManager::AMainMenuCameraManager()
@@ -68,6 +71,9 @@ void AMainMenuCameraManager::ChangeCameraView()
 {
 	ACameraActor* NewCamera = Cameras[CurrentCameraPosition];
 	ControllerRef->SetViewTargetWithBlend(NewCamera, 0.0f);
+
+	//UE::AudioEditor::PlaySound(CameraChangeSound);
+	UGameplayStatics::PlaySound2D(GetWorld(), CameraChangeSound, 1.0f, 1.0f, 0.0f);
 	
 	ChangeMenu();
 }

@@ -64,6 +64,12 @@ public:
 	// ==========================
 	
 protected:
+	// =========================
+	// ==        Sound        ==
+	// =========================
+
+	UPROPERTY(EditAnywhere, Blueprintable, BlueprintReadWrite) 
+	TObjectPtr<USoundBase> CameraChangeSound;
 
 	// UFUNCTIONS
 public:	

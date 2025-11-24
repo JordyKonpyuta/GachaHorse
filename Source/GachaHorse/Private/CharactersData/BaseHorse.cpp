@@ -9,6 +9,7 @@
 #include "EnhancedInputComponent.h"
 #include "GameData/BaseGameInstance.h"
 #include "GameData/BaseGamemode.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
 
@@ -505,10 +506,13 @@ void ABaseHorse::Respawn()
 	GetController()->SetControlRotation(FRotator(RespawnPoint.GetRotation()));
 }
 
-
 	// =========================
 	// ==       Ragdoll       ==
 	// =========================
+
+void ABaseHorse::VFXOnHit_Implementation(bool bIsHorseKill)
+{
+}
 
 void ABaseHorse::BeginRagdoll()
 {
@@ -518,6 +522,7 @@ void ABaseHorse::BeginRagdoll()
 	RiderSkel->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndPhysics);
 	RiderSkel->SetSimulatePhysics(true);
 	GetCharacterMovement()->StopMovementImmediately();
+	TimeBeginsSlow();
 
 	GetWorldTimerManager().SetTimer(
 		RagdollTimerHandle,
@@ -540,7 +545,23 @@ void ABaseHorse::CeaseRagdoll()
 	RiderSkel->AttachToComponent(GetCapsuleComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	RiderSkel->SetRelativeLocationAndRotation(FVector(0, 0, -90), FRotator(0, -90, 0));
 }
-	
+
+void ABaseHorse::TimeBeginsSlow_Implementation()
+{
+}
+
+void ABaseHorse::TimeManipulation(float GameSpeed)
+{
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), GameSpeed);
+
+	HorseSpringArm->TargetArmLength = 300.0f + GameSpeed * 300.0f;
+
+	if (GameSpeed == 1.0f)
+	{
+		HorseSpringArm->TargetArmLength = 600.0f;
+	}
+}
+
 	// ========================
 	// ==       Damage       ==
 	// ========================
@@ -564,17 +585,20 @@ void ABaseHorse::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UP
 			{
 				BeginRagdoll();
 				SetTargetSpeed(1);
+				VFXOnHit(true);
 			}
 			else
 			{
 				GetCharacterMovement()->StopMovementImmediately();
 				SetTargetSpeed(FMath::Clamp(TargetSpeed, 0, 1));
+				VFXOnHit(false);
 			}
 		}
 		else
 		{
 			BeginRagdoll();
 			SetTargetSpeed(1);
+			VFXOnHit(true);
 		}
 	}
 	else if (FVector2D::DotProduct(NormalHitSave2D, ForwardVector2D) <= 0.0)
@@ -589,6 +613,7 @@ void ABaseHorse::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UP
 			SetTargetSpeed(FMath::Clamp(CurrentSpeedIndex, 0, 4));
 			PauseShiftSpeedPossibility(1.0f);
 		}
+		VFXOnHit(false);
 	}
 	else
 	{

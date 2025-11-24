@@ -56,7 +56,7 @@ public:
 	// ==        Values        ==
 	// ==========================
 
-	UPROPERTY(EditAnywhere, Category="Checkpoints")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Checkpoints")
 	ECheckpointType CurrentCheckpointType = ECheckpointType::Generic;
 
 	UPROPERTY(EditAnywhere, Category="Checkpoints", meta = (EditCondition = "CurrentCheckpointType == ECheckpointType::Generic"))
