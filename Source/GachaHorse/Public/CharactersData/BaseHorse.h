@@ -304,6 +304,9 @@ protected:
 	void ChargeJump(float DeltaTime);
 
 	virtual void Landed(const FHitResult& Hit) override;
+
+	UFUNCTION(BlueprintNativeEvent, Blueprintable)
+	void Landed_Blueprint();
 	
 	// =========================
 	// ==       Respawn       ==

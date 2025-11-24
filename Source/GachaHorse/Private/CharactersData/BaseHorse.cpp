@@ -480,7 +480,13 @@ void ABaseHorse::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
 
+	Landed_Blueprint();
+
 	bHasJustJumped = true;
+}
+
+void ABaseHorse::Landed_Blueprint_Implementation()
+{
 }
 
 	// ==========================
