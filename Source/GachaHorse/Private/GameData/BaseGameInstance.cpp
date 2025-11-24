@@ -276,13 +276,10 @@ void UBaseGameInstance::LevelUpHorse()
 		{
 			int Price = FMath::Pow(2.0, HorseData[i].Level - 1);
 			
-			GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, FString::FromInt(Price));
-			
 			if (HorseData[i].Level >= 6 || HorseData[i].ShardNumber < Price)
 				return;
 			
 			HorseData[i].ShardNumber -= FMath::Pow(2.0f, HorseData[i].Level - 1);
-			GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, FString::FromInt(HorseData[i].Level));
 			HorseData[i].Level += 1;
 			ViewedHorseData = HorseData[i];
 
@@ -290,10 +287,15 @@ void UBaseGameInstance::LevelUpHorse()
 				ChosenHorseData = ViewedHorseData;
 
 			SaveGame();
+			LevelUpHorseVisual();
 			break;
 		}
 	}
 	Cast<AMainMenuGamemode>(GetWorld()->GetAuthGameMode())->SelectHorseWidget(ViewedHorseData);
+}
+
+void UBaseGameInstance::LevelUpHorseVisual_Implementation()
+{
 }
 
 void UBaseGameInstance::LevelUpEquip()
@@ -322,11 +324,17 @@ void UBaseGameInstance::LevelUpEquip()
 			if (ViewedEquipData.EquipmentID == ChosenEquipData.EquipmentID)
 				ChosenEquipData = ViewedEquipData;
 
+			LevelUpEquipVisual();
+
 			SaveGame();
 			break;
 		}
 	}
 	Cast<AMainMenuGamemode>(GetWorld()->GetAuthGameMode())->SelectEquipWidget(ViewedEquipData);
+}
+
+void UBaseGameInstance::LevelUpEquipVisual_Implementation()
+{
 }
 
 	// =========================

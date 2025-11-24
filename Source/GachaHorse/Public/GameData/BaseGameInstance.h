@@ -184,8 +184,12 @@ public:
 
 	UFUNCTION()
 	void LevelUpHorse();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void LevelUpHorseVisual();
 	UFUNCTION()
 	void LevelUpEquip();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void LevelUpEquipVisual();
 
 private:
 	// ==========================
