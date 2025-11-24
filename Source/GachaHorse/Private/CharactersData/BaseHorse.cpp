@@ -213,7 +213,7 @@ void ABaseHorse::Turn(const FInputActionValue& Value)
 	if (bIsRagdoll)
 		return;
 
-	float TurnAngle = (Value.Get<float>() * TurnRateFactor) / (bIsChargingJump ? 3 : 1) / (GetCharacterMovement()->IsMovingOnGround() ? 1 : 100);
+	float TurnAngle = (Value.Get<float>() * TurnRateFactor) / (bIsChargingJump ? 2 : 1) / (GetCharacterMovement()->IsMovingOnGround() ? 1 : 100);
 	TurnAngle *= TickCorrecter;
 	
 	AddControllerYawInput(TurnAngle * GetWorld()->GetDeltaSeconds());
@@ -465,7 +465,7 @@ void ABaseHorse::ChargeJump(float DeltaTime)
 	}
 
 	// APPLY PERCENTAGE CALC
-	JumpCharge = FMath::Clamp(JumpCharge + (DeltaTime / 3), 0.0f, 1.0f);
+	JumpCharge = FMath::Clamp(JumpCharge + (DeltaTime / 1.5f), 0.0f, 1.0f);
 
 	// MAKE SURE TO CHANGE JUMP VELOCITY ONLY IF YOU CAN JUMP
 	if (JumpCharge < 0.7)
