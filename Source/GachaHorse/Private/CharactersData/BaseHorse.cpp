@@ -245,6 +245,9 @@ void ABaseHorse::ReleaseJump()
 		JumpCharge = 0.0f;
 		return;
 	}
+	
+	if (!bIsChargingJump)
+		return;
 
 	if (!bIsRagdoll && CurrentSpeed > 750 && GetCharacterMovement()->JumpZVelocity > 325.0f)
 	{
@@ -455,7 +458,7 @@ void ABaseHorse::CalculateCurrentSpeed()
 void ABaseHorse::ChargeJump(float DeltaTime)
 {
 	// DON'T WASTE TIME IF YOU'RE READY TO JUMP
-	if (!bIsChargingJump || JumpCharge == 1.0f)
+	if (!bIsChargingJump || JumpCharge == 1.0f || !GetCharacterMovement()->IsMovingOnGround())
 		return;
 
 	// MAKE SURE YOU CAN'T GO HIGHER THAN 100%
@@ -587,7 +590,7 @@ void ABaseHorse::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UP
 		// HEADSHOT!
 		if (GetCharacterMovement()->IsMovingOnGround())
 		{
-			if (CurrentSpeed > 800)
+			if (CurrentSpeed > SpeedTable[3])
 			{
 				BeginRagdoll();
 				SetTargetSpeed(1);
@@ -614,7 +617,7 @@ void ABaseHorse::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UP
 		
 		GetCharacterMovement()->Velocity = GetCharacterMovement()->Velocity.RotateAngleAxis(FVector2D::DotProduct(NormalHitSave2D, RightVector2D) > 0 ? 0.5 : -0.5, FVector(0,0,1));
 
-		if (CurrentSpeed > 1000)
+		if (CurrentSpeed > SpeedTable[3])
 		{
 			SetTargetSpeed(FMath::Clamp(CurrentSpeedIndex, 0, 4));
 			PauseShiftSpeedPossibility(1.0f);

@@ -40,11 +40,12 @@ public:
 	float Timer = -7.0f;
 
 	UPROPERTY()
+	bool bGameLoaded = false;
+	bool bDoNotRunTimer = true;
 	bool bThreeBeforeGo = false;
 	bool bTwoBeforeGo = false;
 	bool bOneBeforeGo = false;
 	bool bHasStartedRun = false;
-	bool bHasEndedRun = false;
 
 	UPROPERTY()
 	float BestTime = 1000.0f;
@@ -108,6 +109,21 @@ protected:
 	// ==========================
 	
 	virtual void BeginPlay() override;
+	
+	// ==========================
+	// ==    Pre-Beginnings    ==
+	// ==========================
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Blueprintable)
+	void PrepareGame();
+
+	UFUNCTION()
+	void CheckAllAssets();
+
+	UFUNCTION(BlueprintCallable, Blueprintable)
+	void GamePrepared();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Blueprintable)
+	void GamePrepared_Blueprint();
 	
 	// ==========================
 	// ==      Beginnings      ==

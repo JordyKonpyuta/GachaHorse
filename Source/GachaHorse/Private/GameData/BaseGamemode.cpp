@@ -20,7 +20,12 @@ void ABaseGamemode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!bHasEndedRun)
+	if (!bGameLoaded)
+	{
+		CheckAllAssets();
+	}
+
+	if (!bDoNotRunTimer)
 		Timer += DeltaTime;
 
 	if (!bHasStartedRun)
@@ -63,12 +68,39 @@ void ABaseGamemode::BeginPlay()
 	BestTime = InstanceRef->LevelData[InstanceRef->LevelSelected].BestPersonalTime;
 	BestTimeSplits = InstanceRef->LevelData[InstanceRef->LevelSelected].PersonalTimeSplits;
 
+	PrepareGame();
+
 	SetupWidgets();
 }
 	
 	// ==========================
 	// ==      Beginnings      ==
 	// ==========================
+
+void ABaseGamemode::PrepareGame_Implementation()
+{
+}
+
+void ABaseGamemode::CheckAllAssets()
+{
+	int32 RemainingRequests = FStreamingManagerCollection::Get().BlockTillAllRequestsFinished(0.0f, true);
+
+	if (RemainingRequests == 0)
+	{
+		bGameLoaded = true;
+		GamePrepared();
+	}
+}
+
+void ABaseGamemode::GamePrepared()
+{
+	bDoNotRunTimer = false;
+	GamePrepared_Blueprint();
+}
+
+void ABaseGamemode::GamePrepared_Blueprint_Implementation()
+{
+}
 
 void ABaseGamemode::StartGame()
 {
@@ -155,7 +187,7 @@ void ABaseGamemode::Victory()
 		Timer = 0.0f;
 		return;
 	}
-	bHasEndedRun = true;
+	bDoNotRunTimer = true;
 
 	int OldRank = CalculateRank(InstanceRef->LevelData[InstanceRef->LevelSelected].BestPersonalTime);
 	RankAchieved = CalculateRank(Timer);
