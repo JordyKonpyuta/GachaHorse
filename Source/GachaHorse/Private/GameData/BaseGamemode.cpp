@@ -124,9 +124,19 @@ void ABaseGamemode::StartGame()
 
 void ABaseGamemode::DisplaySplit(int CheckpointIndex)
 {
-	float TimeDifference = BestTimeSplits[CheckpointIndex] - Timer;
-	CurrentTimeSplits[CheckpointIndex] = Timer;
-
+	float TimeDifference = 0.0f;
+	if (BestTimeSplits.IsValidIndex(CheckpointIndex))
+		TimeDifference = BestTimeSplits[CheckpointIndex] - Timer;
+	
+	if (CheckpointIndex != 0)
+	{
+		CurrentTimeSplits.Add(Timer - CurrentTimeSplits[CheckpointIndex - 1]);
+	}
+	else
+	{
+		CurrentTimeSplits.Add(Timer);
+	}
+	
 	DisplaySplitWidget(TimeDifference);
 }
 

@@ -5,6 +5,7 @@
 #include "CharactersData/BaseHorse.h"
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
+#include "GameData/BaseGameInstance.h"
 #include "GameData/BaseGamemode.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -110,10 +111,6 @@ void ACheckpoints::UnblockStart()
 	CheckpointArea->SetCollisionResponseToAllChannels(ECR_Overlap);
 }
 
-void ACheckpoints::HideAwayTimer_Implementation()
-{
-}
-
 void ACheckpoints::RegularCheckpointCrossed(ABaseHorse* HorseActor)
 {
 	if (HorseActor->CurrentCheckpointIndex != CurrentIndex - 1)
@@ -123,8 +120,7 @@ void ACheckpoints::RegularCheckpointCrossed(ABaseHorse* HorseActor)
 	
 	HorseActor->SetPlayerRespawn(NewRespawn);
 	HorseActor->CurrentCheckpointIndex = CurrentIndex;
-
-	
+	GamemodeRef->DisplaySplit(CurrentIndex);
 }
 
 void ACheckpoints::StartCheckPointCrossed(ABaseHorse* HorseActor)

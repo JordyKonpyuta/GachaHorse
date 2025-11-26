@@ -82,7 +82,7 @@ public:
 	// =========================
 	// ==        Timer        ==
 	// =========================
-
+	
 	UFUNCTION()
 	void DisplaySplit(int CheckpointIndex);
 	

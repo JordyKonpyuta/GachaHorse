@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Checkpoints.generated.h"
 
+class UBaseGameInstance;
 class ABaseGamemode;
 class ABaseHorse;
 class UArrowComponent;
@@ -85,13 +86,6 @@ public:
 
 	UFUNCTION()
 	void UnblockStart();
-	
-	// ===========================
-	// ==        Widgets        ==
-	// ===========================
-
-	UFUNCTION(BlueprintCallable, Blueprintable, BlueprintNativeEvent)
-	void HideAwayTimer();
 
 protected:
 	// ==========================
