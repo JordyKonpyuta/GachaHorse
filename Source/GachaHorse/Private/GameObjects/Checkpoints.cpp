@@ -5,7 +5,6 @@
 #include "CharactersData/BaseHorse.h"
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
-#include "GameData/BaseGameInstance.h"
 #include "GameData/BaseGamemode.h"
 #include "Kismet/GameplayStatics.h"
 
