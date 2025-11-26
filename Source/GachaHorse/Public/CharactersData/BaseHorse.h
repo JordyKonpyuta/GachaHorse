@@ -81,18 +81,18 @@ protected:
 	TObjectPtr<UCameraComponent> HorseCamera;
 
 	
-	UPROPERTY(EditAnywhere, Category="SkeletonComponent")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="SkeletonComponent")
 	TObjectPtr<USkeletalMeshComponent> RiderSkel;
 	
-	UPROPERTY(EditAnywhere, Category="SkeletonComponent")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="SkeletonComponent")
 	TObjectPtr<USkeletalMeshComponent> HorseSkel;
-	UPROPERTY(EditAnywhere, Category="SkeletonComponent")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="SkeletonComponent")
 	TObjectPtr<USkeletalMeshComponent> SaddleSkel;
-	UPROPERTY(EditAnywhere, Category="SkeletonComponent")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="SkeletonComponent")
 	TObjectPtr<USkeletalMeshComponent> HairSkel;
-	UPROPERTY(EditAnywhere, Category="SkeletonComponent")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="SkeletonComponent")
 	TObjectPtr<USkeletalMeshComponent> BeltsSkel;
-	UPROPERTY(EditAnywhere, Category="SkeletonComponent")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="SkeletonComponent")
 	TObjectPtr<USkeletalMeshComponent> ReinsSkel;
 	
 	// =========================
