@@ -229,8 +229,6 @@ void ABaseGamemode::CheckMissions()
 	int Reward = 101 - InstanceRef->RankMissionTarget * 3;
 	SecondMissionWidget(false, Reward);
 	ThirdMissionWidget(false, 100);
-
-	GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, "AAAAAAAAAAAAH MISSIONS");
 	
 	// FIRST : THE COURSE YOU RAN THROUGH
 	GetWorldTimerManager().SetTimer(
@@ -239,26 +237,11 @@ void ABaseGamemode::CheckMissions()
 		&ABaseGamemode::CheckFirstMission,
 		1.25f,
 		false);
-	
-	// SECOND : RANK MISSION TARGET
-	GetWorldTimerManager().SetTimer(
-		MissionHandle,
-		this,
-		&ABaseGamemode::CheckSecondMission,
-		1.50f,
-		false);
-	
-	// THIRD : evil and intimidating horse
-	GetWorldTimerManager().SetTimer(
-		MissionHandle,
-		this,
-		&ABaseGamemode::CheckThirdMission,
-		1.75f,
-		false);
 }
 
 void ABaseGamemode::CheckFirstMission()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 500.f, FColor::Blue, FString::FromInt(InstanceRef->LevelSelected));
 	if (InstanceRef->LevelData[InstanceRef->LevelSelected].WorldToLoad == InstanceRef->TrackMissionTarget)
 	{
 		InstanceRef->AddMoney(100);
@@ -266,11 +249,20 @@ void ABaseGamemode::CheckFirstMission()
 		FirstMissionWidget(true, 100);
 		GEngine->AddOnScreenDebugMessage(-1,500.f, FColor::Blue, "AAAAAAAAAAAAH yay mission 1 :=)");
 	}
+	FTimerHandle MissionHandle;
+	
+	// SECOND : RANK MISSION TARGET
+	GetWorldTimerManager().SetTimer(
+		MissionHandle,
+		this,
+		&ABaseGamemode::CheckSecondMission,
+		0.25f,
+		false);
 }
 
 void ABaseGamemode::CheckSecondMission()
 {
-	if (InstanceRef->RankMissionTarget >= RankAchieved)
+	if (RankAchieved <= InstanceRef->RankMissionTarget)
 	{
 		int Reward = 101 - RankAchieved * 3;
 		InstanceRef->AddMoney(Reward);
@@ -278,6 +270,15 @@ void ABaseGamemode::CheckSecondMission()
 		SecondMissionWidget(true, Reward);
 	GEngine->AddOnScreenDebugMessage(-1,500.f, FColor::Green, "I CANT BELIEVE ITS NOT A LOSS! Misson 2 succsex");
 	}
+	FTimerHandle MissionHandle;
+	
+	// THIRD : evil and intimidating horse
+	GetWorldTimerManager().SetTimer(
+		MissionHandle,
+		this,
+		&ABaseGamemode::CheckThirdMission,
+		0.25f,
+		false);
 }
 
 void ABaseGamemode::CheckThirdMission()
