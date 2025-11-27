@@ -6,8 +6,9 @@
 #include "CharactersData/BaseHorse.h"
 #include "GameData/BaseGameInstance.h"
 #include "GameObjects/Checkpoints.h"
+#include "Materials/MaterialExpressionLocalPosition.h"
 
-	// ==========================
+// ==========================
 	// ==    Base Functions    ==
 	// ==========================
 
@@ -224,17 +225,19 @@ void ABaseGamemode::CheckMissions()
 		return;
 	}
 	FTimerHandle MissionHandle;
-	FirstMissionWidget(true, 100);
+	FirstMissionWidget(false, 100);
 	int Reward = 101 - InstanceRef->RankMissionTarget * 3;
-	SecondMissionWidget(true, Reward);
-	ThirdMissionWidget(true, 100);
+	SecondMissionWidget(false, Reward);
+	ThirdMissionWidget(false, 100);
+
+	GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, "AAAAAAAAAAAAH MISSIONS");
 	
 	// FIRST : THE COURSE YOU RAN THROUGH
 	GetWorldTimerManager().SetTimer(
 		MissionHandle,
 		this,
 		&ABaseGamemode::CheckFirstMission,
-		0.25f,
+		1.25f,
 		false);
 	
 	// SECOND : RANK MISSION TARGET
@@ -242,7 +245,7 @@ void ABaseGamemode::CheckMissions()
 		MissionHandle,
 		this,
 		&ABaseGamemode::CheckSecondMission,
-		0.50f,
+		1.50f,
 		false);
 	
 	// THIRD : evil and intimidating horse
@@ -250,28 +253,30 @@ void ABaseGamemode::CheckMissions()
 		MissionHandle,
 		this,
 		&ABaseGamemode::CheckThirdMission,
-		0.75f,
+		1.75f,
 		false);
 }
 
 void ABaseGamemode::CheckFirstMission()
 {
-	if (GetWorld() == InstanceRef->TrackMissionTarget)
+	if (InstanceRef->LevelData[InstanceRef->LevelSelected].WorldToLoad == InstanceRef->TrackMissionTarget)
 	{
 		InstanceRef->AddMoney(100);
 
-		FirstMissionWidget(false, 100);
+		FirstMissionWidget(true, 100);
+		GEngine->AddOnScreenDebugMessage(-1,500.f, FColor::Blue, "AAAAAAAAAAAAH yay mission 1 :=)");
 	}
 }
 
 void ABaseGamemode::CheckSecondMission()
 {
-	if (InstanceRef->RankMissionTarget <= RankAchieved)
+	if (InstanceRef->RankMissionTarget >= RankAchieved)
 	{
 		int Reward = 101 - RankAchieved * 3;
 		InstanceRef->AddMoney(Reward);
 
-		SecondMissionWidget(false, Reward);
+		SecondMissionWidget(true, Reward);
+	GEngine->AddOnScreenDebugMessage(-1,500.f, FColor::Green, "I CANT BELIEVE ITS NOT A LOSS! Misson 2 succsex");
 	}
 }
 
@@ -281,7 +286,8 @@ void ABaseGamemode::CheckThirdMission()
 	{
 		InstanceRef->AddMoney(100);
 
-		ThirdMissionWidget(false, 100);
+		ThirdMissionWidget(true, 100);
+	GEngine->AddOnScreenDebugMessage(-1,500.f, FColor::Yellow, "It appears you have managed to accomplish mission 3 which, indeed, is a feat of its own. Congratulations, good sir.");
 	}
 }
 

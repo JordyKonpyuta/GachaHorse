@@ -115,6 +115,7 @@ void UBaseGameInstance::PrepareMissions()
 	
 
 	Cast<AMainMenuGamemode>(GetWorld()->GetAuthGameMode())->DisplayMissionsWidget(LevelData[LevelSelected].LevelName, RankMissionTarget, HorseData[HorseIDMissionTarget].HorseName);
+	SaveGame();
 }
 
 	// =========================
@@ -389,38 +390,44 @@ void UBaseGameInstance::SaveGame()
 	SaveWorldData();
 	SaveMoneyData();
 	SaveMissionData();
+	SaveOtherData();
 	UGameplayStatics::SaveGameToSlot(SaveGameRef, SaveName, 0);
 }
 
-void UBaseGameInstance::SaveHorseData()
+void UBaseGameInstance::SaveHorseData() const
 {
 	SaveGameRef->HorseData = HorseData;
 	SaveGameRef->ChosenHorseData = ChosenHorseData;
 }
 
-void UBaseGameInstance::SaveEquipData()
+void UBaseGameInstance::SaveEquipData() const
 {
 	SaveGameRef->EquipData = EquipData;
 	SaveGameRef->ChosenEquipData = ChosenEquipData;
 }
 
-void UBaseGameInstance::SaveWorldData()
+void UBaseGameInstance::SaveWorldData() const
 {
 	SaveGameRef->LevelData = LevelData;
 }
 
-void UBaseGameInstance::SaveMoneyData()
+void UBaseGameInstance::SaveMoneyData() const
 {
 	 SaveGameRef->SummonMoney = SummonMoney;
 	 SaveGameRef->ScrapMoney = ScrapMoney;
 }
 
-void UBaseGameInstance::SaveMissionData()
+void UBaseGameInstance::SaveMissionData() const
 {
 	 SaveGameRef->MissionNextResetRef = MissionNextResetRef;
 	 SaveGameRef->TrackMissionTarget = TrackMissionTarget;
 	 SaveGameRef->RankMissionTarget = RankMissionTarget;
 	 SaveGameRef->HorseIDMissionTarget = HorseIDMissionTarget;
+}
+
+void UBaseGameInstance::SaveOtherData()
+{
+	SaveGameRef->PlayerName = PlayerName;
 }
 
 void UBaseGameInstance::LoadData()
@@ -444,6 +451,8 @@ void UBaseGameInstance::LoadData()
 	TrackMissionTarget = SaveGameRef->TrackMissionTarget;
 	RankMissionTarget = SaveGameRef->RankMissionTarget;
 	HorseIDMissionTarget = SaveGameRef->HorseIDMissionTarget;
+
+	PlayerName = SaveGameRef->PlayerName;
 
 	CheckFileIntegrity();
 }

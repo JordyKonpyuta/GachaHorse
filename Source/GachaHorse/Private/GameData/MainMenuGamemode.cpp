@@ -29,7 +29,7 @@ void AMainMenuGamemode::BeginPlay()
 		this,
 		&AMainMenuGamemode::DoWeNeedToRefreshNow,
 		1.0f,
-		true
+		false
 		);
 }
 	
@@ -91,7 +91,7 @@ void AMainMenuGamemode::DoWeNeedToRefreshNow()
 	if (Current.GetYear() != Old.GetYear() || Current.GetMonth() != Old.GetMonth() || Current.GetDay() != Old.GetDay() || Current.GetHour() != Old.GetHour())
 		bRefreshNow = true;
 	else
-		if (Current.GetMinute() > Old.GetMinute() + 15)
+		if (Current.GetMinute() > Old.GetMinute())
 			bRefreshNow = true;
 
 	if (bRefreshNow)
@@ -133,7 +133,9 @@ void AMainMenuGamemode::RefreshMissions()
 float AMainMenuGamemode::CalculateTimeBeforeNextRefresh(FDateTime NextMissionTime)
 {
 	FDateTime CurrentTime = FDateTime::Now();
-	float TimeReturned = (NextMissionTime.GetMinute() - CurrentTime.GetMinute()) * 60.0f;
+	int NextMissionMinute = NextMissionTime.GetMinute() == 0 ? 60 : NextMissionTime.GetMinute();
+	
+	float TimeReturned = (NextMissionMinute - CurrentTime.GetMinute()) * 60.0f;
 	TimeReturned -= CurrentTime.GetSecond();
 	TimeReturned -= CurrentTime.GetMillisecond() / 1000.0f;
 	
@@ -151,6 +153,13 @@ void AMainMenuGamemode::PrepareDisplayMissions()
 			break;
 		}
 	}
+
+	GetWorldTimerManager().SetTimer(
+		MissionTimerHandle,
+		this,
+		&AMainMenuGamemode::RefreshMissions,
+		CalculateTimeBeforeNextRefresh(InstanceRef->MissionNextResetRef),
+		false);
 	
 	FString HorseName = InstanceRef->HorseData[InstanceRef->HorseIDMissionTarget].HorseName;
 	

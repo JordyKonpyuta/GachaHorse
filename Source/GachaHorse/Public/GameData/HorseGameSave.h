@@ -46,5 +46,8 @@ public:
 	int RankMissionTarget;
 	UPROPERTY(Blueprintable, BlueprintReadOnly)
 	int HorseIDMissionTarget;
-	
+
+	// PLAYER
+	UPROPERTY()
+	FString PlayerName;
 };

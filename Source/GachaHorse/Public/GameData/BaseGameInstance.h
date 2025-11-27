@@ -219,19 +219,22 @@ private:
 	void SaveGame();
 
 	UFUNCTION()
-	void SaveHorseData();
+	void SaveHorseData() const;
 
 	UFUNCTION()
-	void SaveEquipData();
+	void SaveEquipData() const;
 
 	UFUNCTION()
-	void SaveWorldData();
+	void SaveWorldData() const;
 
 	UFUNCTION()
-	void SaveMoneyData();
+	void SaveMoneyData() const;
 
 	UFUNCTION()
-	void SaveMissionData();
+	void SaveMissionData() const;
+
+	UFUNCTION()
+	void SaveOtherData();
 
 	UFUNCTION()
 	void LoadData();
