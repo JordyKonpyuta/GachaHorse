@@ -5,6 +5,7 @@
 #include "CharactersData/BaseHorse.h"
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
+#include "GameData/BaseGameInstance.h"
 #include "GameData/BaseGamemode.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -40,7 +41,7 @@ void ACheckpoints::BeginPlay()
 	Super::BeginPlay();
 
 	GamemodeRef = Cast<ABaseGamemode>(GetWorld()->GetAuthGameMode());
-	bIsTraining = GamemodeRef->bIsTrainingMode;
+	bIsTraining = Cast<UBaseGameInstance>(GetGameInstance())->bIsTrainingMode;
 
 	TArray<AActor*> AllCheckpointsFound;
 
@@ -129,12 +130,9 @@ void ACheckpoints::StartCheckPointCrossed(ABaseHorse* HorseActor)
 
 	if (bIsTraining)
 	{
-
-
+		GamemodeRef->Timer = 0.0f;
 		return;
 	}
 	
 	Cast<ABaseGamemode>(GetWorld()->GetAuthGameMode())->Victory();
-	
-	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "WIN");
 }

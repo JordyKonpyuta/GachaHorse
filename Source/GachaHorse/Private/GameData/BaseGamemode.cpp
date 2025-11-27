@@ -6,9 +6,8 @@
 #include "CharactersData/BaseHorse.h"
 #include "GameData/BaseGameInstance.h"
 #include "GameObjects/Checkpoints.h"
-#include "Materials/MaterialExpressionLocalPosition.h"
 
-// ==========================
+	// ==========================
 	// ==    Base Functions    ==
 	// ==========================
 
@@ -247,7 +246,6 @@ void ABaseGamemode::CheckFirstMission()
 		InstanceRef->AddMoney(100);
 
 		FirstMissionWidget(true, 100);
-		GEngine->AddOnScreenDebugMessage(-1,500.f, FColor::Blue, "AAAAAAAAAAAAH yay mission 1 :=)");
 	}
 	FTimerHandle MissionHandle;
 	
@@ -268,7 +266,6 @@ void ABaseGamemode::CheckSecondMission()
 		InstanceRef->AddMoney(Reward);
 
 		SecondMissionWidget(true, Reward);
-	GEngine->AddOnScreenDebugMessage(-1,500.f, FColor::Green, "I CANT BELIEVE ITS NOT A LOSS! Misson 2 succsex");
 	}
 	FTimerHandle MissionHandle;
 	
@@ -288,7 +285,6 @@ void ABaseGamemode::CheckThirdMission()
 		InstanceRef->AddMoney(100);
 
 		ThirdMissionWidget(true, 100);
-	GEngine->AddOnScreenDebugMessage(-1,500.f, FColor::Yellow, "It appears you have managed to accomplish mission 3 which, indeed, is a feat of its own. Congratulations, good sir.");
 	}
 }
 
