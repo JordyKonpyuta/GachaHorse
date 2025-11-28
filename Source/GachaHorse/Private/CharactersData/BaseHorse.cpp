@@ -532,6 +532,9 @@ void ABaseHorse::BeginRagdoll()
 	RiderSkel->SetSimulatePhysics(true);
 	GetCharacterMovement()->StopMovementImmediately();
 	TimeBeginsSlow();
+	
+	SetTargetSpeed(1);
+	VFXOnHit(true);
 
 	GetWorldTimerManager().SetTimer(
 		RagdollTimerHandle,
@@ -593,8 +596,6 @@ void ABaseHorse::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UP
 			if (CurrentSpeed > SpeedTable[3])
 			{
 				BeginRagdoll();
-				SetTargetSpeed(1);
-				VFXOnHit(true);
 			}
 			else
 			{
@@ -606,8 +607,6 @@ void ABaseHorse::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UP
 		else
 		{
 			BeginRagdoll();
-			SetTargetSpeed(1);
-			VFXOnHit(true);
 		}
 	}
 	else if (FVector2D::DotProduct(NormalHitSave2D, ForwardVector2D) <= 0.0)

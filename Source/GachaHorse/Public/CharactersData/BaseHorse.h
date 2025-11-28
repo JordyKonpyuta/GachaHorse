@@ -231,6 +231,13 @@ public:
 	void SetTargetSpeed(int IndexSpeed);
 	
 	// =========================
+	// ==       Ragdoll       ==
+	// =========================
+
+	UFUNCTION()
+	void BeginRagdoll();
+	
+	// =========================
 	// ==       Respawn       ==
 	// =========================
 
@@ -321,9 +328,6 @@ protected:
 
 	UFUNCTION(BlueprintNativeEvent)
 	void VFXOnHit(bool bIsHorseKill);
-
-	UFUNCTION()
-	void BeginRagdoll();
 	UFUNCTION()
 	void CeaseRagdoll();
 
