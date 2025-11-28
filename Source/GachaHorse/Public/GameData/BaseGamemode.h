@@ -86,6 +86,9 @@ public:
 	UFUNCTION()
 	void DisplaySplit(int CheckpointIndex);
 	
+	UFUNCTION()
+	void DisplaySplitFinal();
+	
 	// =========================
 	// ==       Widgets       ==
 	// =========================
@@ -99,6 +102,9 @@ public:
 
 	UFUNCTION()
 	void Victory();
+
+	UFUNCTION()
+	void TrainingModeVictory();
 
 	UFUNCTION()
 	void CheckMissions();
@@ -140,7 +146,7 @@ protected:
 	void SetupWidgets();
 
 	UFUNCTION(BlueprintCallable, Blueprintable, BlueprintNativeEvent)
-	void DisplaySplitWidget(float Difference);
+	void DisplaySplitWidget(float TimeChange);
 
 	/**
 	 * Widget called to do that "3,2,1, go!" thing

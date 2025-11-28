@@ -56,16 +56,15 @@ void ACheckpoints::BeginPlay()
 	case ECheckpointType::Start:
 		CurrentIndex = 0;
 		
-		if (!Cast<ABaseGamemode>(GetWorld()->GetAuthGameMode()))
+		if (!GamemodeRef->IsValidLowLevelFast())
 			break;
 		
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACheckpoints::StaticClass(), AllCheckpointsFound);
 		CurrentIndex = AllCheckpointsFound.Num() - 2;
-		if (Cast<ABaseGamemode>(GetWorld()->GetAuthGameMode()))
-			Cast<ABaseGamemode>(GetWorld()->GetAuthGameMode())->StartCheckpointRef = this;
+		if (GamemodeRef)
+			GamemodeRef->StartCheckpointRef = this;
 
 		CheckpointArea->SetCollisionResponseToAllChannels(ECR_Block);
-		
 		break;
 	default:
 		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, "Wait wat");
@@ -91,15 +90,22 @@ void ACheckpoints::OnComponentBeginOverlap(class UPrimitiveComponent* Overlapped
 	switch (CurrentCheckpointType)
 	{
 	case ECheckpointType::Generic :
+		if (OurHorse->CurrentCheckpointIndex != CurrentIndex - 1)
+			return;
 		RegularCheckpointCrossed(OurHorse);
 		break;
 	case ECheckpointType::LastGen :
+		if (OurHorse->CurrentCheckpointIndex != CurrentIndex - 1)
+			return;
 		RegularCheckpointCrossed(OurHorse);
 		if (!bIsTraining)
 			GamemodeRef->HideAwayTimer();
 		break;
 	case ECheckpointType::Start :
-		StartCheckPointCrossed(OurHorse);
+		if (OurHorse->CurrentCheckpointIndex != CurrentIndex)
+			return;
+		StartCheckPointCrossed();
+		OurHorse->CurrentCheckpointIndex = -1;
 		break;
 	default:
 		break;
@@ -113,9 +119,6 @@ void ACheckpoints::UnblockStart()
 
 void ACheckpoints::RegularCheckpointCrossed(ABaseHorse* HorseActor)
 {
-	if (HorseActor->CurrentCheckpointIndex != CurrentIndex - 1)
-		return;
-
 	FTransform NewRespawn = FTransform(GetActorRotation(), Arrow->GetComponentLocation(),  FVector(1.0f,1.0f,1.0f));
 	
 	HorseActor->SetPlayerRespawn(NewRespawn);
@@ -123,16 +126,10 @@ void ACheckpoints::RegularCheckpointCrossed(ABaseHorse* HorseActor)
 	GamemodeRef->DisplaySplit(CurrentIndex);
 }
 
-void ACheckpoints::StartCheckPointCrossed(ABaseHorse* HorseActor)
+void ACheckpoints::StartCheckPointCrossed()
 {
-	if (HorseActor->CurrentCheckpointIndex != CurrentIndex)
-		return;
-
 	if (bIsTraining)
-	{
-		GamemodeRef->Timer = 0.0f;
-		return;
-	}
-	
-	Cast<ABaseGamemode>(GetWorld()->GetAuthGameMode())->Victory();
+		GamemodeRef->TrainingModeVictory();
+	else
+		GamemodeRef->Victory();
 }

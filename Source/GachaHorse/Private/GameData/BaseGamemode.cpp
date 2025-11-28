@@ -6,8 +6,10 @@
 #include "CharactersData/BaseHorse.h"
 #include "GameData/BaseGameInstance.h"
 #include "GameObjects/Checkpoints.h"
+#include "Kismet/GameplayStatics.h"
+#include "Materials/MaterialExpressionLocalPosition.h"
 
-	// ==========================
+// ==========================
 	// ==    Base Functions    ==
 	// ==========================
 
@@ -125,17 +127,41 @@ void ABaseGamemode::StartGame()
 void ABaseGamemode::DisplaySplit(int CheckpointIndex)
 {
 	float TimeDifference = 0.0f;
-	if (BestTimeSplits.IsValidIndex(CheckpointIndex))
-		TimeDifference = BestTimeSplits[CheckpointIndex] - Timer;
 	
 	if (CheckpointIndex != 0)
 	{
-		CurrentTimeSplits.Add(Timer - CurrentTimeSplits[CheckpointIndex - 1]);
+		int AllIndexes = CheckpointIndex - 1;
+		float TimeAdded = Timer;
+		while (AllIndexes >= 0)
+		{
+			TimeAdded -= CurrentTimeSplits[AllIndexes];
+			AllIndexes -= 1;
+		}
+		CurrentTimeSplits.Add(TimeAdded);
 	}
 	else
 	{
 		CurrentTimeSplits.Add(Timer);
 	}
+	
+	bool bNoBestTimeLocated = true;
+	if (BestTimeSplits.IsValidIndex(CheckpointIndex))
+	{
+		TimeDifference = CurrentTimeSplits[CheckpointIndex] - BestTimeSplits[CheckpointIndex];
+		bNoBestTimeLocated = false;
+	}
+	
+	if (bNoBestTimeLocated)
+		return;
+	
+	DisplaySplitWidget(TimeDifference);
+}
+
+void ABaseGamemode::DisplaySplitFinal()
+{
+	float TimeDifference = 0.0f;
+	if (BestTime > 0)
+		TimeDifference = BestTime - Timer;
 	
 	DisplaySplitWidget(TimeDifference);
 }
@@ -148,7 +174,7 @@ void ABaseGamemode::SetupWidgets_Implementation()
 {
 }
 
-void ABaseGamemode::DisplaySplitWidget_Implementation(float Difference)
+void ABaseGamemode::DisplaySplitWidget_Implementation(float TimeChange)
 {
 }
 
@@ -192,11 +218,6 @@ int ABaseGamemode::CalculateRank(float TimeOfRank) const
 void ABaseGamemode::Victory()
 {
 	BestTime = Timer;
-	if (bIsTrainingMode)
-	{
-		Timer = 0.0f;
-		return;
-	}
 	bDoNotRunTimer = true;
 
 	int OldRank = CalculateRank(InstanceRef->LevelData[InstanceRef->LevelSelected].BestPersonalTime);
@@ -208,12 +229,30 @@ void ABaseGamemode::Victory()
 	{
 		MoneyAdded = 10 + (OldRank - RankAchieved) * 10;
 		InstanceRef->AddMoney(MoneyAdded);
+	}
+
+	if (BestTime < InstanceRef->LevelData[InstanceRef->LevelSelected].BestPersonalTime)
+	{
 		InstanceRef->LevelData[InstanceRef->LevelSelected].BestPersonalTime = BestTime;
+		InstanceRef->LevelData[InstanceRef->LevelSelected].PersonalTimeSplits = CurrentTimeSplits;
 	}
 	
 	WidgetVictory(Timer, OldRank, RankAchieved, MoneyAdded);
 	HorseRef->SetTargetSpeed(1);
 	CheckMissions();
+}
+
+void ABaseGamemode::TrainingModeVictory()
+{
+	DisplaySplitFinal();
+	if (Timer < BestTime)
+	{
+		BestTime = Timer;
+		BestTimeSplits = CurrentTimeSplits;
+	}
+	CurrentTimeSplits.Empty();
+	
+	Timer = 0.0f;
 }
 
 void ABaseGamemode::CheckMissions()

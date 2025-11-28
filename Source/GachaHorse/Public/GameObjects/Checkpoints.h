@@ -102,5 +102,5 @@ protected:
 	void RegularCheckpointCrossed(ABaseHorse* HorseActor);
 
 	UFUNCTION()
-	void StartCheckPointCrossed(ABaseHorse* HorseActor);
+	void StartCheckPointCrossed();
 };
