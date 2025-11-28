@@ -162,13 +162,10 @@ void UBaseGameInstance::ObtainedHorse(int HorseID)
 
 void UBaseGameInstance::ObtainedEquip(int EquipID)
 {
-	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "A");
 	for (int i = 0; i < EquipData.Num(); i++)
 	{
-		GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "B");
 		if (EquipData[i].EquipmentID == EquipID)
 		{
-			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "NINJA");
 			if (!EquipData[i].bEquipmentPossessed)
 				EquipData[i].bEquipmentPossessed = true;
 			else
@@ -183,7 +180,6 @@ void UBaseGameInstance::ObtainedEquip(int EquipID)
 			if (SaveGameRef->IsValidLowLevelFast())
 				SaveGameRef->EquipData[i] = EquipData[i];
 
-			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, EquipData[i].EquipmentName);
 			break;
 		}
 	}
