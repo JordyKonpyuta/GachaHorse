@@ -59,6 +59,25 @@ public:
 	UPROPERTY(EditAnywhere, Blueprintable, BlueprintReadWrite, Category="Stats")
 	TArray<int> Stats = {5,5,5};
 	
+	// ==========================
+	// ==    Editable Stats    ==
+	// ==========================
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseSpeed = 175;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseSpeedMultiplier = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseRotation = 0.05;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseRotationMultiplier = 0.001;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseAcceleration = 300;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseAccelerationMultiplier = 10;
+	
 protected:
 	// ==========================
 	// ==      References      ==

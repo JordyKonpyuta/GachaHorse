@@ -144,7 +144,6 @@ void ABaseHorse::Tick(float DeltaTime)
 			GEngine->AddOnScreenDebugMessage(-2, 0.f, FColor::Red, FString::FromInt(-(1 - SlopeType * 0.5)));
 			AddMovementInput(GetActorForwardVector(),
 				-(150 - SlopeType * 75) * DeltaTime, false);
-			
 		}
 	}
 	else if (CurrentSpeed < MaxAvailableSpeed - 1)
@@ -352,22 +351,22 @@ float ABaseHorse::GetJumpPower()
 
 void ABaseHorse::InitAcceleration()
 {
-	GetCharacterMovement()->MaxAcceleration = 300 + (10 * Stats[0]);
+	GetCharacterMovement()->MaxAcceleration = BaseAcceleration + (BaseAccelerationMultiplier * Stats[0]);
 }
 
 void ABaseHorse::InitSpeed()
 {
-	SpeedTable[0] = -175 - Stats[1];
+	SpeedTable[0] = -1 * (BaseSpeed + (BaseSpeedMultiplier * Stats[1]));
 	SpeedTable[1] = 0;
-	SpeedTable[2] = 350 + (Stats[1] * 2);
-	SpeedTable[3] = 875 + (Stats[1] * 5);
-	SpeedTable[4] = 1400 + (Stats[1] * 8);
-	SpeedTable[5] = 1750 + (Stats[1] * 10);
+	SpeedTable[2] = 2 * (BaseSpeed + (BaseSpeedMultiplier * Stats[1]));
+	SpeedTable[3] = 5 * (BaseSpeed + (BaseSpeedMultiplier * Stats[1]));
+	SpeedTable[4] = 8 * (BaseSpeed + (BaseSpeedMultiplier * Stats[1]));
+	SpeedTable[5] = 10 * (BaseSpeed + (BaseSpeedMultiplier * Stats[1]));
 }
 
 void ABaseHorse::InitHandling()
 {
-	TurnRateFactor = 0.05 + (Stats[2] * 0.001);
+	TurnRateFactor = BaseRotation + (Stats[2] * BaseRotationMultiplier);
 }
 
 void ABaseHorse::PauseShiftSpeedPossibility(float TimeBeforeNewShift)
