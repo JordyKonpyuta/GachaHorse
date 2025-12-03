@@ -115,6 +115,11 @@ void ACheckpoints::OnComponentBeginOverlap(class UPrimitiveComponent* Overlapped
 void ACheckpoints::UnblockStart()
 {
 	CheckpointArea->SetCollisionResponseToAllChannels(ECR_Overlap);
+	UnblockStartBlueprint();
+}
+
+void ACheckpoints::UnblockStartBlueprint_Implementation()
+{
 }
 
 void ACheckpoints::RegularCheckpointCrossed(ABaseHorse* HorseActor)

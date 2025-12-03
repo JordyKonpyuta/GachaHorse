@@ -86,6 +86,8 @@ public:
 
 	UFUNCTION()
 	void UnblockStart();
+	UFUNCTION(Blueprintable, BlueprintNativeEvent)
+	void UnblockStartBlueprint();
 
 protected:
 	// ==========================
