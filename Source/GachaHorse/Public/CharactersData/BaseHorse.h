@@ -64,14 +64,14 @@ public:
 	// ==========================
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BaseSpeed = 175;
+	float BaseSpeed = 200;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BaseSpeedMultiplier = 1;
+	float BaseSpeedMultiplier = 2;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BaseRotation = 0.05;
+	float BaseRotation = 0.04;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BaseRotationMultiplier = 0.001;
+	float BaseRotationMultiplier = 0.0015;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float BaseAcceleration = 300;
@@ -321,6 +321,9 @@ protected:
 
 	UFUNCTION()
 	void CalculateCurrentSpeed();
+
+	UFUNCTION()
+	void MoveCameraWithSpeed();
 	
 	// ==========================
 	// ==         Jump         ==
@@ -361,7 +364,14 @@ protected:
 	
 	UFUNCTION()    
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	
+	// =========================
+	// ==         VFX         ==
+	// =========================
+
+	UFUNCTION(BlueprintNativeEvent)
+	void TweakSpeedFX(float SpawnRate, FVector Windspeed);
 	
 	// =========================
 	// ==       Widgets       ==

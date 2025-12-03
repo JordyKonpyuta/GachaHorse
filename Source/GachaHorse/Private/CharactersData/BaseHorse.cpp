@@ -141,7 +141,6 @@ void ABaseHorse::Tick(float DeltaTime)
 	{
 		if (!bIsRagdoll && GetCharacterMovement()->IsMovingOnGround())
 		{
-			GEngine->AddOnScreenDebugMessage(-2, 0.f, FColor::Red, FString::FromInt(-(1 - SlopeType * 0.5)));
 			AddMovementInput(GetActorForwardVector(),
 				-(150 - SlopeType * 75) * DeltaTime, false);
 		}
@@ -174,6 +173,16 @@ void ABaseHorse::Tick(float DeltaTime)
 		GetCapsuleComponent()->SetCapsuleSize(34, NewHalfHeight + 34, true);
 	}
 
+	// WOOOOOSH SPEED EFFECTS PARTICLES YEAAAAAH
+	if (CurrentSpeed > 1700)
+	{
+		FVector WindAngle = FVector(UKismetMathLibrary::DegCos(GetActorRotation().Yaw) * -25000, UKismetMathLibrary::DegSin(GetActorRotation().Yaw) * -25000, 0);
+		TweakSpeedFX((CurrentSpeed - 1700) * 0.1 + 100, WindAngle);
+	}
+	else
+	{
+		TweakSpeedFX(0, FVector(0,0,0));
+	}
 	
 	// GAME END :
 
@@ -448,6 +457,15 @@ void ABaseHorse::CalculateCurrentSpeed()
 {
 	CurrentSpeed = FVector2D::DotProduct(FVector2D(GetCharacterMovement()->Velocity.X, GetCharacterMovement()->Velocity.Y), FVector2D(GetActorForwardVector().X, GetActorForwardVector().Y));
 	SideSpeed = FVector2D::DotProduct(FVector2D(GetCharacterMovement()->Velocity.X, GetCharacterMovement()->Velocity.Y), FVector2D(GetActorRightVector().X, GetActorRightVector().Y));
+
+	MoveCameraWithSpeed();
+}
+
+void ABaseHorse::MoveCameraWithSpeed()
+{
+	HorseSpringArm->TargetArmLength = 600 + CurrentSpeed * 0.05;
+	HorseSpringArm->SetRelativeRotation(FRotator(-20 + CurrentSpeed * 0.001,0,0));
+	HorseCamera->FieldOfView = 90 + (CurrentSpeed * 0.005);
 }
 
 	// ========================
@@ -626,6 +644,14 @@ void ABaseHorse::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UP
 	{
 		// BACK HIT
 	}
+}
+	
+	// =========================
+	// ==         VFX         ==
+	// =========================
+
+void ABaseHorse::TweakSpeedFX_Implementation(float SpawnRate, FVector Windspeed)
+{
 }
 
 	// =========================
