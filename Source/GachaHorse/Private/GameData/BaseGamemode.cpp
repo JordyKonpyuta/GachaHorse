@@ -3,6 +3,7 @@
 
 #include "GameData/BaseGamemode.h"
 
+#include "CharactersData/BaseController.h"
 #include "CharactersData/BaseHorse.h"
 #include "GameData/BaseGameInstance.h"
 #include "GameObjects/Checkpoints.h"
@@ -236,6 +237,8 @@ void ABaseGamemode::Victory()
 		InstanceRef->LevelData[InstanceRef->LevelSelected].BestPersonalTime = BestTime;
 		InstanceRef->LevelData[InstanceRef->LevelSelected].PersonalTimeSplits = CurrentTimeSplits;
 	}
+
+	Cast<ABaseController>(GetWorld()->GetFirstPlayerController())->ActivateTouchInterface(nullptr);
 	
 	WidgetVictory(Timer, OldRank, RankAchieved, MoneyAdded);
 	HorseRef->SetTargetSpeed(1);
