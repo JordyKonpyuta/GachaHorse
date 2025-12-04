@@ -28,6 +28,7 @@ AObstacleBase::AObstacleBase()
 	MeshComp->SetCollisionResponseToAllChannels(ECR_Overlap);
 
 	RagdollArea->OnComponentBeginOverlap.AddDynamic(this, &AObstacleBase::OnComponentBeginOverlap);
+	RagdollArea->OnComponentEndOverlap.AddDynamic(this, &AObstacleBase::OnOverlapEnd);
 }
 
 // Called when the game starts or when spawned
@@ -67,6 +68,7 @@ void AObstacleBase::OnComponentBeginOverlap(class UPrimitiveComponent* Overlappe
 void AObstacleBase::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, "AH");
 	MercyTimer = 0.0f;
 	bMercyTimerRuns = false;
 }
