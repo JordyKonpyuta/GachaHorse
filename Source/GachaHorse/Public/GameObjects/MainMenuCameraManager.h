@@ -82,6 +82,14 @@ public:
 	AMainMenuCameraManager();
 	
 	virtual void Tick(float DeltaTime) override;
+	
+	// ===========================
+	// ==      Camera Move      ==
+	// ===========================
+
+	UFUNCTION(BlueprintCallable, Blueprintable)
+	void ChangeCameraView(ECameraPosition MenuType);
+	void ChangeCameraView();
 
 protected:
 	// ==========================
@@ -96,10 +104,6 @@ protected:
 	// ===========================
 	// ==      Camera Move      ==
 	// ===========================
-
-	UFUNCTION(BlueprintCallable, Blueprintable)
-	void ChangeCameraView(ECameraPosition MenuType);
-	void ChangeCameraView();
 
 	UFUNCTION(BlueprintNativeEvent)
 	void CreateGameWidget(ECameraPosition MenuType);

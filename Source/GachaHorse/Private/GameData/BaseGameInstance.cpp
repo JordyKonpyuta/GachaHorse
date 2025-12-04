@@ -23,6 +23,15 @@ void UBaseGameInstance::Init()
 
 	CheckSaves();
 }
+
+	// ==========================
+	// ==     Title Screen     ==
+	// ==========================
+
+void UBaseGameInstance::TitleScreenLoaded()
+{
+	bTitleScreenAlreadyAppeared = true;
+}
 	
 	// =========================
 	// ==     Money Gains     ==

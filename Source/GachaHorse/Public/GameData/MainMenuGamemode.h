@@ -90,6 +90,22 @@ public:
 	// =========================================================
 	
 	// ==========================
+	// ==    Loading Screen    ==
+	// ==========================
+
+	UFUNCTION(Blueprintable)
+	void PrepareLoadingScreen();
+
+	UFUNCTION(BlueprintNativeEvent, Blueprintable)
+	void CreateLoadingScreen_Widget();
+
+	UFUNCTION(BlueprintNativeEvent, Blueprintable)
+	void RemoveLoadingScreen();
+
+	UFUNCTION(BlueprintCallable)
+	void LoadingScreenDone();
+	
+	// ==========================
 	// ==   GACHA! GAMBLING!   ==
 	// ==========================
 

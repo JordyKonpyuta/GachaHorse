@@ -681,8 +681,9 @@ void ABaseHorse::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UP
 		
 		GetCharacterMovement()->Velocity = GetCharacterMovement()->Velocity.RotateAngleAxis(FVector2D::DotProduct(NormalHitSave2D, RightVector2D) > 0 ? 0.5 : -0.5, FVector(0,0,1));
 
-		if (CurrentSpeed > SpeedTable[3])
+		if (CurrentSpeed > SpeedTable[3] && CurrentSpeedIndex > 4)
 		{
+			CameraBurst(-150);
 			SetTargetSpeed(FMath::Clamp(CurrentSpeedIndex, 0, 4));
 			PauseShiftSpeedPossibility(1.0f);
 		}

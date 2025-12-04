@@ -4,12 +4,17 @@
 #include "GameObjects/MainMenuCameraManager.h"
 #include "Camera/CameraActor.h"
 #include "CharactersData/MainMenuController.h"
+#include "GameData/BaseGameInstance.h"
+#include "GameData/BaseGamemode.h"
+#include "GameData/MainMenuGamemode.h"
 #include "Kismet/GameplayStatics.h"
 
-// Sets default values
+	// ==========================
+	// ==    Base Functions    ==
+	// ==========================
+
 AMainMenuCameraManager::AMainMenuCameraManager()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 }
@@ -54,8 +59,18 @@ void AMainMenuCameraManager::BeginPlay()
 	
 	ControllerRef->CameraHandler = this;
 
-	// CHANGE CAMERA TARGET
-	ChangeCameraView();
+	CurrentCameraPosition = Cast<UBaseGameInstance>(GetWorld()->GetGameInstance())->bTitleScreenAlreadyAppeared ?
+		ECameraPosition::Menu : ECameraPosition::TitleScreen;
+
+	if (CurrentCameraPosition == ECameraPosition::Menu)
+	{
+		Cast<AMainMenuGamemode>(GetWorld()->GetAuthGameMode())->PrepareLoadingScreen();
+	}
+	else
+	{
+		// CHANGE CAMERA TARGET
+		ChangeCameraView();
+	}
 }
 
 // Called every frame
@@ -64,6 +79,10 @@ void AMainMenuCameraManager::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+	
+	// ===========================
+	// ==      Camera Move      ==
+	// ===========================
 
 void AMainMenuCameraManager::ChangeCameraView()
 {

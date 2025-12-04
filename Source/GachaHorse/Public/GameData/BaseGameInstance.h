@@ -96,6 +96,13 @@ public:
 	int HorseIDMissionTarget = 0;
 	
 	// =========================
+	// ==  Other Menu Values  ==
+	// =========================
+
+	UPROPERTY()
+	bool bTitleScreenAlreadyAppeared = false;
+	
+	// =========================
 	// ==  Other Game Values  ==
 	// =========================
 
@@ -126,6 +133,13 @@ public:
 	// ==========================
 	
 	UBaseGameInstance();
+	
+	// ==========================
+	// ==     Title Screen     ==
+	// ==========================
+
+	UFUNCTION(Blueprintable, BlueprintCallable)
+	void TitleScreenLoaded();
 	
 	// =========================
 	// ==        Money        ==

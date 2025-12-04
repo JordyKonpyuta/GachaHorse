@@ -2,8 +2,12 @@
 
 
 #include "GameData/MainMenuGamemode.h"
+
+#include "CharactersData/BaseController.h"
+#include "CharactersData/MainMenuController.h"
 #include "GameData/AllStructs.h"
 #include "GameData/BaseGameInstance.h"
+#include "GameObjects/MainMenuCameraManager.h"
 
 AMainMenuGamemode::AMainMenuGamemode()
 {
@@ -356,6 +360,36 @@ void AMainMenuGamemode::PrepareSummonResults(bool bIsHorses, int ThingID, float 
 	
 void AMainMenuGamemode::DisplaySummonResults_Implementation(bool bIsHorses, int ThingID)
 {
+}
+
+	// ==========================
+	// ==    Loading Screen    ==
+	// ==========================
+
+void AMainMenuGamemode::PrepareLoadingScreen()
+{
+	CreateLoadingScreen_Widget();
+	
+	FTimerHandle LoadingTimer;
+	GetWorldTimerManager().SetTimer(
+		LoadingTimer,
+		this,
+		&AMainMenuGamemode::RemoveLoadingScreen,
+		1.5f,
+		false);
+}
+
+void AMainMenuGamemode::CreateLoadingScreen_Widget_Implementation()
+{
+}
+
+void AMainMenuGamemode::RemoveLoadingScreen_Implementation()
+{
+}
+
+void AMainMenuGamemode::LoadingScreenDone()
+{
+	Cast<AMainMenuController>(GetWorld()->GetFirstPlayerController())->CameraHandler->ChangeCameraView();
 }
 
 	// ==========================
