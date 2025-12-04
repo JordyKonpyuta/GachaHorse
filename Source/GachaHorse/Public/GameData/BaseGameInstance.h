@@ -229,7 +229,7 @@ private:
 	UFUNCTION()
 	void InitializeFirstSave();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Blueprintable)
 	void SaveGame();
 
 	UFUNCTION()
