@@ -124,7 +124,7 @@ void ABaseHorse::Tick(float DeltaTime)
 		CalculateCameraValues();
 	if (!bIsRagdoll)
 		MoveCameraValuesDT(DeltaTime);
-
+	
 	if (!GetCharacterMovement()->IsMovingOnGround() && bIsChargingJump)
 	{
 		bIsChargingJump = false;
@@ -159,10 +159,17 @@ void ABaseHorse::Tick(float DeltaTime)
 	}
 
 	GEngine->AddOnScreenDebugMessage(-2, 0.f, FColor::Blue, FString::SanitizeFloat(CurrentSpeed));
+	GEngine->AddOnScreenDebugMessage(-1,0.f, FColor::Yellow, FString::SanitizeFloat(HorseCamera->GetRelativeLocation().Z));
 
 	// MOVE HORSEY LEFTY RIGHTY
 	if (!(-0.1 < SideSpeed && SideSpeed < 0.1))
 		AddMovementInput(GetActorRightVector(), (SideSpeed < 0 ? 2 : -2) * DeltaTime * TickCorrecter);
+
+	// CAMERA SHAKE
+	if (!bCameraJumpMove)
+		CameraShakeMovement(DeltaTime);
+	else
+		CameraShakeLanded(DeltaTime);
 
 	// LANDING BEHAVIOUR
 	if (bHasJustJumped)
@@ -206,6 +213,7 @@ void ABaseHorse::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	{
 		// Move
 		EnhancedInputComponent->BindAction(Move_Action, ETriggerEvent::Triggered, this, &ABaseHorse::Turn);
+		EnhancedInputComponent->BindAction(Move_Action, ETriggerEvent::Completed, this, &ABaseHorse::StopTurn);
 
 		// Jumping
 		EnhancedInputComponent->BindAction(Jump_Action, ETriggerEvent::Started, this, &ABaseHorse::PrepareJump);
@@ -231,6 +239,15 @@ void ABaseHorse::Turn(const FInputActionValue& Value)
 	
 	AddControllerYawInput(TurnAngle * GetWorld()->GetDeltaSeconds());
 	GetCharacterMovement()->Velocity = UKismetMathLibrary::RotateAngleAxis(GetCharacterMovement()->Velocity, TurnAngle * GetWorld()->GetDeltaSeconds(), FVector(0, 0, 1));
+
+	CameraRollMultiplier = -2 * Value.Get<float>();
+	bCameraRoll = true;
+}
+
+void ABaseHorse::StopTurn()
+{
+	CameraRollMultiplier = 0;
+	bCameraRoll = false;
 }
 
 void ABaseHorse::PrepareJump()
@@ -513,6 +530,40 @@ void ABaseHorse::CalculateCameraValues()
 	TargetCameraFOV = 90 + CurrentSpeed * 0.005;
 }
 
+void ABaseHorse::CameraShakeMovement(float DeltaTime)
+{
+	if (CurrentSpeed < SpeedTable[4] - 5 || bCameraJumpMove)
+		CameraRollMultiplier = 0;
+	
+	float NewCameraRoll = UKismetMathLibrary::FInterpTo(HorseCamera->GetRelativeRotation().Roll, CameraRollMultiplier, DeltaTime, bCameraRoll ? 1.25 : 2.5);
+	HorseCamera->SetRelativeRotation(FRotator(HorseCamera->GetRelativeRotation().Pitch, HorseCamera->GetRelativeRotation().Yaw, NewCameraRoll));
+}
+
+void ABaseHorse::StartCameraShakeLanded()
+{
+	bCameraGoingDown = true;
+	bCameraJumpMove = true;
+	HorseCamera->SetRelativeRotation(FRotator(HorseCamera->GetRelativeRotation().Pitch, HorseCamera->GetRelativeRotation().Yaw, 0));
+	GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, "LANDED");
+}
+
+void ABaseHorse::CameraShakeLanded(float DeltaTime)
+{
+	float NewZLoc = UKismetMathLibrary::FInterpTo(HorseCamera->GetRelativeLocation().Z, bCameraGoingDown ? -60 : 0, DeltaTime, 10);
+	HorseCamera->SetRelativeLocation(FVector(0, 0, NewZLoc));
+	
+	if (HorseCamera->GetRelativeLocation().Z <= -50.0f)
+		bCameraGoingDown = false;
+	
+	if (HorseCamera->GetRelativeLocation().Z >= -0.5 && !bCameraGoingDown)
+	{
+		bCameraJumpMove = false;
+		HorseCamera->SetRelativeLocation(FVector(0, 0, 0));
+		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Yellow, "HAHA");
+
+	}
+}
+
 	// ========================
 	// ==        Jump        ==
 	// ========================
@@ -546,6 +597,7 @@ void ABaseHorse::Landed(const FHitResult& Hit)
 	Super::Landed(Hit);
 
 	Landed_Blueprint();
+	StartCameraShakeLanded();
 
 	bHasJustJumped = true;
 }

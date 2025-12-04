@@ -176,6 +176,15 @@ protected:
 	
 	UPROPERTY()
 	float TargetCameraFOV = 90;
+
+	UPROPERTY()
+	float CameraRollMultiplier = 0.0f;
+	UPROPERTY()
+	bool bCameraRoll = false;
+	UPROPERTY()
+	bool bCameraJumpMove = false;
+	UPROPERTY()
+	bool bCameraGoingDown = false;
 	
 	// ==========================
 	// ==         Jump         ==
@@ -301,6 +310,8 @@ protected:
 
 	UFUNCTION()
 	void Turn(const FInputActionValue& Value);
+	UFUNCTION()
+	void StopTurn();
 
 	UFUNCTION(BlueprintCallable)
 	void PrepareJump();
@@ -345,18 +356,24 @@ protected:
 
 	UFUNCTION()
 	void SetInitialCameraValues();
-
 	UFUNCTION()
 	void MoveCameraValuesDT(float DeltaTime);
-
+	
 	UFUNCTION()
 	void CameraBurst(float AddedLengthToSpring);
-
 	UFUNCTION()
 	void CameraUnburst();
 
 	UFUNCTION()
 	void CalculateCameraValues();
+
+
+	UFUNCTION()
+	void CameraShakeMovement(float DeltaTime);
+	UFUNCTION()
+	void StartCameraShakeLanded();
+	UFUNCTION()
+	void CameraShakeLanded(float DeltaTime);
 	
 	// ==========================
 	// ==         Jump         ==
