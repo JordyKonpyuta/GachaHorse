@@ -90,9 +90,7 @@ void ABaseHorse::BeginPlay()
 	// THIRD : SET SPEED
 
 	SetTargetSpeed(1);
-	GEngine->AddOnScreenDebugMessage(-1, 100.f, FColor::Green, GameInstanceRef->ChosenHorseData.HorseName);
-	GEngine->AddOnScreenDebugMessage(-1, 100.f, FColor::Green, FString::FromInt(GameInstanceRef->ChosenHorseData.Level));
-
+	
 	// FOURTH : CREATE WIDGET
 	
 	GetCharacterMovement()->MaxWalkSpeed = 50000.0f;
@@ -120,6 +118,12 @@ void ABaseHorse::Tick(float DeltaTime)
 
 	// MOVE HORSEY FORWARD
 	CalculateCurrentSpeed();
+
+	// MOVE CAMERA
+	if (!bBurstingCamera)
+		CalculateCameraValues();
+	if (!bIsRagdoll)
+		MoveCameraValuesDT(DeltaTime);
 
 	if (!GetCharacterMovement()->IsMovingOnGround() && bIsChargingJump)
 	{
@@ -188,7 +192,7 @@ void ABaseHorse::Tick(float DeltaTime)
 
 	if (bGameEnded)
 	{
-		HorseSpringArm->TargetArmLength = FMath::FInterpTo(HorseSpringArm->TargetArmLength, 200, DeltaTime, 200);
+		HorseSpringArm->TargetArmLength = FMath::FInterpTo(HorseSpringArm->TargetArmLength, 200, DeltaTime, 20);
 		HorseSpringArm->SetRelativeRotation(FRotator(0, -20, FMath::FInterpTo(HorseSpringArm->GetRelativeRotation().Roll, -270, DeltaTime, 135)));
 	}
 }
@@ -290,6 +294,7 @@ void ABaseHorse::ActualChangeSpeed()
 
 		CurrentSpeedIndex -= 1;
 		SetTargetSpeed(CurrentSpeedIndex);
+		CameraBurst(-150);
 	}
 	else
 	{
@@ -298,6 +303,7 @@ void ABaseHorse::ActualChangeSpeed()
 
 		CurrentSpeedIndex += 1;
 		SetTargetSpeed(CurrentSpeedIndex);
+		CameraBurst(150);
 	}
 
 	PauseShiftSpeedPossibility(1.0f);
@@ -457,15 +463,54 @@ void ABaseHorse::CalculateCurrentSpeed()
 {
 	CurrentSpeed = FVector2D::DotProduct(FVector2D(GetCharacterMovement()->Velocity.X, GetCharacterMovement()->Velocity.Y), FVector2D(GetActorForwardVector().X, GetActorForwardVector().Y));
 	SideSpeed = FVector2D::DotProduct(FVector2D(GetCharacterMovement()->Velocity.X, GetCharacterMovement()->Velocity.Y), FVector2D(GetActorRightVector().X, GetActorRightVector().Y));
-
-	MoveCameraWithSpeed();
 }
+	
+	// ==========================
+	// ==        Camera        ==
+	// ==========================
 
-void ABaseHorse::MoveCameraWithSpeed()
+void ABaseHorse::SetInitialCameraValues()
 {
 	HorseSpringArm->TargetArmLength = 600 + CurrentSpeed * 0.05;
 	HorseSpringArm->SetRelativeRotation(FRotator(-20 + CurrentSpeed * 0.001,0,0));
-	HorseCamera->FieldOfView = 90 + (CurrentSpeed * 0.005);
+	HorseCamera->FieldOfView = 90 + CurrentSpeed * 0.005;
+}
+
+void ABaseHorse::MoveCameraValuesDT(float DeltaTime)
+{
+	HorseSpringArm->TargetArmLength = UKismetMathLibrary::FInterpTo(HorseSpringArm->TargetArmLength, TargetCameraArmLength, DeltaTime, 5);
+	HorseCamera->FieldOfView = UKismetMathLibrary::FInterpTo(HorseCamera->FieldOfView, TargetCameraFOV, DeltaTime, 0.5);
+	GEngine->AddOnScreenDebugMessage(-1,0.f, FColor::Red, FString::SanitizeFloat(HorseSpringArm->TargetArmLength));
+	GEngine->AddOnScreenDebugMessage(-1,0.f, FColor::Red, FString::SanitizeFloat(TargetCameraArmLength));
+	
+	float CurRotPitch = UKismetMathLibrary::FInterpTo(HorseSpringArm->GetComponentRotation().Pitch, TargetCameraArmRotation, DeltaTime, 0.00001);
+	HorseSpringArm->SetRelativeRotation(FRotator(CurRotPitch, 0, 0));
+}
+
+void ABaseHorse::CameraBurst(float AddedLengthToSpring)
+{
+	bBurstingCamera = true;
+	
+	TargetCameraArmLength += AddedLengthToSpring;
+	GetWorldTimerManager().SetTimer(
+		BurstHandle,
+		this,
+		&ABaseHorse::CameraUnburst,
+		0.3f,
+		false);
+}
+
+void ABaseHorse::CameraUnburst()
+{
+	bBurstingCamera = false;
+	TargetCameraArmLength = 600 + CurrentSpeed * 0.05;
+}
+
+void ABaseHorse::CalculateCameraValues()
+{
+	TargetCameraArmLength = 600 + CurrentSpeed * 0.05;
+	TargetCameraArmRotation = -20 + CurrentSpeed * 0.001;
+	TargetCameraFOV = 90 + CurrentSpeed * 0.005;
 }
 
 	// ========================
@@ -530,6 +575,7 @@ void ABaseHorse::Respawn()
 	
 	SetActorLocation(RespawnPoint.GetLocation());
 	GetController()->SetControlRotation(FRotator(RespawnPoint.GetRotation()));
+	SetInitialCameraValues();
 }
 
 	// =========================
@@ -584,10 +630,12 @@ void ABaseHorse::TimeManipulation(float GameSpeed)
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), GameSpeed);
 
 	HorseSpringArm->TargetArmLength = 300.0f + GameSpeed * 300.0f;
+	TargetCameraArmLength = 300.0f + GameSpeed * 300.0f;
 
 	if (GameSpeed == 1.0f)
 	{
 		HorseSpringArm->TargetArmLength = 600.0f;
+		TargetCameraArmLength = 600.0f;
 	}
 }
 

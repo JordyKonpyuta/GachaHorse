@@ -159,6 +159,23 @@ protected:
 	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Speed Actual")
 	FTimerHandle ShiftSpeedTimerHandle;
 	
+	// ==========================
+	// ==        Camera        ==
+	// ==========================
+	
+	FTimerHandle BurstHandle;
+	
+	UPROPERTY()
+	bool bBurstingCamera = false;
+
+	UPROPERTY()
+	float TargetCameraArmLength = 600.0f;
+	
+	UPROPERTY()
+	float TargetCameraArmRotation = -20.0f;
+	
+	UPROPERTY()
+	float TargetCameraFOV = 90;
 	
 	// ==========================
 	// ==         Jump         ==
@@ -321,9 +338,25 @@ protected:
 
 	UFUNCTION()
 	void CalculateCurrentSpeed();
+	
+	// ==========================
+	// ==        Camera        ==
+	// ==========================
 
 	UFUNCTION()
-	void MoveCameraWithSpeed();
+	void SetInitialCameraValues();
+
+	UFUNCTION()
+	void MoveCameraValuesDT(float DeltaTime);
+
+	UFUNCTION()
+	void CameraBurst(float AddedLengthToSpring);
+
+	UFUNCTION()
+	void CameraUnburst();
+
+	UFUNCTION()
+	void CalculateCameraValues();
 	
 	// ==========================
 	// ==         Jump         ==
