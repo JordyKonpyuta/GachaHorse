@@ -312,14 +312,14 @@ void AMainMenuGamemode::GachaPullHorses(bool bTenSummons)
 		return;
 	
 	InstanceRef->AddMoney(-Price);
+	InstanceRef->AllHorsesPulled.Empty();
 	
 	TArray<int> AllGains = CalculatePossibleHorseGains(bTenSummons);
 	float Delay = 0.25f;
-
-	for (int CurrentHorseID : AllGains)
+	for (int i = 0; i < AllGains.Num(); i++ )
 	{
-		PrepareSummonResults(true, CurrentHorseID, Delay);
-		InstanceRef->ObtainedHorse(CurrentHorseID);
+		PrepareSummonResults(true, i, Delay);
+		InstanceRef->ObtainedHorse(AllGains[i]);
 		Delay += 0.5f;
 	}
 }
@@ -332,24 +332,25 @@ void AMainMenuGamemode::GachaPullEquips(bool bTenSummons)
 		return;
 
 	InstanceRef->AddMoney(-Price);
+	InstanceRef->AllEquipsPulled.Empty();
 	
 	TArray<int> AllGains = CalculatePossibleEquipGains(bTenSummons);
 	float Delay = 0.25f;
-	
-	for (int CurrentEquipID : AllGains)
+
+	for (int i = 0; i < AllGains.Num(); i++ )
 	{
-		PrepareSummonResults(false, CurrentEquipID, Delay);
-		InstanceRef->ObtainedEquip(CurrentEquipID);
+		PrepareSummonResults(false, i, Delay);
+		InstanceRef->ObtainedEquip(AllGains[i]);
 		Delay += 0.5f;
 	}
 }
 
-void AMainMenuGamemode::PrepareSummonResults(bool bIsHorses, int ThingID, float Delay)
+void AMainMenuGamemode::PrepareSummonResults(bool bIsHorses, int Index, float Delay)
 {
 	FTimerHandle TempSummonHandle;
 	FTimerDelegate TempSummonDelegate;
 
-	TempSummonDelegate.BindUFunction(this, "DisplaySummonResults", static_cast<bool>(bIsHorses), static_cast<int>(ThingID));
+	TempSummonDelegate.BindUFunction(this, "DisplaySummonResults", static_cast<bool>(bIsHorses), static_cast<int>(Index));
 
 	GetWorldTimerManager().SetTimer(
 		TempSummonHandle,
@@ -358,7 +359,7 @@ void AMainMenuGamemode::PrepareSummonResults(bool bIsHorses, int ThingID, float 
 		false);
 }
 	
-void AMainMenuGamemode::DisplaySummonResults_Implementation(bool bIsHorses, int ThingID)
+void AMainMenuGamemode::DisplaySummonResults_Implementation(bool bIsHorses, int Index)
 {
 }
 

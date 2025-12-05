@@ -156,6 +156,7 @@ void UBaseGameInstance::ObtainedHorse(int HorseID)
 	{
 		if (HorseData[i].HorseID == HorseID)
 		{
+			AllHorsesPulled.Add(HorseData[i]);
 			if (!HorseData[i].bHorsePossessed)
 				HorseData[i].bHorsePossessed = true;
 			else
@@ -167,6 +168,7 @@ void UBaseGameInstance::ObtainedHorse(int HorseID)
 			break;
 		}
 	}
+	SaveGame();
 }
 
 void UBaseGameInstance::ObtainedEquip(int EquipID)
@@ -175,6 +177,7 @@ void UBaseGameInstance::ObtainedEquip(int EquipID)
 	{
 		if (EquipData[i].EquipmentID == EquipID)
 		{
+			AllEquipsPulled.Add(EquipData[i]);
 			if (!EquipData[i].bEquipmentPossessed)
 				EquipData[i].bEquipmentPossessed = true;
 			else
@@ -192,6 +195,7 @@ void UBaseGameInstance::ObtainedEquip(int EquipID)
 			break;
 		}
 	}
+	SaveGame();
 }
 
 void UBaseGameInstance::SelectHorse(int HorseID)

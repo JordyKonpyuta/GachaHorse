@@ -110,7 +110,7 @@ public:
 	// ==========================
 
 	UFUNCTION(BlueprintNativeEvent, Blueprintable, BlueprintCallable)
-	void DisplaySummonResults(bool bIsHorses, int ThingID);
+	void DisplaySummonResults(bool bIsHorses, int Index);
 	
 	// ==========================
 	// ==    Fission Mailed    ==
@@ -166,7 +166,7 @@ protected:
 	void GachaPullEquips(bool bTenSummons);
 
 	UFUNCTION()
-	void PrepareSummonResults(bool bIsHorses, int ThingID, float Delay);
+	void PrepareSummonResults(bool bIsHorses, int Index, float Delay);
 	
 	// ==========================
 	// ==   Rankings Results   ==

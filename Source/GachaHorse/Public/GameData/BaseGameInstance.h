@@ -77,6 +77,16 @@ public:
 	int LevelSelected = 0;
 	
 	// =========================
+	// ==        Pulls        ==
+	// =========================
+
+	UPROPERTY(BlueprintReadWrite)
+	TArray<FHorseDataStruct> AllHorsesPulled;
+
+	UPROPERTY(BlueprintReadWrite)
+	TArray<FEquipDataStruct> AllEquipsPulled;
+	
+	// =========================
 	// == All Missions Values ==
 	// =========================
 
