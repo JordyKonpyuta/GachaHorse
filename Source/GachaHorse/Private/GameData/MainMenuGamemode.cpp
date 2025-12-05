@@ -318,9 +318,9 @@ void AMainMenuGamemode::GachaPullHorses(bool bTenSummons)
 	float Delay = 0.25f;
 	for (int i = 0; i < AllGains.Num(); i++ )
 	{
+		Delay +=0.5f;
 		PrepareSummonResults(true, i, Delay);
 		InstanceRef->ObtainedHorse(AllGains[i]);
-		Delay += 0.5f;
 	}
 }
 
@@ -339,9 +339,9 @@ void AMainMenuGamemode::GachaPullEquips(bool bTenSummons)
 
 	for (int i = 0; i < AllGains.Num(); i++ )
 	{
+		Delay += 0.5f;
 		PrepareSummonResults(false, i, Delay);
 		InstanceRef->ObtainedEquip(AllGains[i]);
-		Delay += 0.5f;
 	}
 }
 
