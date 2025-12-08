@@ -133,6 +133,9 @@ public:
 	UFUNCTION(Blueprintable, BlueprintCallable)
 	void PrepareRankingResults(int CurrentWorldSelected);
 
+	UFUNCTION(Blueprintable, BlueprintCallable, BlueprintPure)
+	int GetRank(TSoftObjectPtr<UWorld> CurrentWorldSelected);
+
 protected:
 	// ==========================
 	// ==    Base Functions    ==

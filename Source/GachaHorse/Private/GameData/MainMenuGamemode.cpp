@@ -464,6 +464,31 @@ void AMainMenuGamemode::PrepareRankingResults(int CurrentWorldSelected)
 		DisplayRankingsResults(true, FName(*InstanceRef->PlayerName), InstanceRef->LevelData[CurrentWorldSelected].BestPersonalTime, CurRank);
 }
 
+int AMainMenuGamemode::GetRank(TSoftObjectPtr<UWorld> CurrentWorldSelected)
+{
+	int CurRank = 1;
+
+	if (InstanceRef->LevelData.IsEmpty())
+		return 101;
+
+	int WorldID = 0;
+
+	for (WorldID; WorldID < InstanceRef->LevelData.Num(); WorldID++)
+	{
+		if (InstanceRef->LevelData[WorldID].WorldToLoad == CurrentWorldSelected)
+			break;
+	}
+	
+	for (TPair<FName, float>& CurrentRanking : InstanceRef->LevelData[WorldID].Rankings)
+	{
+		if (InstanceRef->LevelData[WorldID].BestPersonalTime < CurrentRanking.Value)
+			return CurRank;
+		CurRank++;
+	}
+
+	return 101;
+}
+
 void AMainMenuGamemode::DisplayRankingsResults_Implementation(bool bIsPlayer, FName CurRankName, float CurRankTime, int CurrentRank)
 {
 }
