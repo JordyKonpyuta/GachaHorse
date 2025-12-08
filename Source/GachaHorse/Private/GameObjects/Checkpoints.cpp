@@ -67,7 +67,7 @@ void ACheckpoints::BeginPlay()
 		CheckpointArea->SetCollisionResponseToAllChannels(ECR_Block);
 		break;
 	default:
-		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, "Wait wat");
+		break;
 	}
 }
 

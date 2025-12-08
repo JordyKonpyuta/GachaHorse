@@ -37,24 +37,20 @@ void ABaseGamemode::Tick(float DeltaTime)
 		{
 			bThreeBeforeGo = true;
 			Widget_ReadyToGo(3);
-			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "3");
 		}
 		if (Timer >= -4.0f && !bTwoBeforeGo)
 		{
 			bTwoBeforeGo = true;
 			Widget_ReadyToGo(2);
-			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "2");
 		}
 		if (Timer >= -2.0f && !bOneBeforeGo)
 		{
 			bOneBeforeGo = true;
 			Widget_ReadyToGo(1);
-			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "1");
 		}
 		if (Timer >= 0.0f)
 		{
 			StartGame();
-			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "0");
 		}
 	}
 
@@ -282,7 +278,6 @@ void ABaseGamemode::CheckMissions()
 
 void ABaseGamemode::CheckFirstMission()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 500.f, FColor::Blue, FString::FromInt(InstanceRef->LevelSelected));
 	if (InstanceRef->LevelData[InstanceRef->LevelSelected].WorldToLoad == InstanceRef->TrackMissionTarget)
 	{
 		InstanceRef->AddMoney(100);

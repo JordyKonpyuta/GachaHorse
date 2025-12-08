@@ -158,9 +158,6 @@ void ABaseHorse::Tick(float DeltaTime)
 		}
 	}
 
-	GEngine->AddOnScreenDebugMessage(-2, 0.f, FColor::Blue, FString::SanitizeFloat(CurrentSpeed));
-	GEngine->AddOnScreenDebugMessage(-1,0.f, FColor::Yellow, FString::SanitizeFloat(HorseCamera->GetRelativeLocation().Z));
-
 	// MOVE HORSEY LEFTY RIGHTY
 	if (!(-0.1 < SideSpeed && SideSpeed < 0.1))
 		AddMovementInput(GetActorRightVector(), (SideSpeed < 0 ? 2 : -2) * DeltaTime * TickCorrecter);
@@ -497,8 +494,6 @@ void ABaseHorse::MoveCameraValuesDT(float DeltaTime)
 {
 	HorseSpringArm->TargetArmLength = UKismetMathLibrary::FInterpTo(HorseSpringArm->TargetArmLength, TargetCameraArmLength, DeltaTime, 5);
 	HorseCamera->FieldOfView = UKismetMathLibrary::FInterpTo(HorseCamera->FieldOfView, TargetCameraFOV, DeltaTime, 0.5);
-	GEngine->AddOnScreenDebugMessage(-1,0.f, FColor::Red, FString::SanitizeFloat(HorseSpringArm->TargetArmLength));
-	GEngine->AddOnScreenDebugMessage(-1,0.f, FColor::Red, FString::SanitizeFloat(TargetCameraArmLength));
 	
 	float CurRotPitch = UKismetMathLibrary::FInterpTo(HorseSpringArm->GetComponentRotation().Pitch, TargetCameraArmRotation, DeltaTime, 0.00001);
 	HorseSpringArm->SetRelativeRotation(FRotator(CurRotPitch, 0, 0));
@@ -544,7 +539,6 @@ void ABaseHorse::StartCameraShakeLanded()
 	bCameraGoingDown = true;
 	bCameraJumpMove = true;
 	HorseCamera->SetRelativeRotation(FRotator(HorseCamera->GetRelativeRotation().Pitch, HorseCamera->GetRelativeRotation().Yaw, 0));
-	GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, "LANDED");
 }
 
 void ABaseHorse::CameraShakeLanded(float DeltaTime)
@@ -559,7 +553,6 @@ void ABaseHorse::CameraShakeLanded(float DeltaTime)
 	{
 		bCameraJumpMove = false;
 		HorseCamera->SetRelativeLocation(FVector(0, 0, 0));
-		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Yellow, "HAHA");
 
 	}
 }

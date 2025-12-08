@@ -68,7 +68,6 @@ void AObstacleBase::OnComponentBeginOverlap(class UPrimitiveComponent* Overlappe
 void AObstacleBase::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, "AH");
 	MercyTimer = 0.0f;
 	bMercyTimerRuns = false;
 }
