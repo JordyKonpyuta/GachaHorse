@@ -83,6 +83,13 @@ public:
 	UFUNCTION(BlueprintNativeEvent, Blueprintable)
 	void LevelUpEquipWidgetUpdate(FEquipDataStruct EquipDisplayed);
 	
+	// =========================
+	// ==  General Selection  ==
+	// =========================
+	
+	UFUNCTION(BlueprintCallable, Blueprintable)
+	void UpdateViewedData();
+	
 	// =========================================================
 	// ==         █     █ █████ ███  ██    ████ █████         ==
 	// ==          █ █ █    █   █  █ █ ███ ██     █           ==

@@ -81,6 +81,28 @@ void AMainMenuGamemode::LevelUpEquip()
 void AMainMenuGamemode::LevelUpEquipWidgetUpdate_Implementation(FEquipDataStruct EquipDisplayed)
 {
 }
+	
+	// =========================
+	// ==  General Selection  ==
+	// =========================
+
+void AMainMenuGamemode::UpdateViewedData()
+{
+	for (FHorseDataStruct ThisHorse : InstanceRef->HorseData)
+	{
+		if (InstanceRef->ViewedHorseData.HorseName == ThisHorse.HorseName)
+		{
+			GEngine->AddOnScreenDebugMessage(-1,50.f, FColor::Red, "LAAAAAAAA");
+			if (InstanceRef->ViewedHorseData.ShardNumber != ThisHorse.ShardNumber)
+			{
+			GEngine->AddOnScreenDebugMessage(-1,50.f, FColor::Red, "DETROIT SMASH !!!!!!");
+				InstanceRef->ViewedHorseData = ThisHorse;
+				
+			}
+			break;
+		}
+	}
+}
 
 	// ==========================
 	// ==       Missions       ==

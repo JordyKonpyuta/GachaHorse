@@ -235,7 +235,7 @@ void UBaseGameInstance::CheckAvailableHorse(bool bCheckingLeft)
 void UBaseGameInstance::EquipHorse()
 {
 	ChosenHorseData = ViewedHorseData;
-	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, ChosenHorseData.HorseName);
+	SaveGame();
 }
 
 void UBaseGameInstance::SelectEquip(int EquipID)
@@ -275,7 +275,7 @@ void UBaseGameInstance::CheckAvailableEquip(bool bCheckingLeft)
 void UBaseGameInstance::EquipEquips()
 {
 	ChosenEquipData = ViewedEquipData;
-	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, ChosenEquipData.EquipmentName);
+	SaveGame();
 }
 
 void UBaseGameInstance::LevelUpHorse()
