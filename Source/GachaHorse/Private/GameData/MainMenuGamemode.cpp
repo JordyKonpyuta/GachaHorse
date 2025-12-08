@@ -332,10 +332,10 @@ void AMainMenuGamemode::GachaPullHorses(bool bTenSummons)
 	InstanceRef->AllHorsesPulled.Empty();
 	
 	TArray<int> AllGains = CalculatePossibleHorseGains(bTenSummons);
-	float Delay = 0.25f;
+	float Delay = InstanceRef->HorseData[0].bHorsePossessed ? 0.15f : 0.25f;
 	for (int i = 0; i < AllGains.Num(); i++ )
 	{
-		Delay +=0.5f;
+		Delay += InstanceRef->HorseData[AllGains[i]].bHorsePossessed ? 0.2f : 0.5f;
 		PrepareSummonResults(true, i, Delay);
 		InstanceRef->ObtainedHorse(AllGains[i]);
 	}
@@ -352,11 +352,11 @@ void AMainMenuGamemode::GachaPullEquips(bool bTenSummons)
 	InstanceRef->AllEquipsPulled.Empty();
 	
 	TArray<int> AllGains = CalculatePossibleEquipGains(bTenSummons);
-	float Delay = 0.25f;
+	float Delay = InstanceRef->EquipData[0].bEquipmentPossessed ? 0.15f : 0.25f;
 
 	for (int i = 0; i < AllGains.Num(); i++ )
 	{
-		Delay += 0.5f;
+		Delay += InstanceRef->EquipData[AllGains[i]].bEquipmentPossessed ? 0.2f : 0.5f;
 		PrepareSummonResults(false, i, Delay);
 		InstanceRef->ObtainedEquip(AllGains[i]);
 	}

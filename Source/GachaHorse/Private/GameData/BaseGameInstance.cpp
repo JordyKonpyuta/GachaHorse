@@ -160,7 +160,12 @@ void UBaseGameInstance::ObtainedHorse(int HorseID)
 			if (!HorseData[i].bHorsePossessed)
 				HorseData[i].bHorsePossessed = true;
 			else
-				HorseData[i].ShardNumber += 1;
+			{
+				if (HorseData[i].Level >= 6)
+					AddMoney(50);
+				else
+					HorseData[i].ShardNumber += 1;
+			}
 			
 			if (SaveGameRef->IsValidLowLevelFast())
 				SaveGameRef->HorseData[i] = HorseData[i];
@@ -292,6 +297,12 @@ void UBaseGameInstance::LevelUpHorse()
 			HorseData[i].ShardNumber -= FMath::Pow(2.0f, HorseData[i].Level - 1);
 			HorseData[i].Level += 1;
 			ViewedHorseData = HorseData[i];
+
+			if (HorseData[i].Level >= 6)
+			{
+				AddMoney(HorseData[i].ShardNumber * 50);
+				HorseData[i].ShardNumber = 0;
+			}
 
 			if (ViewedHorseData.HorseID == ChosenHorseData.HorseID)
 				ChosenHorseData = ViewedHorseData;
