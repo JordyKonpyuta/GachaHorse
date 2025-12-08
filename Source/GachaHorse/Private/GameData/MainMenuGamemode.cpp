@@ -468,7 +468,7 @@ int AMainMenuGamemode::GetRank(TSoftObjectPtr<UWorld> CurrentWorldSelected)
 
 	int WorldID = 0;
 
-	for (WorldID; WorldID < InstanceRef->LevelData.Num(); WorldID++)
+	for (WorldID = 0; WorldID < InstanceRef->LevelData.Num(); WorldID++)
 	{
 		if (InstanceRef->LevelData[WorldID].WorldToLoad == CurrentWorldSelected)
 			break;
