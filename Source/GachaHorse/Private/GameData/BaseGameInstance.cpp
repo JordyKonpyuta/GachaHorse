@@ -398,7 +398,7 @@ void UBaseGameInstance::InitializeFirstSave()
 	{
 		LevelData.Add(*InitialLevelData->FindRow<FWorldMapDataStruct>(CurrentRowName, "Horse Data Creation...", true));
 	}
-	SummonMoney = 1000000;
+	SummonMoney = 5000;
 
 	SaveGame();
 }

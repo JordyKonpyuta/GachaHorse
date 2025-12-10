@@ -220,11 +220,11 @@ void ABaseGamemode::Victory()
 	int OldRank = CalculateRank(InstanceRef->LevelData[InstanceRef->LevelSelected].BestPersonalTime);
 	RankAchieved = CalculateRank(Timer);
 
-	int MoneyAdded = 10;
+	int MoneyAdded = 50;
 
 	if (RankAchieved < OldRank)
 	{
-		MoneyAdded = 10 + (OldRank - RankAchieved) * 10;
+		MoneyAdded = 50 + (OldRank - RankAchieved) * 50;
 		InstanceRef->AddMoney(MoneyAdded);
 	}
 
@@ -280,9 +280,9 @@ void ABaseGamemode::CheckFirstMission()
 {
 	if (InstanceRef->LevelData[InstanceRef->LevelSelected].WorldToLoad == InstanceRef->TrackMissionTarget)
 	{
-		InstanceRef->AddMoney(100);
+		InstanceRef->AddMoney(200);
 
-		FirstMissionWidget(true, 100);
+		FirstMissionWidget(true, 200);
 	}
 	FTimerHandle MissionHandle;
 	
@@ -299,7 +299,7 @@ void ABaseGamemode::CheckSecondMission()
 {
 	if (RankAchieved <= InstanceRef->RankMissionTarget)
 	{
-		int Reward = 101 - RankAchieved * 3;
+		int Reward = (101 - InstanceRef->RankMissionTarget) * 6;
 		InstanceRef->AddMoney(Reward);
 
 		SecondMissionWidget(true, Reward);
@@ -319,9 +319,9 @@ void ABaseGamemode::CheckThirdMission()
 {
 	if (InstanceRef->HorseIDMissionTarget == InstanceRef->ChosenHorseData.HorseID)
 	{
-		InstanceRef->AddMoney(100);
+		InstanceRef->AddMoney(200);
 
-		ThirdMissionWidget(true, 100);
+		ThirdMissionWidget(true, 200);
 	}
 }
 
