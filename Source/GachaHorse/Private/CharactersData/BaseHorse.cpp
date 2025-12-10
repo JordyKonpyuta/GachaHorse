@@ -124,6 +124,9 @@ void ABaseHorse::Tick(float DeltaTime)
 		CalculateCameraValues();
 	if (!bIsRagdoll)
 		MoveCameraValuesDT(DeltaTime);
+
+	// HORSEY TURNING ANIMATION
+	AnimTurn(DeltaTime);
 	
 	if (!GetCharacterMovement()->IsMovingOnGround() && bIsChargingJump)
 	{
@@ -231,11 +234,13 @@ void ABaseHorse::Turn(const FInputActionValue& Value)
 	if (bIsRagdoll)
 		return;
 
-	float TurnAngle = (Value.Get<float>() * TurnRateFactor) / (bIsChargingJump ? 2 : 1) / (GetCharacterMovement()->IsMovingOnGround() ? 1 : 100);
-	TurnAngle *= TickCorrecter;
+	float TurnMovement = (Value.Get<float>() * TurnRateFactor) / (bIsChargingJump ? 2 : 1) / (GetCharacterMovement()->IsMovingOnGround() ? 1 : 100);
+	TurnMovement *= TickCorrecter;
+
+	TargetTurnAngle = TurnMovement / TickCorrecter / TurnRateFactor;
 	
-	AddControllerYawInput(TurnAngle * GetWorld()->GetDeltaSeconds());
-	GetCharacterMovement()->Velocity = UKismetMathLibrary::RotateAngleAxis(GetCharacterMovement()->Velocity, TurnAngle * GetWorld()->GetDeltaSeconds(), FVector(0, 0, 1));
+	AddControllerYawInput(TurnMovement * GetWorld()->GetDeltaSeconds());
+	GetCharacterMovement()->Velocity = UKismetMathLibrary::RotateAngleAxis(GetCharacterMovement()->Velocity, TurnMovement * GetWorld()->GetDeltaSeconds(), FVector(0, 0, 1));
 
 	CameraRollMultiplier = -2 * Value.Get<float>();
 	bCameraRoll = true;
@@ -245,6 +250,7 @@ void ABaseHorse::StopTurn()
 {
 	CameraRollMultiplier = 0;
 	bCameraRoll = false;
+	TargetTurnAngle = 0;
 }
 
 void ABaseHorse::PrepareJump()
@@ -321,6 +327,12 @@ void ABaseHorse::ActualChangeSpeed()
 	}
 
 	PauseShiftSpeedPossibility(1.0f);
+}
+
+void ABaseHorse::AnimTurn(float DeltaTime)
+{
+	TurnAngle = UKismetMathLibrary::FInterpTo(TurnAngle, TargetTurnAngle, DeltaTime, 1.5);
+	
 }
 
 	// =========================

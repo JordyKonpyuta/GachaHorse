@@ -134,6 +134,10 @@ protected:
 	float CurrentSpeed = 0.0f;
 	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Speed Actual")
 	float SideSpeed = 0.0f;
+	UPROPERTY()
+	float TargetTurnAngle = 0.0f;
+	UPROPERTY(Blueprintable, BlueprintReadWrite, Category="Speed Actual")
+	float TurnAngle = 0.0f;
 
 	// SLOPE
 	/**
@@ -324,6 +328,9 @@ protected:
 	void StopChangeSpeed();
 	UFUNCTION()
 	void ActualChangeSpeed();
+
+	UFUNCTION()
+	void AnimTurn(float DeltaTime);
 	
 	// =========================
 	// ==        Speed        ==
