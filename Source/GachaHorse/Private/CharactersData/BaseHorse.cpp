@@ -238,6 +238,8 @@ void ABaseHorse::Turn(const FInputActionValue& Value)
 	TurnMovement *= TickCorrecter;
 
 	TargetTurnAngle = TurnMovement / TickCorrecter / TurnRateFactor;
+
+	TurnMovement *= CurrentSpeed < 1 ? 2 : 1;
 	
 	AddControllerYawInput(TurnMovement * GetWorld()->GetDeltaSeconds());
 	GetCharacterMovement()->Velocity = UKismetMathLibrary::RotateAngleAxis(GetCharacterMovement()->Velocity, TurnMovement * GetWorld()->GetDeltaSeconds(), FVector(0, 0, 1));
