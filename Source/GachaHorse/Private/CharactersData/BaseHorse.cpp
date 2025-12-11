@@ -234,7 +234,7 @@ void ABaseHorse::Turn(const FInputActionValue& Value)
 	if (bIsRagdoll)
 		return;
 
-	float TurnMovement = (Value.Get<float>() * TurnRateFactor) / (bIsChargingJump ? 2 : 1) / (GetCharacterMovement()->IsMovingOnGround() ? 1 : 100);
+	float TurnMovement = (Value.Get<float>() * TurnRateFactor)  / (bIsChargingJump ? 2 : 1) / (GetCharacterMovement()->IsMovingOnGround() ? 1 : 100);
 	TurnMovement *= TickCorrecter;
 
 	TargetTurnAngle = TurnMovement / TickCorrecter / TurnRateFactor;
@@ -647,7 +647,7 @@ void ABaseHorse::VFXOnHit_Implementation(bool bIsHorseKill)
 
 void ABaseHorse::BeginRagdoll()
 {
-	if (bGameEnded)
+	if (bGameEnded || bIsRagdoll)
 		return;
 	
 	bIsRagdoll = true;
@@ -667,6 +667,11 @@ void ABaseHorse::BeginRagdoll()
 		&ABaseHorse::Respawn,
 		1.0f,
 		false);
+}
+
+bool ABaseHorse::GetRagdollState()
+{
+	return bIsRagdoll;
 }
 
 void ABaseHorse::CeaseRagdoll()
@@ -727,7 +732,7 @@ void ABaseHorse::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UP
 			else
 			{
 				GetCharacterMovement()->StopMovementImmediately();
-				SetTargetSpeed(FMath::Clamp(TargetSpeed, 1, 2));
+				SetTargetSpeed(FMath::Clamp(TargetSpeed, 1, 1));
 				VFXOnHit(false);
 			}
 		}

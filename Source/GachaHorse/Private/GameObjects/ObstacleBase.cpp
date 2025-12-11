@@ -50,7 +50,7 @@ void AObstacleBase::Tick(float DeltaTime)
 	{
 		MercyTimer = 0.0f;
 		bMercyTimerRuns = false;
-		if (HorseRef->IsValidLowLevelFast())
+		if (HorseRef->IsValidLowLevelFast() && !HorseRef->GetRagdollState())
 			HorseRef->BeginRagdoll();
 	}
 }

@@ -288,6 +288,8 @@ public:
 
 	UFUNCTION()
 	void BeginRagdoll();
+	UFUNCTION()
+	bool GetRagdollState();
 	
 	// =========================
 	// ==       Respawn       ==
