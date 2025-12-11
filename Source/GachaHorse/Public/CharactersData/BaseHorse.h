@@ -189,6 +189,9 @@ protected:
 	bool bCameraJumpMove = false;
 	UPROPERTY()
 	bool bCameraGoingDown = false;
+
+	UPROPERTY()
+	float TargetCameraAngleEndgame = 0.0f;
 	
 	// ==========================
 	// ==         Jump         ==
@@ -438,11 +441,6 @@ protected:
 	void CreateWidgetRace();
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void DeleteWidgetRace();
-
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void CreateWidgetFinish();
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void DeleteWidgetFinish();
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void Widget_ShowCharge();

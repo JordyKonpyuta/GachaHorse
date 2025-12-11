@@ -120,9 +120,9 @@ void ABaseHorse::Tick(float DeltaTime)
 	CalculateCurrentSpeed();
 
 	// MOVE CAMERA
-	if (!bBurstingCamera)
+	if (!bBurstingCamera && !bGameEnded)
 		CalculateCameraValues();
-	if (!bIsRagdoll)
+	if (!bIsRagdoll && !bGameEnded)
 		MoveCameraValuesDT(DeltaTime);
 
 	// HORSEY TURNING ANIMATION
@@ -199,8 +199,8 @@ void ABaseHorse::Tick(float DeltaTime)
 
 	if (bGameEnded)
 	{
-		HorseSpringArm->TargetArmLength = FMath::FInterpTo(HorseSpringArm->TargetArmLength, 200, DeltaTime, 20);
-		HorseSpringArm->SetRelativeRotation(FRotator(0, -20, FMath::FInterpTo(HorseSpringArm->GetRelativeRotation().Roll, -270, DeltaTime, 135)));
+		HorseSpringArm->TargetArmLength = FMath::FInterpTo(HorseSpringArm->TargetArmLength, 400, DeltaTime, 2);
+		HorseSpringArm->SetRelativeRotation(FRotator(-30, FMath::FInterpTo(HorseSpringArm->GetRelativeRotation().Yaw, TargetCameraAngleEndgame, DeltaTime, 1), 0));
 	}
 }
 
@@ -618,7 +618,9 @@ void ABaseHorse::Landed_Blueprint_Implementation()
 void ABaseHorse::FinishRace()
 {
 	SetTargetSpeed(1);
-	CreateWidgetFinish();
+	bGameEnded = true;
+	GetCharacterMovement()->MaxAcceleration = 600;
+	TargetCameraAngleEndgame = HorseSpringArm->GetRelativeRotation().Yaw + 145;
 }
 	
 	// =========================
@@ -645,6 +647,9 @@ void ABaseHorse::VFXOnHit_Implementation(bool bIsHorseKill)
 
 void ABaseHorse::BeginRagdoll()
 {
+	if (bGameEnded)
+		return;
+	
 	bIsRagdoll = true;
 	HorseSkel->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndPhysics);
 	HorseSkel->SetSimulatePhysics(true);
@@ -703,7 +708,7 @@ void ABaseHorse::TimeManipulation(float GameSpeed)
 void ABaseHorse::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (FVector2D(Hit.ImpactNormal.X, Hit.ImpactNormal.Y).Length() < 0.35 || bIsRagdoll)
+	if (FVector2D(Hit.ImpactNormal.X, Hit.ImpactNormal.Y).Length() < 0.35 || bIsRagdoll || bGameEnded)
 		return;
 		
 	FVector2D NormalHitSave2D = FVector2D(Hit.ImpactNormal.X, Hit.ImpactNormal.Y);
@@ -722,7 +727,7 @@ void ABaseHorse::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UP
 			else
 			{
 				GetCharacterMovement()->StopMovementImmediately();
-				SetTargetSpeed(FMath::Clamp(TargetSpeed, 0, 1));
+				SetTargetSpeed(FMath::Clamp(TargetSpeed, 1, 2));
 				VFXOnHit(false);
 			}
 		}
@@ -767,10 +772,6 @@ void ABaseHorse::TweakSpeedFX_Implementation(float SpawnRate, FVector Windspeed)
 void ABaseHorse::CreateWidgetRace_Implementation(){}
 
 void ABaseHorse::DeleteWidgetRace_Implementation(){}
-
-void ABaseHorse::CreateWidgetFinish_Implementation(){}
- 
-void ABaseHorse::DeleteWidgetFinish_Implementation(){}
 
 void ABaseHorse::Widget_ShowCharge_Implementation()
 {

@@ -237,7 +237,7 @@ void ABaseGamemode::Victory()
 	Cast<ABaseController>(GetWorld()->GetFirstPlayerController())->ActivateTouchInterface(nullptr);
 	
 	WidgetVictory(Timer, OldRank, RankAchieved, MoneyAdded);
-	HorseRef->SetTargetSpeed(1);
+	HorseRef->FinishRace();
 	CheckMissions();
 }
 
