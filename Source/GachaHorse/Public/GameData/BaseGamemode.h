@@ -170,11 +170,11 @@ protected:
 	int CalculateRank(float TimeOfRank) const;
 
 	UFUNCTION()
-	void CheckFirstMission();
+	void AnimFirstMission();
 	UFUNCTION()
-	void CheckSecondMission();
+	void AnimSecondMission();
 	UFUNCTION()
-	void CheckThirdMission();
+	void AnimThirdMission();
 
 	UFUNCTION(BlueprintNativeEvent, Blueprintable)
 	void FirstMissionWidget(bool bAnimation, int Prize);

@@ -262,67 +262,70 @@ void ABaseGamemode::CheckMissions()
 		return;
 	}
 	FTimerHandle MissionHandle;
-	FirstMissionWidget(false, 100);
-	int Reward = 101 - InstanceRef->RankMissionTarget * 3;
-	SecondMissionWidget(false, Reward);
-	ThirdMissionWidget(false, 100);
+	FirstMissionWidget(false, 200);
+	SecondMissionWidget(false, (101 - InstanceRef->RankMissionTarget) * 6);
+	ThirdMissionWidget(false, 200);
+
+	// MISSION 1
+	if (InstanceRef->LevelData[InstanceRef->LevelSelected].WorldToLoad == InstanceRef->TrackMissionTarget)
+	{
+		InstanceRef->AddMoney(200);
+	}
+
+	// MISSION 2
+	if (RankAchieved <= InstanceRef->RankMissionTarget)
+	{
+		InstanceRef->AddMoney((101 - InstanceRef->RankMissionTarget) * 6);
+	}
+	
+	// MISSION 3
+	if (InstanceRef->HorseIDMissionTarget == InstanceRef->ChosenHorseData.HorseID)
+	{
+		InstanceRef->AddMoney(200);
+	}
 	
 	// FIRST : THE COURSE YOU RAN THROUGH
 	GetWorldTimerManager().SetTimer(
 		MissionHandle,
 		this,
-		&ABaseGamemode::CheckFirstMission,
-		1.25f,
+		&ABaseGamemode::AnimFirstMission,
+		3.0f,
 		false);
 }
 
-void ABaseGamemode::CheckFirstMission()
+void ABaseGamemode::AnimFirstMission()
 {
-	if (InstanceRef->LevelData[InstanceRef->LevelSelected].WorldToLoad == InstanceRef->TrackMissionTarget)
-	{
-		InstanceRef->AddMoney(200);
-
-		FirstMissionWidget(true, 200);
-	}
 	FTimerHandle MissionHandle;
+
+	FirstMissionWidget(true, 200);
 	
 	// SECOND : RANK MISSION TARGET
 	GetWorldTimerManager().SetTimer(
 		MissionHandle,
 		this,
-		&ABaseGamemode::CheckSecondMission,
+		&ABaseGamemode::AnimSecondMission,
 		0.25f,
 		false);
 }
 
-void ABaseGamemode::CheckSecondMission()
+void ABaseGamemode::AnimSecondMission()
 {
-	if (RankAchieved <= InstanceRef->RankMissionTarget)
-	{
-		int Reward = (101 - InstanceRef->RankMissionTarget) * 6;
-		InstanceRef->AddMoney(Reward);
-
-		SecondMissionWidget(true, Reward);
-	}
 	FTimerHandle MissionHandle;
+
+	SecondMissionWidget(true, (101 - InstanceRef->RankMissionTarget) * 6);
 	
 	// THIRD : evil and intimidating horse
 	GetWorldTimerManager().SetTimer(
 		MissionHandle,
 		this,
-		&ABaseGamemode::CheckThirdMission,
+		&ABaseGamemode::AnimThirdMission,
 		0.25f,
 		false);
 }
 
-void ABaseGamemode::CheckThirdMission()
+void ABaseGamemode::AnimThirdMission()
 {
-	if (InstanceRef->HorseIDMissionTarget == InstanceRef->ChosenHorseData.HorseID)
-	{
-		InstanceRef->AddMoney(200);
-
-		ThirdMissionWidget(true, 200);
-	}
+	ThirdMissionWidget(true, 200);
 }
 
 void ABaseGamemode::FirstMissionWidget_Implementation(bool bAnimation, int Prize)
