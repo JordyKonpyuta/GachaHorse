@@ -283,7 +283,7 @@ void ABaseHorse::ReleaseJump()
 	if (!bIsChargingJump)
 		return;
 
-	if (!bIsRagdoll && CurrentSpeed > 750 && GetCharacterMovement()->JumpZVelocity > 325.0f)
+	if (!bIsRagdoll && CurrentSpeed > 750 && GetCharacterMovement()->JumpZVelocity > 310.0f)
 	{
 		Jump();
 		GetCapsuleComponent()->SetCapsuleSize(34,34,true);
