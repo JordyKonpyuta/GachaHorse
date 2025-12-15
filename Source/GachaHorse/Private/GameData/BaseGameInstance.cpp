@@ -499,6 +499,8 @@ void UBaseGameInstance::CheckHorseIntegrity()
 	if (SaveGameRef->HorseData.Num() == InitialHorseData->GetRowNames().Num())
 		return;
 
+	GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, "HORSES MISSING DETECTED");
+
 	TArray<FHorseDataStruct> TempHorseData;
 	bool bCheckIfExists = false;
 	
@@ -520,8 +522,14 @@ void UBaseGameInstance::CheckHorseIntegrity()
 			TempHorseData.Add(*InitialHorseData->FindRow<FHorseDataStruct>(CurrentRowName, "Horse Data Missing! Creation...", true));
 		}
 	}
-
+	
 	HorseData = TempHorseData;
+
+	for (FHorseDataStruct CurHorse: HorseData)
+	{
+		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Blue, CurHorse.HorseName);
+	}
+
 	SaveHorseData();
 }
 

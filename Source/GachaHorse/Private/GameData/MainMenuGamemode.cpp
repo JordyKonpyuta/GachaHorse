@@ -196,6 +196,26 @@ TArray<int> AMainMenuGamemode::CalculatePossibleHorseGains(bool bTenSummons)
 	TArray<int> AllHorses;
 	int CurOdd;
 
+	TArray<int> CommonHorseIDs;
+	TArray<int> UncommonHorseIDs;
+	TArray<int> RareHorseIDs;
+
+	for (int i = 0; i < InstanceRef->HorseData.Num(); i++)
+	{
+		if (InstanceRef->HorseData[i].Rarity == 0)
+		{
+			CommonHorseIDs.Add(InstanceRef->HorseData[i].HorseID);
+		}
+		else if (InstanceRef->HorseData[i].Rarity == 1)
+		{
+			UncommonHorseIDs.Add(InstanceRef->HorseData[i].HorseID);
+		}
+		else
+		{
+			RareHorseIDs.Add(InstanceRef->HorseData[i].HorseID);
+		}
+	}
+
 	if (!bTenSummons)
 	{
 		CurOdd = FMath::RandRange(0.000f, 100.000f);
@@ -203,17 +223,17 @@ TArray<int> AMainMenuGamemode::CalculatePossibleHorseGains(bool bTenSummons)
 		if (CurOdd >= 93.75)
 		{
 			// RARE HORSE :DDD
-			AllHorses.Add(FMath::RandRange(9, 12));
+			AllHorses.Add(RareHorseIDs[FMath::RandRange(0, RareHorseIDs.Num() - 1)]);
 		}
 		else if (CurOdd >= 62.5)
 		{
 			// UNCOMMON HORSE :)
-			AllHorses.Add(FMath::RandRange(5, 8));
+			AllHorses.Add(UncommonHorseIDs[FMath::RandRange(0, UncommonHorseIDs.Num() - 1)]);
 		}
 		else
 		{
 			// COMMON HORSE :(
-			AllHorses.Add(FMath::RandRange(0, 4));
+			AllHorses.Add(CommonHorseIDs[FMath::RandRange(0, CommonHorseIDs.Num() - 1)]);
 		}
 
 		return AllHorses;
@@ -226,17 +246,17 @@ TArray<int> AMainMenuGamemode::CalculatePossibleHorseGains(bool bTenSummons)
 		if (CurOdd >= 93.75)
 		{
 			// RARE HORSE :DDD
-			AllHorses.Add(FMath::RandRange(9, 12));
+			AllHorses.Add(RareHorseIDs[FMath::RandRange(0, RareHorseIDs.Num() - 1)]);
 		}
 		else if (CurOdd >= 62.5)
 		{
 			// UNCOMMON HORSE :)
-			AllHorses.Add(FMath::RandRange(5, 8));
+			AllHorses.Add(UncommonHorseIDs[FMath::RandRange(0, UncommonHorseIDs.Num() - 1)]);
 		}
 		else
 		{
 			// COMMON HORSE :(
-			AllHorses.Add(FMath::RandRange(0, 4));
+			AllHorses.Add(CommonHorseIDs[FMath::RandRange(0, CommonHorseIDs.Num() - 1)]);
 		}
 	}
 
@@ -245,12 +265,12 @@ TArray<int> AMainMenuGamemode::CalculatePossibleHorseGains(bool bTenSummons)
 	if (CurOdd < 5)
 	{
 		// UNCOMMON HORSE DDD:
-		AllHorses.Add(FMath::RandRange(5, 8));
+			AllHorses.Add(UncommonHorseIDs[FMath::RandRange(0, UncommonHorseIDs.Num() - 1)]);
 	}
 	else
 	{
 		// RARE HORSE :DDD
-		AllHorses.Add(FMath::RandRange(9, 12));
+			AllHorses.Add(RareHorseIDs[FMath::RandRange(0, RareHorseIDs.Num() - 1)]);
 	}
 	
 	return AllHorses;
@@ -261,24 +281,44 @@ TArray<int> AMainMenuGamemode::CalculatePossibleEquipGains(bool bTenSummons)
 	TArray<int> AllEquips;
 	int CurOdd;
 
+	TArray<int> CommonEquipIDs;
+	TArray<int> UncommonEquipIDs;
+	TArray<int> RareEquipIDs;
+
+	for (int i = 0; i < InstanceRef->HorseData.Num(); i++)
+	{
+		if (InstanceRef->HorseData[i].Rarity == 0)
+		{
+			CommonEquipIDs.Add(InstanceRef->HorseData[i].HorseID);
+		}
+		else if (InstanceRef->HorseData[i].Rarity == 1)
+		{
+			UncommonEquipIDs.Add(InstanceRef->HorseData[i].HorseID);
+		}
+		else
+		{
+			RareEquipIDs.Add(InstanceRef->HorseData[i].HorseID);
+		}
+	}
+
 	if (!bTenSummons)
 	{
 		CurOdd = FMath::RandRange(0.000f, 100.000f);
 
 		if (CurOdd >= 93.75)
 		{
-			// RARE HORSE :DDD
-			AllEquips.Add(FMath::RandRange(6, 8));
+			// RARE EQUIP :DDD
+			AllEquips.Add(RareEquipIDs[FMath::RandRange(0, RareEquipIDs.Num() - 1)]);
 		}
 		else if (CurOdd >= 62.5)
 		{
-			// UNCOMMON HORSE :)
-			AllEquips.Add(FMath::RandRange(3, 5));
+			// UNCOMMON EQUIP :)
+			AllEquips.Add(UncommonEquipIDs[FMath::RandRange(0, UncommonEquipIDs.Num() - 1)]);
 		}
 		else
 		{
-			// COMMON HORSE :(
-			AllEquips.Add(FMath::RandRange(0, 2));
+			// COMMON EQUIP :(
+			AllEquips.Add(CommonEquipIDs[FMath::RandRange(0, CommonEquipIDs.Num() - 1)]);
 		}
 
 		return AllEquips;
@@ -290,18 +330,18 @@ TArray<int> AMainMenuGamemode::CalculatePossibleEquipGains(bool bTenSummons)
 
 		if (CurOdd >= 93.75)
 		{
-			// RARE HORSE :DDD
-			AllEquips.Add(FMath::RandRange(6, 8));
+			// RARE EQUIP :DDD
+			AllEquips.Add(RareEquipIDs[FMath::RandRange(0, RareEquipIDs.Num() - 1)]);
 		}
 		else if (CurOdd >= 62.5)
 		{
-			// UNCOMMON HORSE :)
-			AllEquips.Add(FMath::RandRange(3, 5));
+			// UNCOMMON EQUIP :)
+			AllEquips.Add(UncommonEquipIDs[FMath::RandRange(0, UncommonEquipIDs.Num() - 1)]);
 		}
 		else
 		{
-			// COMMON HORSE :(
-			AllEquips.Add(FMath::RandRange(0, 2));
+			// COMMON EQUIP :(
+			AllEquips.Add(CommonEquipIDs[FMath::RandRange(0, CommonEquipIDs.Num() - 1)]);
 		}
 	}
 
@@ -309,13 +349,13 @@ TArray<int> AMainMenuGamemode::CalculatePossibleEquipGains(bool bTenSummons)
 
 	if (CurOdd < 5)
 	{
-		// UNCOMMON HORSE DDD:
-		AllEquips.Add(FMath::RandRange(3, 5));
+		// UNCOMMON EQUIP DDD:
+		AllEquips.Add(UncommonEquipIDs[FMath::RandRange(0, UncommonEquipIDs.Num() - 1)]);
 	}
 	else
 	{
-		// RARE HORSE :DDD
-		AllEquips.Add(FMath::RandRange(6, 8));
+		// RARE EQUIP :DDD
+		AllEquips.Add(RareEquipIDs[FMath::RandRange(0, RareEquipIDs.Num() - 1)]);
 	}
 	
 	return AllEquips;

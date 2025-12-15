@@ -50,12 +50,6 @@ void AMainMenuCameraManager::BeginPlay()
 	CheckForPregameErrors();
 
 	ControllerRef = Cast<AMainMenuController>(GetWorld()->GetFirstPlayerController());
-
-	if (!ControllerRef->IsValidLowLevelFast())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("CONTROLLER NOT FOUND, SHUTTING THE GAME DOWN"));
-		FGenericPlatformMisc::RequestExit(false);
-	}
 	
 	ControllerRef->CameraHandler = this;
 
@@ -86,10 +80,11 @@ void AMainMenuCameraManager::Tick(float DeltaTime)
 
 void AMainMenuCameraManager::ChangeCameraView()
 {
+	// MOVE BETWEEN CAMERAS
 	ACameraActor* NewCamera = Cameras[CurrentCameraPosition];
 	ControllerRef->SetViewTargetWithBlend(NewCamera, 0.0f);
 
-	//UE::AudioEditor::PlaySound(CameraChangeSound);
+	// SOUND
 	UGameplayStatics::PlaySound2D(GetWorld(), CameraChangeSound, 1.0f, 1.0f, 0.0f);
 	
 	ChangeMenu();
