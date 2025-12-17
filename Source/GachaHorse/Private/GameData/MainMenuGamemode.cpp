@@ -26,6 +26,8 @@ void AMainMenuGamemode::BeginPlay()
 	InstanceRef = Cast<UBaseGameInstance>(GetWorld()->GetGameInstance());
 	
 	CheckPossibleCrash();
+	
+	InstanceRef->MissionUnavailable = false;
 
 	FTimerHandle InitialMissionTimerHandle;
 	GetWorldTimerManager().SetTimer(

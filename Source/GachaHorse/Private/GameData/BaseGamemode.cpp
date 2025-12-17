@@ -236,10 +236,9 @@ void ABaseGamemode::Victory()
 		MoneyAdded = 75;
 
 	if (RankAchieved < OldRank)
-	{
 		MoneyAdded += (OldRank - RankAchieved) * 50;
-		InstanceRef->AddMoney(MoneyAdded);
-	}
+	
+	InstanceRef->AddMoney(MoneyAdded);
 
 	if (BestTime < InstanceRef->LevelData[InstanceRef->LevelSelected].BestPersonalTime)
 	{
@@ -320,6 +319,29 @@ void ABaseGamemode::CheckMissions()
 			this,
 			&ABaseGamemode::AnimThirdMission,
 			3.0f,
+			false);
+	}
+
+	FDateTime Current = FDateTime::Now();
+	FDateTime Old = InstanceRef->MissionNextResetRef;
+
+	bool bCancelNow = false;
+	if (Current.GetYear() != Old.GetYear() || Current.GetMonth() != Old.GetMonth() || Current.GetDay() != Old.GetDay() || Current.GetHour() != Old.GetHour())
+		bCancelNow = true;
+	else
+		if (Current.GetMinute() > Old.GetMinute())
+			bCancelNow = true;
+
+	if (bCancelNow)
+	{
+		FTimerHandle CancelHandle;
+		InstanceRef->MissionUnavailable = true;
+		
+		GetWorldTimerManager().SetTimer(
+			CancelHandle,
+			this,
+			&ABaseGamemode::MissionsCanceled,
+			3.5f,
 			false);
 	}
 }
