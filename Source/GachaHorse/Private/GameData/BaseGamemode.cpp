@@ -219,12 +219,25 @@ void ABaseGamemode::Victory()
 
 	int OldRank = CalculateRank(InstanceRef->LevelData[InstanceRef->LevelSelected].BestPersonalTime);
 	RankAchieved = CalculateRank(Timer);
-
+	
 	int MoneyAdded = 50;
+	
+	if (RankAchieved == 1)
+		MoneyAdded = 250;
+	else if (RankAchieved == 2)
+		MoneyAdded = 200;
+	else if (RankAchieved == 3)
+		MoneyAdded = 150;
+	else if (RankAchieved <= 5)
+		MoneyAdded = 125;
+	else if (RankAchieved <= 10)
+		MoneyAdded = 100;
+	else if (RankAchieved <= 20)
+		MoneyAdded = 75;
 
 	if (RankAchieved < OldRank)
 	{
-		MoneyAdded = 50 + (OldRank - RankAchieved) * 50;
+		MoneyAdded += (OldRank - RankAchieved) * 50;
 		InstanceRef->AddMoney(MoneyAdded);
 	}
 
